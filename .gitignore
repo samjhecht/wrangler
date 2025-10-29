@@ -1,2 +1,6 @@
 .worktrees/
 .private-journal/
+
+# AI Stuff
+.claude-flow/
+.swarm/

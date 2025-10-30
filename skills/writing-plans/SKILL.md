@@ -15,11 +15,12 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `plans/YYYY-MM-DD-PLAN_<specification-name>.md`
 
 ## Bite-Sized Task Granularity
 
 **Each step is one action (2-5 minutes):**
+
 - "Write the failing test" - step
 - "Run it to make sure it fails" - step
 - "Implement the minimal code to make the test pass" - step
@@ -46,10 +47,11 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 ## Task Structure
 
-```markdown
+````markdown
 ### Task N: [Component Name]
 
 **Files:**
+
 - Create: `exact/path/to/file.py`
 - Modify: `exact/path/to/existing.py:123-145`
 - Test: `tests/exact/path/to/test.py`
@@ -61,6 +63,7 @@ def test_specific_behavior():
     result = function(input)
     assert result == expected
 ```
+````
 
 **Step 2: Run test to verify it fails**
 
@@ -85,6 +88,7 @@ Expected: PASS
 git add tests/path/test.py src/path/file.py
 git commit -m "feat: add specific feature"
 ```
+
 ```
 
 ## Remember
@@ -114,3 +118,4 @@ After saving the plan, offer execution choice:
 **If Parallel Session chosen:**
 - Guide them to open new session in worktree
 - **REQUIRED SUB-SKILL:** New session uses wrangler:executing-plans
+```

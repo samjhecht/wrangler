@@ -7,6 +7,55 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Initialize .wrangler/ directory structure
+initialize_workspace() {
+    # Find git repository root
+    if ! GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null); then
+        # Not in a git repo - skip initialization gracefully
+        return 0
+    fi
+
+    # Check if .wrangler/ already exists
+    if [ -d "${GIT_ROOT}/.wrangler" ]; then
+        # Already initialized - skip
+        return 0
+    fi
+
+    # Create .wrangler directory structure
+    mkdir -p "${GIT_ROOT}/.wrangler/issues"
+    mkdir -p "${GIT_ROOT}/.wrangler/specifications"
+
+    # Add .gitkeep files
+    touch "${GIT_ROOT}/.wrangler/issues/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/specifications/.gitkeep"
+
+    # Update .gitignore if needed
+    local gitignore="${GIT_ROOT}/.gitignore"
+    if [ -f "$gitignore" ]; then
+        # Check if .wrangler entries already exist
+        if ! grep -q "^\.wrangler/" "$gitignore" 2>/dev/null; then
+            echo "" >> "$gitignore"
+            echo "# Wrangler workspace" >> "$gitignore"
+            echo ".wrangler/" >> "$gitignore"
+            echo "!.wrangler/issues/" >> "$gitignore"
+            echo "!.wrangler/specifications/" >> "$gitignore"
+        fi
+    else
+        # Create .gitignore with .wrangler entries
+        cat > "$gitignore" <<GITIGNORE
+# Wrangler workspace
+.wrangler/
+!.wrangler/issues/
+!.wrangler/specifications/
+GITIGNORE
+    fi
+
+    echo "✓ Initialized .wrangler workspace at ${GIT_ROOT}" >&2
+}
+
+# Run workspace initialization
+initialize_workspace
+
 # Check if legacy skills directory exists and build warning
 warning_message=""
 legacy_skills_dir="${HOME}/.config/wrangler/skills"

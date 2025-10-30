@@ -14,6 +14,7 @@ Plus:
 - **Slash Commands** - `/wrangler:brainstorm`, `/wrangler:write-plan`, `/wrangler:execute-plan`
 - **Automatic Integration** - Skills activate automatically when relevant
 - **Consistent Workflows** - Systematic approaches to common engineering tasks
+- **Built-in MCP Server** - Local issue and specification management with automatic workspace initialization
 
 ## Installation
 
@@ -58,6 +59,42 @@ Skills activate automatically when relevant. For example:
 - `test-driven-development` activates when implementing features
 - `systematic-debugging` activates when debugging issues
 - `verification-before-completion` activates before claiming work is done
+
+### MCP Server - Issue Management
+
+Wrangler includes a built-in MCP (Model Context Protocol) server for local issue and specification tracking. The workspace is automatically initialized with `.wrangler/` directories when you first use the issue tools.
+
+**Quick Example:**
+```javascript
+// Create an issue
+issues_create({
+  title: "Add user authentication",
+  description: "Implement JWT-based authentication",
+  type: "issue",
+  priority: "high",
+  labels: ["feature", "auth"]
+})
+
+// List all open issues
+issues_list({
+  status: ["open", "in_progress"]
+})
+
+// Search by keyword
+issues_search({
+  query: "authentication",
+  fields: ["title", "description"]
+})
+```
+
+**Features:**
+- Automatic `.wrangler/issues/` and `.wrangler/specifications/` initialization
+- 11 tools for complete issue lifecycle management
+- Markdown-based storage with frontmatter metadata
+- Search, filtering, and project organization
+- Integrates seamlessly with git workflows
+
+See [MCP Usage Guide](docs/MCP-USAGE.md) for complete documentation.
 
 ## What's Inside
 

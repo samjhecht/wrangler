@@ -9,5 +9,20 @@
   "homepage": "",
   "repository": "",
   "license": "MIT",
-  "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"]
+  "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"],
+  "mcpServers": [
+    {
+      "id": "wrangler-mcp",
+      "name": "Wrangler Issue Management",
+      "description": "Built-in MCP server for systematic issue and specification tracking",
+      "command": "node",
+      "args": ["mcp/dist/index.js"],
+      "env": {
+        "WRANGLER_MCP_DEBUG": "false"
+      },
+      "autoStart": true,
+      "workingDirectory": ".",
+      "trust": "allow"
+    }
+  ]
 }

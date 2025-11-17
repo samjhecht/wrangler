@@ -6,10 +6,12 @@
     "name": "Sam",
     "email": ""
   },
-  "homepage": "",
-  "repository": "",
-  "license": "MIT",
-  "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"],
+  "homepage": "https://irregularexpressions.com",
+  "repository": "https://github.com/samjhecht/wrangler",
+  "source": {
+    "source": "github",
+    "repo": "samjhecht/wrangler"
+  },
   "mcpServers": [
     {
       "id": "wrangler-mcp",

@@ -1,20 +1,24 @@
 {
   "name": "wrangler-marketplace",
-  "description": "Development marketplace for Wrangler core skills library",
   "owner": {
     "name": "Sam Hecht",
     "email": "samjhecht@gmail.com"
   },
+  "metadata": {
+    "description": "Development marketplace for Wrangler core skills library",
+    "version": "1.0.0"
+  },
   "plugins": [
     {
       "name": "wrangler",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, etc.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/samjhecht/wrangler.git"
+      },
+      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, and proven techniques",
       "version": "1.0.0",
-      "source": "./",
-      "author": {
-        "name": "Sam Hecht",
-        "email": "samjhecht@gmail.com"
-      }
+      "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows", "mcp", "issue-tracking"],
+      "strict": true
     }
   ]
 }

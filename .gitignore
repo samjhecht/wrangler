@@ -10,7 +10,8 @@ node_modules/
 npm-debug.log*
 
 # TypeScript build output
-mcp/dist/
+# Note: mcp/dist/ is committed for marketplace plugin distribution
+# so the plugin works without requiring npm install
 *.tsbuildinfo
 
 # Testing

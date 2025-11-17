@@ -8,19 +8,13 @@
   },
   "homepage": "https://irregularexpressions.com",
   "repository": "https://github.com/samjhecht/wrangler",
-  "mcpServers": [
-    {
-      "id": "wrangler-mcp",
-      "name": "Wrangler Issue Management",
-      "description": "Built-in MCP server for systematic issue and specification tracking",
+  "mcpServers": {
+    "wrangler-mcp": {
       "command": "node",
       "args": ["mcp/dist/index.js"],
       "env": {
         "WRANGLER_MCP_DEBUG": "false"
-      },
-      "autoStart": true,
-      "workingDirectory": ".",
-      "trust": "allow"
+      }
     }
-  ]
+  }
 }

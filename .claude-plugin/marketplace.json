@@ -1,16 +1,13 @@
 {
-  "name": "wrangler-marketplace",
+  "name": "samjhecht-plugins",
   "owner": {
     "name": "Sam Hecht",
-    "email": "samjhecht@gmail.com"
+    "email": ""
   },
   "plugins": [
     {
       "name": "wrangler",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/samjhecht/wrangler.git"
-      },
+      "source": "./",
       "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, and proven techniques",
       "version": "1.0.0",
       "strict": true

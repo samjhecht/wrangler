@@ -8,7 +8,9 @@
     "build:mcp": "tsc -p mcp/tsconfig.json",
     "watch:mcp": "tsc -p mcp/tsconfig.json --watch",
     "mcp:dev": "npm run build:mcp && WRANGLER_MCP_DEBUG=true node mcp/dist/index.js",
-    "test:mcp": "jest mcp/__tests__"
+    "test:mcp": "jest mcp/__tests__",
+    "postinstall": "npm run build:mcp",
+    "prepare": "npm run build:mcp"
   },
   "keywords": [
     "mcp",

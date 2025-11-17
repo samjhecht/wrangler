@@ -15,9 +15,6 @@
         "source": "url",
         "url": "https://github.com/samjhecht/wrangler.git"
       },
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, and proven techniques",
-      "version": "1.0.0",
-      "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows", "mcp", "issue-tracking"],
       "strict": true
     }
   ]

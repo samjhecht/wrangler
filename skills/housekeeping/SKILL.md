@@ -116,6 +116,31 @@ Launch **three parallel subagents** using the Task tool:
 
 ---
 
+#### **Agent D: Root Directory Organization**
+
+**Task:** Clean up and organize markdown files at project root
+
+**Approach:**
+1. Scan project root for organizational candidates:
+   - RCA-*.md, ANALYSIS-*.md, IMPLEMENTATION-*.md, etc.
+   - Any ALL_CAPS.md files (excluding standard files like README.md)
+2. Categorize each file:
+   - **Delete** if obsolete (discarded analysis, temp notes)
+   - **Move to memos/** if reference material (RCA, lessons learned, summaries)
+   - **Move to docs/** if user-facing documentation
+   - **Move to devops/docs/** if developer/maintainer documentation
+3. Execute actions (delete or move with appropriate naming)
+4. Track metrics:
+   - Files processed: [count]
+   - Deleted: [count]
+   - Moved to memos/: [count]
+   - Moved to docs/: [count]
+   - Moved to devops/docs/: [count]
+
+**Output:** Organized root directory with action summary
+
+---
+
 ### **Phase 3: Summary Report (Sequential)**
 
 **Why sequential:** Needs results from all Phase 2 agents.
@@ -148,14 +173,15 @@ Execute roadmap update task yourself (don't delegate this one).
 Use **three separate Task tool calls in a single message** to dispatch parallel agents:
 
 ```
-I'm launching three parallel housekeeping agents:
+I'm launching four parallel housekeeping agents:
 
 [Use Task tool - Agent A: Open Issues Reconciliation]
 [Use Task tool - Agent B: Completed Issues Organization]
 [Use Task tool - Agent C: Documentation Drift Detection]
+[Use Task tool - Agent D: Root Directory Organization]
 ```
 
-**CRITICAL:** All three Task tool calls must be in a **single response** to execute truly in parallel.
+**CRITICAL:** All four Task tool calls must be in a **single response** to execute truly in parallel.
 
 ### **Step 3: Collect Results & Generate Report**
 
@@ -211,6 +237,14 @@ Housekeeping workflow completed successfully.
   - High severity: [count]
   - Medium severity: [count]
   - Low severity: [count]
+- Status: ✅ Complete
+
+**Agent D - Root Directory Organization:**
+- Files processed: [count]
+- Deleted (obsolete): [count]
+- Moved to memos/: [count]
+- Moved to docs/: [count]
+- Moved to devops/docs/: [count]
 - Status: ✅ Complete
 
 ## Actions Taken
@@ -350,6 +384,7 @@ Each Phase 2 agent operates on independent data:
 - Agent A: Open issues (won't touch closed)
 - Agent B: Closed issues (won't touch open)
 - Agent C: Documentation (won't touch issues)
+- Agent D: Root markdown files (won't touch issues/docs/memos)
 
 This ensures no conflicts or race conditions.
 

@@ -58,6 +58,11 @@ wrangler/
 ├── issues/                        # Issue tracking (git-tracked)
 ├── specifications/                # Feature specs (git-tracked)
 │
+├── memos/                         # Reference material, lessons learned, RCA archives
+├── docs/                          # User-facing product documentation
+├── devops/
+│   └── docs/                      # Developer/maintainer documentation
+│
 ├── commands/                      # Slash commands
 │   ├── brainstorm.md              # /wrangler:brainstorm
 │   ├── write-plan.md              # /wrangler:write-plan
@@ -73,6 +78,81 @@ wrangler/
 └── docs/                          # Documentation
     └── MCP-USAGE.md               # MCP server user guide
 ```
+
+### File Organization Guidelines
+
+**IMPORTANT: When creating analysis, documentation, or reference files, DO NOT create them at project root.**
+
+Use these directories for different file types:
+
+**`memos/` - Reference Material & Lessons Learned**
+- Root cause analyses (RCA-*.md)
+- Post-mortems and incident reports
+- Lessons learned from debugging sessions
+- Technical investigations and research findings
+- Decision records and rationale
+- Meeting notes or discussion summaries
+- **Naming:** `YYYY-MM-DD-topic-slug.md` or descriptive names
+
+**`docs/` - User-Facing Documentation**
+- Product documentation
+- User guides and tutorials
+- API documentation for end users
+- Getting started guides
+- FAQ and troubleshooting (user perspective)
+- **Naming:** lowercase-with-dashes.md
+
+**`devops/docs/` - Developer/Maintainer Documentation**
+- Architecture decision records (ADR)
+- Deployment procedures
+- CI/CD configuration guides
+- Infrastructure documentation
+- Maintenance procedures
+- **Naming:** Organized by topic, lowercase-with-dashes.md
+
+**Examples:**
+
+Creating root cause analysis:
+```bash
+# ❌ DON'T create at root
+RCA-AUTH-FAILURE.md
+
+# ✅ DO create in memos/
+memos/2025-11-17-auth-failure-rca.md
+```
+
+Creating implementation summary:
+```bash
+# ❌ DON'T create at root
+IMPLEMENTATION-SUMMARY-MCP.md
+
+# ✅ DO create in memos/
+memos/2024-10-29-mcp-integration-summary.md
+```
+
+Creating user documentation:
+```bash
+# ❌ DON'T create at root
+USING-WORKFLOWS.md
+
+# ✅ DO create in docs/
+docs/using-workflows.md
+```
+
+Creating developer documentation:
+```bash
+# ❌ DON'T create at root
+DEPLOYMENT-GUIDE.md
+
+# ✅ DO create in devops/docs/
+devops/docs/deployment-guide.md
+```
+
+**When in doubt:**
+- If it's temporary analysis → `memos/`
+- If users read it → `docs/`
+- If only maintainers read it → `devops/docs/`
+- If it's no longer relevant → Delete it
 
 ---
 

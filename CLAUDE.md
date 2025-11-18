@@ -6,11 +6,47 @@ This document provides essential context for AI agents (Claude Code, etc.) worki
 
 ## Project Overview
 
-**Wrangler** is a comprehensive skills library for AI coding assistants, providing:
-- **Skills System**: Proven techniques, patterns, and workflows
-- **Built-in MCP Server**: Systematic issue and specification management
-- **Slash Commands**: Quick access to common workflows
-- **Automatic Integration**: Skills and tools activate when relevant
+**Wrangler** is a comprehensive project governance framework and skills library for AI coding assistants. Its primary goal is to **establish and maintain perfect alignment between you (the AI assistant) and your human partner** through systematic governance.
+
+### Core Value Proposition
+
+Wrangler ensures you and your human partner are **of one mind** about:
+- **Design principles** (via Constitution documents)
+- **Strategic direction** (via Roadmap files)
+- **Tactical execution** (via tracked issues and specifications)
+- **Development workflows** (via proven skills and patterns)
+
+### Key Components
+
+1. **Project Governance System**
+   - Constitutional principles for consistent decision-making
+   - Hierarchical planning (strategic roadmaps → tactical execution)
+   - Systematic issue and specification tracking
+   - Automated governance verification and maintenance
+
+2. **Skills Library** (36 skills)
+   - Proven techniques, patterns, and workflows
+   - Covers testing, debugging, planning, code review, governance
+   - Mandatory when applicable - no rationalizing away
+   - Discoverable and composable
+
+3. **Built-in MCP Server**
+   - 11 tools for issue and specification management
+   - Markdown-based storage (git-tracked)
+   - Automatic workspace initialization
+   - Full-text search and metadata queries
+
+4. **Template System**
+   - Governance file templates (Constitution, Roadmap, etc.)
+   - Issue and specification templates
+   - Directory README templates
+   - Consistent structure across projects
+
+5. **Workflow Integration**
+   - Slash commands for common operations
+   - Session hooks for automatic setup
+   - Verification and validation tools
+   - Metric tracking and status reporting
 
 ---
 
@@ -153,6 +189,130 @@ devops/docs/deployment-guide.md
 - If users read it → `docs/`
 - If only maintainers read it → `devops/docs/`
 - If it's no longer relevant → Delete it
+
+---
+
+## Project Governance Framework
+
+Wrangler implements a three-tier governance hierarchy to ensure consistency across all projects:
+
+### Tier 1: Constitution (Immutable Principles)
+
+**File**: `specifications/_CONSTITUTION.md` (underscore prefix sorts to top)
+
+**Purpose**: Defines core design principles that guide all development decisions
+
+**Structure**:
+- Mission statement ("North Star")
+- 5-12 core principles with practice examples and anti-patterns
+- Decision framework (questions to evaluate features)
+- Amendment process (how principles can evolve)
+
+**Integration**:
+- Referenced in CLAUDE.md as mandatory reading
+- Checked via `wrangler:check-constitutional-alignment` skill
+- Informs roadmap planning and issue creation
+
+### Tier 2: Strategic Roadmap
+
+**File**: `specifications/_ROADMAP.md`
+
+**Purpose**: Maps vision to execution timeline with phases
+
+**Structure**:
+- Current state (completed features)
+- Phases (1-N) with timelines and goals
+- Success metrics per phase
+- Technical debt tracking
+- Links to constitution for decision-making
+
+**Updates**: Quarterly or upon phase completion
+
+### Tier 3: Tactical Execution
+
+**File**: `specifications/_ROADMAP__NEXT_STEPS.md`
+
+**Purpose**: Detailed implementation status and next actions
+
+**Structure**:
+- Executive summary (X% complete)
+- Implementation completeness analysis (✅ ⚠️ ❌)
+- Partially implemented features table
+- Prioritized roadmap (🔴 🟡 🟢)
+- Quick wins checklist
+
+**Updates**: Weekly/daily as implementation progresses
+
+### Directory Governance
+
+Each governance directory (`issues/`, `specifications/`) contains:
+
+**README.md** (minimal, 100-200 lines):
+- Current status metrics
+- Directory structure
+- Workflow steps (reference skills)
+- Link to comprehensive docs in `.wrangler/docs/`
+
+**Templates**: Generated via skills, not embedded in README
+
+**Validation**: Automated via `wrangler:verify-governance` skill
+
+### Governance Workflow
+
+```
+Feature Request
+    ↓
+Constitutional Check (Does this align with principles?)
+    ↓ (yes)
+Phase Check (Which roadmap phase?)
+    ↓
+Specification Check (Spec exists or needs creation?)
+    ↓
+Issue Creation (Break into tasks)
+    ↓
+Implementation (Following skills/patterns)
+    ↓
+Testing (TDD enforced)
+    ↓
+Mark Complete (Update metrics)
+    ↓
+Update NEXT_STEPS (Track progress)
+```
+
+### Initialization
+
+Run `/wrangler:initialize-governance` to create:
+- `specifications/_CONSTITUTION.md` (template)
+- `specifications/_ROADMAP.md` (template)
+- `specifications/_ROADMAP__NEXT_STEPS.md` (template)
+- `issues/README.md` (minimal guidance)
+- `specifications/README.md` (minimal guidance)
+- `.wrangler/docs/governance.md` (comprehensive reference)
+
+### Verification & Maintenance
+
+**Automated checks** (on session start):
+- Governance file existence
+- Frontmatter validation
+- Status-location consistency
+- Broken link detection
+- Metric staleness
+
+**Manual commands**:
+- `/wrangler:verify-governance` - Detailed validation report
+- `/wrangler:refresh-metrics` - Update status counts
+- `/wrangler:check-alignment` - Constitutional alignment check
+
+### Best Practices
+
+1. **Constitution is supreme law** - All features must align
+2. **Start small** - 5-8 principles initially, evolve as needed
+3. **Be specific** - "Functions ≤50 lines" not "clean code"
+4. **Include anti-patterns** - Show what NOT to do
+5. **Metrics auto-generated** - Skills update counts, don't manual edit
+6. **README references skills** - Don't duplicate workflow logic
+7. **Templates in wrangler** - Not project-specific
+8. **Git tracks everything** - All governance files version-controlled
 
 ---
 

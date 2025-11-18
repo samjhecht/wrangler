@@ -55,9 +55,8 @@ wrangler/
 │   ├── dist/                      # Compiled output (gitignored)
 │   └── __tests__/                 # Comprehensive test suite (233 tests)
 │
-├── .wrangler/                     # Workspace for issue tracking
-│   ├── issues/                    # Issue tracking (git-tracked)
-│   └── specifications/            # Feature specs (git-tracked)
+├── issues/                        # Issue tracking (git-tracked)
+├── specifications/                # Feature specs (git-tracked)
 │
 ├── commands/                      # Slash commands
 │   ├── brainstorm.md              # /wrangler:brainstorm
@@ -81,16 +80,15 @@ wrangler/
 
 ### What It Does
 
-The built-in MCP server provides **systematic issue and specification tracking** using markdown files stored in `.wrangler/issues/` and `.wrangler/specifications/`.
+The built-in MCP server provides **systematic issue and specification tracking** using markdown files stored in `issues/` and `specifications/` at the project root.
 
 ### Automatic Initialization
 
 On session start, the `hooks/session-start.sh` script automatically:
 1. Detects git repository root
-2. Creates `.wrangler/issues/` directory
-3. Creates `.wrangler/specifications/` directory
+2. Creates `issues/` directory at project root
+3. Creates `specifications/` directory at project root
 4. Adds `.gitkeep` files to track empty directories
-5. Updates `.gitignore` appropriately
 
 **This happens automatically - no manual setup required.**
 
@@ -372,7 +370,7 @@ const result = await createIssueTool({
 ### MCP Philosophy
 
 - **Issues track work, not ideas** - Create issues for actionable work items
-- **Markdown is the source of truth** - Files in `.wrangler/` are authoritative
+- **Markdown is the source of truth** - Files in `issues/` and `specifications/` are authoritative
 - **Git tracks everything** - All issues/specs are version controlled
 - **Counter-based IDs** - Sequential numbering (000001, 000002...)
 
@@ -412,8 +410,8 @@ const result = await createIssueTool({
 - **Tools**: `mcp/tools/issues/*.ts`
 - **Tests**: `mcp/__tests__/**/*.test.ts`
 - **Config**: `.claude-plugin/plugin.json`
-- **Issues**: `.wrangler/issues/*.md`
-- **Specs**: `.wrangler/specifications/*.md`
+- **Issues**: `issues/*.md`
+- **Specs**: `specifications/*.md`
 
 ### Important Commands
 
@@ -430,6 +428,8 @@ npm run mcp:dev                # Debug mode
 - `WRANGLER_MCP_NAME` - Server name (default: "wrangler-mcp")
 - `WRANGLER_MCP_VERSION` - Server version (default: "1.0.0")
 - `WRANGLER_WORKSPACE_ROOT` - Workspace root (default: process.cwd())
+- `WRANGLER_ISSUES_DIRECTORY` - Issues directory (default: "issues")
+- `WRANGLER_SPECIFICATIONS_DIRECTORY` - Specifications directory (default: "specifications")
 
 ### Coverage Targets
 

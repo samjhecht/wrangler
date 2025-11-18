@@ -29,16 +29,15 @@ The MCP server exposes 11 tools that Claude can use to manage your project's iss
 When you first use any issue management tool, Wrangler automatically creates:
 
 ```
-.wrangler/
-├── issues/           # Project issues
-└── specifications/   # Technical specifications
+issues/               # Project issues
+specifications/       # Technical specifications
 ```
 
-No configuration needed - just start creating issues.
+These directories are created at your project root. No configuration needed - just start creating issues.
 
 ## Directory Structure
 
-### Issues Directory (`.wrangler/issues/`)
+### Issues Directory (`issues/`)
 
 Stores project issues as Markdown files with frontmatter:
 
@@ -66,7 +65,7 @@ Implement JWT-based authentication system with:
 - Refresh token support
 ```
 
-### Specifications Directory (`.wrangler/specifications/`)
+### Specifications Directory (`specifications/`)
 
 Stores technical specifications with the same structure but `type: "specification"`:
 
@@ -405,7 +404,7 @@ const issue = issues_create({
   priority: "high",
   labels: ["feature", "api"]
 })
-// Creates: .wrangler/issues/implement-user-registration-000001.md
+// Creates: issues/000001-implement-user-registration.md
 ```
 
 ### 2. Start Work
@@ -631,7 +630,7 @@ Issues are stored as Markdown files, so:
 - Sync across team via git
 
 ```bash
-git add .wrangler/
+git add issues/ specifications/
 git commit -m "Add authentication issues"
 ```
 
@@ -677,7 +676,7 @@ issues_delete({
 
 **Problem:** Error about accessing files outside workspace
 
-**Solution:** Don't use absolute paths or `..` in IDs. The MCP server restricts access to `.wrangler/` directories for security.
+**Solution:** Don't use absolute paths or `..` in IDs. The MCP server restricts access to `issues/` and `specifications/` directories for security.
 
 ### Labels Not Working
 
@@ -708,7 +707,7 @@ issues_update({
 })
 ```
 
-This physically moves the file from `.wrangler/issues/` to `.wrangler/specifications/`.
+This physically moves the file from `issues/` to `specifications/`.
 
 ### Pagination Issues
 

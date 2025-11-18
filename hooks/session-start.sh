@@ -15,42 +15,21 @@ initialize_workspace() {
         return 0
     fi
 
-    # Check if .wrangler/ already exists
-    if [ -d "${GIT_ROOT}/.wrangler" ]; then
+    # Check if directories already exist
+    if [ -d "${GIT_ROOT}/issues" ] && [ -d "${GIT_ROOT}/specifications" ]; then
         # Already initialized - skip
         return 0
     fi
 
-    # Create .wrangler directory structure
-    mkdir -p "${GIT_ROOT}/.wrangler/issues"
-    mkdir -p "${GIT_ROOT}/.wrangler/specifications"
+    # Create directory structure
+    mkdir -p "${GIT_ROOT}/issues"
+    mkdir -p "${GIT_ROOT}/specifications"
 
     # Add .gitkeep files
-    touch "${GIT_ROOT}/.wrangler/issues/.gitkeep"
-    touch "${GIT_ROOT}/.wrangler/specifications/.gitkeep"
+    touch "${GIT_ROOT}/issues/.gitkeep"
+    touch "${GIT_ROOT}/specifications/.gitkeep"
 
-    # Update .gitignore if needed
-    local gitignore="${GIT_ROOT}/.gitignore"
-    if [ -f "$gitignore" ]; then
-        # Check if .wrangler entries already exist
-        if ! grep -q "^\.wrangler/" "$gitignore" 2>/dev/null; then
-            echo "" >> "$gitignore"
-            echo "# Wrangler workspace" >> "$gitignore"
-            echo ".wrangler/" >> "$gitignore"
-            echo "!.wrangler/issues/" >> "$gitignore"
-            echo "!.wrangler/specifications/" >> "$gitignore"
-        fi
-    else
-        # Create .gitignore with .wrangler entries
-        cat > "$gitignore" <<GITIGNORE
-# Wrangler workspace
-.wrangler/
-!.wrangler/issues/
-!.wrangler/specifications/
-GITIGNORE
-    fi
-
-    echo "✓ Initialized .wrangler workspace at ${GIT_ROOT}" >&2
+    echo "✓ Initialized issues and specifications directories at ${GIT_ROOT}" >&2
 }
 
 # Run workspace initialization

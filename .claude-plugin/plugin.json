@@ -13,7 +13,9 @@
       "command": "node",
       "args": ["mcp/dist/index.js"],
       "env": {
-        "WRANGLER_MCP_DEBUG": "false"
+        "WRANGLER_MCP_DEBUG": "false",
+        "WRANGLER_ISSUES_DIRECTORY": "issues",
+        "WRANGLER_SPECIFICATIONS_DIRECTORY": "specifications"
       }
     }
   }

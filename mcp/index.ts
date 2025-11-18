@@ -24,12 +24,14 @@ function parseConfig(): WranglerMCPConfig {
   const issueProvider = process.env.WRANGLER_ISSUE_PROVIDER || 'markdown';
   const issueBasePath = process.env.WRANGLER_ISSUE_BASE_PATH || config.workspaceRoot || process.cwd();
   const issuesDirectory = process.env.WRANGLER_ISSUES_DIRECTORY || '.wrangler/issues';
+  const specificationsDirectory = process.env.WRANGLER_SPECIFICATIONS_DIRECTORY || '.wrangler/specifications';
 
   config.issues = {
     provider: issueProvider as 'markdown' | 'mock',
     settings: {
       basePath: issueBasePath,
       issuesDirectory: issuesDirectory,
+      specificationsDirectory: specificationsDirectory,
     },
   };
 

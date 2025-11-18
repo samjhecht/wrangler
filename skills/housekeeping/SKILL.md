@@ -7,35 +7,63 @@ You are the housekeeping workflow coordinator. Your job is to ensure the project
 
 ## Core Responsibilities
 
-- Update `specifications/_ROADMAP__NEXT_STEPS.md` to reflect current reality
+- Update `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` to reflect current reality
+- Refresh governance metrics across all governance documents
 - Reconcile open issues with actual implementation
 - Move completed issues to organized archive
 - Identify documentation drift or missing updates
+- Verify constitutional alignment in specifications
 - Generate housekeeping summary report with metrics
 
 ## Execution Strategy: Multi-Phase Workflow
 
 This is a **workflow skill** - it coordinates multiple subagents in parallel for maximum efficiency.
 
-### **Phase 1: Roadmap Update (Sequential)**
+### **Phase 1: Governance Refresh (Sequential)**
 
 **Why sequential:** Need current state understanding before dispatching parallel agents.
 
-**Task:** Update `specifications/_ROADMAP__NEXT_STEPS.md`
+**Task:** Update governance documents to reflect current reality
 
 **Approach:**
 
-1. Read current `specifications/_ROADMAP__NEXT_STEPS.md` (or create if doesn't exist)
-2. Review recent git commits (last 20-30 commits) to understand what's been completed
-3. Review open and recently closed issues to understand current work
-4. Update roadmap with:
-   - **Completed Recently:** What's been finished since last housekeeping
-   - **Current State:** Clear snapshot of where we are now
-   - **In Progress:** What's actively being worked on
-   - **Next Steps:** Prioritized list of what comes next
-   - **Blockers:** Any impediments or open questions
+**1.1 Refresh Governance Metrics**
 
-**Output:** Updated roadmap file with accurate current state
+Use the `refresh-metrics` skill (invoke with Skill tool) to update:
+- `.wrangler/issues/README.md` - Issue counts and status percentages
+- `.wrangler/specifications/README.md` - Spec counts and constitutional compliance
+- `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` - Implementation status and overall % complete
+
+**1.2 Update Roadmap Next Steps**
+
+After metrics refresh, manually review and update Next Steps:
+
+1. Read `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md`
+2. Review recent git commits (last 20-30 commits) for completed work
+3. Review recently closed issues and specifications
+4. Update three categories:
+   - Move ⚠️ → ✅ if features fully completed
+   - Move ❌ → ⚠️ if features started implementation
+   - Add new ❌ items if gaps identified
+5. Update "What Works Well" and "Critical Gap" sections
+6. Update "Prioritized Roadmap" if priorities shifted
+7. Update "Last Updated By" and "Next Review" dates
+
+**1.3 Verify Constitutional Compliance**
+
+Check if any specifications lack constitutional alignment:
+
+```bash
+# Find specs missing constitutional alignment
+grep -L "Constitutional Alignment" .wrangler/specifications/*.md | grep -v "_CONSTITUTION\|_ROADMAP\|README"
+```
+
+If found, note for Agent C (Documentation Drift) to flag.
+
+**Output:**
+- Updated governance metrics
+- Updated roadmap Next Steps
+- List of specs needing constitutional alignment sections
 
 ---
 
@@ -74,15 +102,15 @@ Launch **three parallel subagents** using the Task tool:
 
 #### **Agent B: Completed Issues Organization**
 
-**Task:** Move completed/closed issues to `issues/completed/` directory for archival
+**Task:** Move completed/closed issues to `.wrangler/issues/completed/` directory for archival
 
 **Approach:**
 
 1. List all closed issues (`issues_list` with `status: ["closed", "cancelled"]`)
-2. Check if `issues/completed/` directory exists, create if not
+2. Check if `.wrangler/issues/completed/` directory exists, create if not
 3. For each closed issue:
-   - Check if still in `issues/` root directory
-   - If yes, move to `issues/completed/`
+   - Check if still in `.wrangler/issues/` root directory
+   - If yes, move to `.wrangler/issues/completed/`
    - Preserve filename (don't rename)
 4. Track metrics:
    - Completed issues found: [count]
@@ -95,14 +123,16 @@ Launch **three parallel subagents** using the Task tool:
 
 #### **Agent C: Documentation Drift Detection**
 
-**Task:** Identify areas where documentation may not reflect implementation reality
+**Task:** Identify areas where documentation may not reflect implementation reality, including governance compliance
 
 **Approach:**
 
 1. Read key documentation files:
    - README.md
    - CLAUDE.md (or equivalent project documentation)
-   - Any SPEC-\*.md files
+   - `.wrangler/specifications/_CONSTITUTION.md`
+   - `.wrangler/specifications/_ROADMAP.md`
+   - Any specification files
 2. Review recent git commits for major changes
 3. Look for signs of drift:
    - Features mentioned in docs but not implemented
@@ -110,13 +140,17 @@ Launch **three parallel subagents** using the Task tool:
    - API changes not reflected in docs
    - Configuration changes not updated
    - File structure changes not documented
+   - **Specifications missing constitutional alignment sections**
+   - **Roadmap phases not reflected in Next Steps**
+   - **Constitutional principles violated in recent code**
 4. Create list of documentation updates needed
 5. Track metrics:
    - Documentation files reviewed: [count]
    - Drift issues found: [count]
+   - **Constitutional compliance gaps**: [count]
    - Severity: High/Medium/Low
 
-**Output:** List of documentation drift issues with recommendations
+**Output:** List of documentation drift issues with recommendations, including governance compliance issues
 
 ---
 
@@ -170,9 +204,13 @@ Launch **three parallel subagents** using the Task tool:
 
 ## Workflow Execution Plan
 
-### **Step 1: Start Phase 1 (Roadmap Update)**
+### **Step 1: Start Phase 1 (Governance Refresh)**
 
-Execute roadmap update task yourself (don't delegate this one).
+Execute governance refresh yourself:
+
+1. Invoke `refresh-metrics` skill using Skill tool
+2. Manually update Next Steps with recent completions
+3. Check for specs missing constitutional alignment
 
 ### **Step 2: Launch Phase 2 Parallel Agents**
 
@@ -206,13 +244,18 @@ Housekeeping workflow completed successfully.
 
 **Duration:** [X] minutes total
 
-- Phase 1 (Roadmap): [X] minutes
+- Phase 1 (Governance refresh): [X] minutes
 - Phase 2 (Parallel reconciliation): [X] minutes
 - Phase 3 (Report generation): [X] minutes
 
-## Roadmap Update
+## Governance Refresh
 
-✅ `specifications/_ROADMAP__NEXT_STEPS.md` updated
+✅ **Metrics Updated**:
+- `.wrangler/issues/README.md` - Updated issue counts and status percentages
+- `.wrangler/specifications/README.md` - Updated spec counts and constitutional compliance
+- `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` - Updated implementation status
+
+**Overall Project Completion**: ~[X]% ([+/-]% since last housekeeping)
 
 **Completed since last housekeeping:**
 
@@ -227,6 +270,10 @@ Housekeeping workflow completed successfully.
 **Blockers identified:**
 
 - [Blocker 1 if any]
+
+**Constitutional Compliance**:
+- Specifications with alignment: [X]/[Y] ([Z]%)
+- Specifications needing alignment sections: [count]
 
 ## Issue Reconciliation
 
@@ -250,6 +297,7 @@ Housekeeping workflow completed successfully.
   - High severity: [count]
   - Medium severity: [count]
   - Low severity: [count]
+- Constitutional compliance gaps: [count]
 - Status: ✅ Complete
 
 **Agent D - Root Directory Organization:**
@@ -461,11 +509,13 @@ The workflow framework is designed to scale to arbitrary parallel agents.
 
 Housekeeping is successful when:
 
-✅ Roadmap accurately reflects current state and next steps
+✅ Governance metrics refreshed across all documents
+✅ Roadmap Next Steps accurately reflects current state and priorities
+✅ Constitutional compliance verified and gaps identified
 ✅ All completed issues are marked as closed
-✅ All closed issues are archived in `issues/completed/`
+✅ All closed issues are archived in `.wrangler/issues/completed/`
 ✅ Issue descriptions match implementation reality
-✅ Documentation drift is identified and catalogued
+✅ Documentation drift is identified and catalogued (including governance compliance)
 ✅ Summary report provides actionable insights
 ✅ Workflow completes in reasonable time (< 5 minutes for typical project)
 

@@ -1,8 +1,29 @@
+---
+wranglerVersion: "1.1.0"
+lastUpdated: "YYYY-MM-DD"
+---
+
 # [PROJECT_NAME] Constitution
 
 **Version**: 1.0.0
 **Ratified**: [YYYY-MM-DD]
 **Last Amended**: [YYYY-MM-DD]
+
+---
+
+<!--
+WRANGLER VERSION TRACKING
+
+The frontmatter above tracks which version of wrangler this project uses:
+- wranglerVersion: Latest wrangler version this project has been updated to
+- lastUpdated: Date when constitution or wrangler version was last updated
+
+This enables automatic version detection and migration guidance via:
+- Startup skill: Detects version gaps on session start
+- /update-yourself command: Provides migration instructions
+
+DO NOT remove this frontmatter. Update wranglerVersion when migrating to new wrangler releases.
+-->
 
 ---
 

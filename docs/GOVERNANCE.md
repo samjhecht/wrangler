@@ -16,6 +16,7 @@ This guide explains the wrangler governance framework and how to use it to maint
 - [Daily Workflows](#daily-workflows)
 - [Skills Reference](#skills-reference)
 - [Templates Reference](#templates-reference)
+- [Ideas and Proposals](#ideas-and-proposals)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -695,6 +696,264 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 - Leave completed issues in open state
 - Create mega-issues (break down)
 - Skip acceptance criteria
+
+---
+
+## Ideas and Proposals
+
+### Overview
+
+The `ideas/` directory captures early-stage concepts and proposals before they become formal specifications or issues. Ideas are exploratory, experimental, and may never be implemented - they serve as a "thinking space" for brainstorming without commitment.
+
+### When to Create an Idea
+
+**Create an Idea When**:
+- Exploring a major architectural change
+- Proposing a new system or capability
+- Brainstorming solutions to complex problems
+- Researching feasibility of ambitious features
+- Documenting "future possibilities" for consideration
+
+**Don't Create an Idea When**:
+- Feature is well-defined and ready to implement → Create a Specification
+- Work is straightforward and tactical → Create an Issue
+- Proposal is small and non-controversial → Just do it
+
+### Idea File Structure
+
+**Location**: `ideas/{descriptive-name}.md`
+
+**Template**:
+```markdown
+# Idea: {Descriptive Title}
+
+**Status**: Brainstorming | Under Review | Approved | Rejected | Implemented
+**Created**: YYYY-MM-DD
+**Category**: Architecture | Features | Performance | Quality | Infrastructure
+
+---
+
+## Core Concept
+
+[One-paragraph elevator pitch of the idea]
+
+## Problem Statement
+
+**Current Pain Points**:
+1. [What problems does this solve?]
+2. [Why do we need this?]
+
+**What if**: [Provocative question exploring possibilities]
+
+## Proposed Solution
+
+[Detailed explanation of the approach]
+
+### Key Components
+
+[Break down the major pieces]
+
+### Example Workflows
+
+[Show how it would work in practice]
+
+## Benefits
+
+[Why this is valuable]
+
+## Challenges & Mitigations
+
+[What could go wrong and how to address it]
+
+## Implementation Phases
+
+[High-level roadmap if we pursue this]
+
+## Open Questions
+
+[Unresolved questions that need answers]
+
+## Success Metrics
+
+[How we'd measure if this is working]
+
+## Related Ideas
+
+[Links to other ideas or proposals]
+
+## Next Steps
+
+[What needs to happen to move this forward]
+```
+
+### Idea Lifecycle
+
+```
+Brainstorming → Under Review → Decision
+                                    ↓
+                    ┌───────────────┴───────────────┐
+                    ↓                               ↓
+                Approved                        Rejected
+                    ↓                               ↓
+            Specification Created            Mark Status: Rejected
+                    ↓                         Document Reasons
+            Issues Created                    Keep for Reference
+                    ↓
+            Implementation
+                    ↓
+            Mark Status: Implemented
+            Archive or Keep Active
+```
+
+### Idea Status Values
+
+- **Brainstorming**: Initial exploration, gathering thoughts
+- **Under Review**: Being evaluated for feasibility and alignment
+- **Approved**: Greenlit for specification creation
+- **Rejected**: Decided against, documented for reference
+- **Implemented**: Completed and shipped
+- **Shelved**: Good idea, but not now (revisit later)
+
+### Review Process
+
+**Constitutional Alignment Check**:
+
+Before approving an idea, validate it against the constitution:
+
+1. **Read the Idea**: Understand the core concept and goals
+2. **Check Alignment**: Run `/wrangler:check-constitutional-alignment` with idea summary
+3. **Evaluate Result**:
+   - ✅ APPROVE → Proceed with approval
+   - ⚠️ REVISE → Request modifications to align with principles
+   - ❌ REJECT → Reject idea as misaligned with project values
+4. **Document Decision**: Update idea status and add rationale
+
+**Example**:
+```markdown
+## Constitutional Alignment Review
+
+**Date**: 2025-11-18
+**Reviewer**: Human Partner + Claude Code
+
+**Decision Framework**:
+1. Does this align with project mission? ✅ YES
+2. Does it simplify or add complexity? ⚠️ ADDS (but justified)
+3. Does it support core principles? ✅ YES
+4. Are there anti-pattern violations? ✅ NONE
+5. Is scope appropriate? ✅ YES
+
+**Principles Alignment**:
+- ✅ Test-Driven Development: Proposal includes TDD workflow
+- ✅ Systematic over Ad-Hoc: Replaces ad-hoc debugging with systematic approach
+- ⚠️ Complexity Reduction: Adds complexity but enables simplification elsewhere
+
+**Result**: ✅ APPROVED with modifications
+- Reduce scope to MCP-only (not all plugin code)
+- Require TDD for all auto-fixes
+- Add rollback procedures
+
+**Next Step**: Create Specification #000XXX
+```
+
+### Graduating Ideas to Specifications
+
+**When to Graduate**:
+- Constitutional alignment verified
+- Feasibility validated
+- Scope well-defined
+- Benefits outweigh costs
+- Stakeholder agreement
+
+**Graduation Process**:
+1. Update idea status to "Approved"
+2. Create formal specification in `.wrangler/specifications/`
+3. Link spec back to original idea
+4. Break specification into issues
+5. Begin implementation
+
+**Template Link**:
+```markdown
+## Related Artifacts
+
+**Original Idea**: `ideas/self-healing-mcp-plugin.md`
+**Specification**: `.wrangler/specifications/000042-self-healing-mcp.md` (Created 2025-12-01)
+**Implementation Issues**: #000123, #000124, #000125
+```
+
+### Example Ideas
+
+**Current Ideas** (as of 2025-11-18):
+
+1. **`ideas/self-healing-mcp-plugin.md`**
+   - **Concept**: Bundle MCP source code in plugin, enable AI-driven bug fixing with PR submission
+   - **Status**: Brainstorming
+   - **Key Innovation**: Plugin can fix itself and contribute improvements back upstream
+
+2. **`ideas/adaptive-workflow-modes.md`**
+   - **Concept**: Use `.wrangler/settings.json` to configure workflow modes (DOUBLE_CHECK, FAST, BALANCED, EXPLORATION) with automatic quality gates
+   - **Status**: Brainstorming
+   - **Key Innovation**: Trade latency for quality via configuration, intelligent parallelization
+
+3. **`ideas/verification-workflow-layer.md`**
+   - **Concept**: Wrap every user request in transparent verification layer with parallel subagents (test runner, constitutional compliance, requirements fulfillment, code review)
+   - **Status**: Brainstorming
+   - **Key Innovation**: Quality firewall prevents premature completion claims, ensures "demanding user with high standards" would be satisfied
+
+### Best Practices
+
+**Do**:
+- Explore ambitious ideas freely
+- Include concrete examples and workflows
+- Document challenges honestly
+- Consider constitutional alignment early
+- Link related ideas together
+
+**Don't**:
+- Commit to implementation in idea stage
+- Skip problem statement (always answer "why")
+- Ignore feasibility concerns
+- Create ideas for trivial features
+- Delete rejected ideas (archive for reference)
+
+### Archiving Ideas
+
+**When to Archive**:
+- Idea fully implemented → Status: Implemented
+- Context changed, no longer relevant
+- Superseded by better approach
+
+**How to Archive**:
+1. Update status field
+2. Add "Archived" note with reason
+3. Move to `ideas/archive/` subdirectory (optional)
+4. Preserve for historical reference
+
+**Example**:
+```markdown
+# Idea: Old Approach to Problem X
+
+**Status**: Implemented (See Spec #000012)
+**Archived**: 2025-12-01
+**Archive Reason**: Fully implemented in v1.3.0
+
+[Original content preserved]
+
+---
+
+## Implementation Summary
+
+This idea was approved and implemented as Specification #000012.
+See `.wrangler/specifications/000012-problem-x-solution.md` for details.
+Released in wrangler v1.3.0 (2025-12-01).
+```
+
+### Metrics
+
+Track idea pipeline health:
+- **Ideas Created**: Volume of new proposals
+- **Approval Rate**: % of ideas that become specs
+- **Time to Decision**: Days from creation to approval/rejection
+- **Implementation Rate**: % of approved ideas that ship
 
 ---
 

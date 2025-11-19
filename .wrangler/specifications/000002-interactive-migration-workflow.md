@@ -2,17 +2,18 @@
 id: "000002"
 title: "Interactive Migration Workflow with User Approval"
 type: "specification"
-status: "open"
+status: "closed"
 priority: "critical"
 labels: ["migration", "user-experience", "session-hooks", "versioning"]
 assignee: ""
 project: "Centralized .wrangler/ Directory"
 createdAt: "2025-11-18T12:00:00.000Z"
-updatedAt: "2025-11-18T12:00:00.000Z"
+updatedAt: "2025-11-19T20:33:00.000Z"
 wranglerContext:
-  agentId: ""
+  agentId: "claude-code"
   parentTaskId: "000001"
   estimatedEffort: "4-6 hours"
+  implementedAt: "2025-11-19T20:33:00.000Z"
 ---
 
 # Specification: Interactive Migration Workflow with User Approval
@@ -573,11 +574,84 @@ Your files are safe in their original locations.
 - **Update Command**: `commands/update-yourself.md`
 - **Release Notes**: `skills/.wrangler-releases/1.1.0.md`
 
+## Implementation Summary
+
+**Status**: ✅ COMPLETED (2025-11-19)
+
+### What Was Implemented
+
+1. **Migration Detector Skill** (`skills/wrangler/migration-detector/SKILL.md`)
+   - Detects legacy directory structure (issues/, specifications/, memos/)
+   - Counts files to be migrated
+   - Uses AskUserQuestion tool for user approval
+   - 4 options: "Migrate now", "Show details", "Skip", "Never ask"
+   - Handles opt-out flags and already-migrated scenarios
+
+2. **Migration Executor Skill** (`skills/wrangler/migration-executor/SKILL.md`)
+   - 9-phase safe migration process
+   - Creates timestamped backup before migration
+   - Validates file counts after migration
+   - Automatic rollback on validation failure
+   - Updates constitution wranglerVersion to 1.1.0
+   - Creates .gitignore for runtime directories
+
+3. **Session Hook Updates** (`hooks/session-start.sh`)
+   - Changed initialization to create `.wrangler/` structure (v1.1.0) instead of legacy
+   - Added migration detection logic
+   - Injects reminder to invoke migration-detector when legacy structure detected
+   - Handles all scenarios: fresh project, legacy, migrated, opted-out
+
+### Test Results
+
+All 5 test scenarios PASS:
+- ✅ Legacy structure → Shows migration reminder
+- ✅ Opted out → No reminder
+- ✅ Already migrated → No reminder
+- ✅ Fresh project → Creates .wrangler/ structure, no reminder
+- ✅ Non-git project → Skips gracefully
+
+### Files Created/Modified
+
+**Created:**
+- `skills/wrangler/migration-detector/SKILL.md` (335 lines)
+- `skills/wrangler/migration-executor/SKILL.md` (492 lines)
+
+**Modified:**
+- `hooks/session-start.sh` (added v1.1.0 initialization + migration detection)
+
+### How It Works
+
+**For new projects:**
+- Hook creates `.wrangler/` structure automatically
+- No migration needed
+
+**For legacy projects:**
+- Hook detects legacy directories
+- Injects context to invoke migration-detector skill
+- User sees prompt with 4 options
+- If approved, migration-executor runs
+- Backup created, files moved, version updated
+
+**Safety features:**
+- Git clean check (warns if uncommitted changes)
+- Timestamped backups before migration
+- File count validation
+- Automatic rollback on failure
+- Opt-out mechanism (`.wrangler/SKIP_AUTO_MIGRATION`)
+
+### Constitutional Alignment
+
+This implementation aligns with wrangler's core principles:
+- **User agency**: User approves before migration
+- **Safety first**: Backups, validation, rollback
+- **Simplicity**: Clear UX, sensible defaults
+- **Transparency**: Shows exactly what will happen
+
 ## Next Steps
 
-1. Create migration-detector skill
-2. Create migration-executor skill
-3. Update session hook
-4. Test with real project
-5. Document migration process
+1. ~~Create migration-detector skill~~ ✅ DONE
+2. ~~Create migration-executor skill~~ ✅ DONE
+3. ~~Update session hook~~ ✅ DONE
+4. ~~Test with real project~~ ✅ DONE
+5. Document migration process (user-facing docs)
 6. Deploy as part of v1.1.0 release

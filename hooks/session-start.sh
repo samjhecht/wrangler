@@ -15,21 +15,46 @@ initialize_workspace() {
         return 0
     fi
 
-    # Check if directories already exist
-    if [ -d "${GIT_ROOT}/issues" ] && [ -d "${GIT_ROOT}/specifications" ]; then
+    # Check if already initialized (either legacy or new structure)
+    if [ -d "${GIT_ROOT}/.wrangler/issues" ] || [ -d "${GIT_ROOT}/issues" ]; then
         # Already initialized - skip
         return 0
     fi
 
-    # Create directory structure
-    mkdir -p "${GIT_ROOT}/issues"
-    mkdir -p "${GIT_ROOT}/specifications"
+    # Create new .wrangler/ directory structure (v1.1.0)
+    mkdir -p "${GIT_ROOT}/.wrangler/issues"
+    mkdir -p "${GIT_ROOT}/.wrangler/specifications"
+    mkdir -p "${GIT_ROOT}/.wrangler/memos"
+    mkdir -p "${GIT_ROOT}/.wrangler/governance"
+    mkdir -p "${GIT_ROOT}/.wrangler/cache"
+    mkdir -p "${GIT_ROOT}/.wrangler/config"
+    mkdir -p "${GIT_ROOT}/.wrangler/docs"
 
     # Add .gitkeep files
-    touch "${GIT_ROOT}/issues/.gitkeep"
-    touch "${GIT_ROOT}/specifications/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/issues/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/specifications/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/memos/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/governance/.gitkeep"
+    touch "${GIT_ROOT}/.wrangler/docs/.gitkeep"
 
-    echo "✓ Initialized issues and specifications directories at ${GIT_ROOT}" >&2
+    # Create .gitignore for runtime directories
+    cat > "${GIT_ROOT}/.wrangler/.gitignore" <<'GITIGNORE'
+# Wrangler gitignore
+
+# Runtime data (don't commit)
+cache/
+config/
+metrics/
+
+# Backup directories (temporary)
+../.wrangler-migration-backup-*/
+
+# Migration markers (local)
+SKIP_AUTO_MIGRATION
+REMIND_NEXT_SESSION
+GITIGNORE
+
+    echo "✓ Initialized .wrangler/ directory structure (v1.1.0) at ${GIT_ROOT}" >&2
 }
 
 # Run workspace initialization

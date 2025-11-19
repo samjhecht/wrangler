@@ -35,6 +35,47 @@ initialize_workspace() {
 # Run workspace initialization
 initialize_workspace
 
+# Check for migration needs
+check_migration_needed() {
+    # Find git repository root
+    if ! GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null); then
+        # Not in a git repo - skip migration check
+        echo ""
+        return 0
+    fi
+
+    # Check if already migrated
+    if [ -d "${GIT_ROOT}/.wrangler/issues" ] && [ -d "${GIT_ROOT}/.wrangler/specifications" ]; then
+        # Already migrated
+        echo ""
+        return 0
+    fi
+
+    # Check for opt-out flag
+    if [ -f "${GIT_ROOT}/.wrangler/SKIP_AUTO_MIGRATION" ]; then
+        # User opted out
+        echo ""
+        return 0
+    fi
+
+    # Check for legacy directories
+    LEGACY_EXISTS=false
+    if [ -d "${GIT_ROOT}/issues" ] || [ -d "${GIT_ROOT}/specifications" ] || [ -d "${GIT_ROOT}/memos" ]; then
+        LEGACY_EXISTS=true
+    fi
+
+    if [ "$LEGACY_EXISTS" = "false" ]; then
+        # No legacy structure to migrate
+        echo ""
+        return 0
+    fi
+
+    # Migration needed - output instruction
+    echo "\n\n<important-reminder>MIGRATION REQUIRED: This project needs to migrate to wrangler v1.1.0 structure. You MUST invoke the migration-detector skill using the Skill tool IMMEDIATELY in your first response: Use Skill tool with skill='wrangler:migration-detector'</important-reminder>"
+}
+
+migration_reminder=$(check_migration_needed)
+
 # Check if legacy skills directory exists and build warning
 warning_message=""
 legacy_skills_dir="${HOME}/.config/wrangler/skills"
@@ -49,12 +90,15 @@ using_wrangler_content=$(cat "${PLUGIN_ROOT}/skills/using-wrangler/SKILL.md" 2>&
 using_wrangler_escaped=$(echo "$using_wrangler_content" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
 warning_escaped=$(echo "$warning_message" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
 
+# Escape migration reminder for JSON
+migration_escaped=$(echo "$migration_reminder" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
+
 # Output context injection as JSON
 cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "<EXTREMELY_IMPORTANT>\nYou have wrangler.\n\n**The content below is from skills/using-wrangler/SKILL.md - your introduction to using skills:**\n\n${using_wrangler_escaped}\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
+    "additionalContext": "<EXTREMELY_IMPORTANT>\nYou have wrangler.\n\n**The content below is from skills/using-wrangler/SKILL.md - your introduction to using skills:**\n\n${using_wrangler_escaped}\n\n${migration_escaped}${warning_escaped}\n</EXTREMELY_IMPORTANT>"
   }
 }
 EOF

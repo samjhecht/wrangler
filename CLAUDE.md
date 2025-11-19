@@ -712,6 +712,26 @@ npm run mcp:dev                # Debug mode
   - All 11 tools with examples
   - Workflows and best practices
   - Troubleshooting
+- **[docs/GOVERNANCE.md](docs/GOVERNANCE.md)** - Governance framework guide
+  - Constitutional principles
+  - Strategic roadmap planning
+  - Tactical execution tracking
+  - Ideas and proposals workflow
+- **[docs/SESSION-HOOKS.md](docs/SESSION-HOOKS.md)** - Session hooks system
+  - Automatic workspace initialization
+  - Context injection mechanism
+  - State management across sessions
+  - Hook configuration and troubleshooting
+- **[docs/VERSIONING.md](docs/VERSIONING.md)** - Versioning and updates
+  - Version tracking in constitution
+  - Automatic version detection
+  - Breaking changes and migration
+  - `/update-yourself` command workflow
+- **[docs/SLASH-COMMANDS.md](docs/SLASH-COMMANDS.md)** - Slash commands reference
+  - All available commands with examples
+  - Creating custom commands
+  - Command best practices
+  - Troubleshooting guide
 
 ### For Developers
 
@@ -739,6 +759,22 @@ npm run mcp:dev                # Debug mode
 ---
 
 ## Version History
+
+### v1.1.0 (November 18, 2025) [In Development]
+
+**Centralized .wrangler/ Directory & Versioning System**:
+- ✅ Versioning system with wranglerVersion in constitution frontmatter
+- ✅ Release notes tracking in `skills/.wrangler-releases/`
+- ✅ Startup version check skill (SUCCESS/WARN/OUTDATED signals)
+- ✅ `/update-yourself` command for LLM-driven migrations
+- ✅ Comprehensive documentation suite:
+  - Session hooks and state management
+  - Versioning and update workflows
+  - Slash commands reference
+  - Governance framework guide
+- 🚧 `.wrangler/` directory consolidation (planned)
+- 🚧 Cache settings configuration (planned)
+- 🚧 Automated migration script (planned)
 
 ### v1.0.0 (October 29, 2024)
 

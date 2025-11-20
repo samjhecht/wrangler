@@ -7,6 +7,8 @@ This skill guides creation of distinctive, production-grade frontend interfaces 
 
 The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
 
+**Announce at start:** "I'm using the frontend-design skills to complete this work."
+
 ## Design Thinking
 
 Before coding, understand the context and commit to a BOLD aesthetic direction:

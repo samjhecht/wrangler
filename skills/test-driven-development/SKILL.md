@@ -110,22 +110,60 @@ Vague name, tests mock not code
 - Clear name
 - Real code (no mocks unless unavoidable)
 
-### Verify RED - Watch It Fail
+### Verify RED - Watch It Fail (MANDATORY EVIDENCE)
 
-**MANDATORY. Never skip.**
+BEFORE proceeding to GREEN phase:
 
-```bash
-npm test path/to/test.test.ts
+1. **Execute test command**:
+   ```bash
+   npm test -- path/to/test.test.ts
+   # or
+   pytest path/to/test.py::test_function_name
+   # or
+   cargo test test_function_name
+   ```
+
+2. **Copy full output showing failure**
+
+3. **Verify failure message matches expected reason**:
+   - ✅ CORRECT: "ReferenceError: retryOperation is not defined"
+   - ✅ CORRECT: "AssertionError: expected 3 to equal undefined"
+   - ❌ WRONG: "TypeError: Cannot read property 'X' of undefined" (syntax error, not missing implementation)
+   - ❌ WRONG: Test passes (you didn't write a failing test!)
+
+4. **If output doesn't match expected failure**: Fix test and re-run
+
+**YOU MUST include test output in your message:**
+
+#### Example of Required Evidence:
+
+```
+Running RED phase verification:
+
+$ npm test -- retry.test.ts
+
+FAIL tests/retry.test.ts
+  ✕ retries failed operations 3 times (2 ms)
+
+  ● retries failed operations 3 times
+
+    ReferenceError: retryOperation is not defined
+
+      at Object.<anonymous> (tests/retry.test.ts:15:5)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Time:        0.234s
+Exit code: 1
+
+This is the expected failure - function doesn't exist yet.
+Failure reason matches expectation: "retryOperation is not defined"
+Proceeding to GREEN phase.
 ```
 
-Confirm:
-- Test fails (not errors)
-- Failure message is expected
-- Fails because feature missing (not typos)
+**Claims without evidence violate verification-before-completion.**
 
-**Test passes?** You're testing existing behavior. Fix test.
-
-**Test errors?** Fix error, re-run until it fails correctly.
+If you cannot provide this output, you have NOT completed the RED phase.
 
 ### GREEN - Minimal Code
 
@@ -165,22 +203,49 @@ Over-engineered
 
 Don't add features, refactor other code, or "improve" beyond the test.
 
-### Verify GREEN - Watch It Pass
+### Verify GREEN - Watch It Pass (MANDATORY EVIDENCE)
 
-**MANDATORY.**
+AFTER implementing minimal code:
 
-```bash
-npm test path/to/test.test.ts
+1. **Execute test command** (same as RED):
+   ```bash
+   npm test -- path/to/test.test.ts
+   ```
+
+2. **Copy full output showing pass**
+
+3. **Verify ALL of these**:
+   - All tests pass (0 failures)
+   - No errors printed
+   - No warnings printed
+   - Exit code: 0
+   - Test that was failing now passes
+
+**YOU MUST include test output in your message:**
+
+#### Example of Required Evidence:
+
+```
+Running GREEN phase verification:
+
+$ npm test -- retry.test.ts
+
+PASS tests/retry.test.ts
+  ✓ retries failed operations 3 times (145 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Time:        0.189s
+Exit code: 0
+
+Test now passes. Proceeding to REFACTOR phase.
 ```
 
-Confirm:
-- Test passes
-- Other tests still pass
-- Output pristine (no errors, warnings)
+**If any errors/warnings appear**: Fix them before claiming GREEN phase complete.
 
-**Test fails?** Fix code, not test.
+**Claims without evidence violate verification-before-completion.**
 
-**Other tests fail?** Fix now.
+If you cannot provide this output, you have NOT completed the GREEN phase.
 
 ### REFACTOR - Clean Up
 
@@ -268,6 +333,18 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 | "TDD will slow me down" | TDD faster than debugging. Pragmatic = test-first. |
 | "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
 | "Existing code has no tests" | You're improving it. Add tests for existing code. |
+
+### "I watched it fail/pass in my head"
+
+**Counter**: Your imagination is not evidence. Run the actual command and paste the output.
+
+### "The test obviously fails/passes, I don't need to show output"
+
+**Counter**: Non-obvious bugs exist. Provide output or you didn't verify.
+
+### "I'll just say it failed/passed"
+
+**Counter**: That's a claim without evidence. Violation of verification-before-completion. Show output.
 
 ## Red Flags - STOP and Start Over
 
@@ -362,3 +439,13 @@ Otherwise → not TDD
 ```
 
 No exceptions without your human partner's permission.
+
+## Integration with Verification
+
+The evidence requirements in RED and GREEN phases integrate with verification-before-completion:
+
+- **RED phase evidence** → Proves you watched test fail
+- **GREEN phase evidence** → Proves tests now pass
+- **Both together** → Required for TDD Compliance Certification
+
+See verification-before-completion skill for complete certification requirements.

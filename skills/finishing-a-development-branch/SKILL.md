@@ -1,6 +1,6 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
+description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by verifying work is complete (tests, requirements, code review, TDD compliance) and presenting structured options for merge, PR, or cleanup
 ---
 
 # Finishing a Development Branch
@@ -9,33 +9,91 @@ description: Use when implementation is complete, all tests pass, and you need t
 
 Guide completion of development work by presenting clear options and handling chosen workflow.
 
-**Core principle:** Verify tests → Present options → Execute choice → Clean up.
+**Core principle:** Verify completeness (tests, requirements, code review, TDD) → Present options → Execute choice → Clean up.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
 ## The Process
 
-### Step 1: Verify Tests
+### Step 1: Verify Completeness
 
-**Before presenting options, verify tests pass:**
+BEFORE presenting options, verify work is ACTUALLY complete:
+
+#### 1.1: Tests Pass
+
+Run full test suite:
 
 ```bash
-# Run project's test suite
-npm test / cargo test / pytest / go test ./...
+npm test
+# or
+pytest
+# or
+cargo test
+# or
+go test ./...
 ```
 
-**If tests fail:**
-```
-Tests failing (<N> failures). Must fix before completing:
+**Required output**:
+- All tests pass (0 failures)
+- No errors or warnings
+- Exit code: 0
 
-[Show failures]
+**If tests fail**: STOP. Fix tests. Cannot proceed with incomplete work.
 
-Cannot proceed with merge/PR until tests pass.
-```
+#### 1.2: Requirements Met
 
-Stop. Don't proceed to Step 2.
+Check verification-before-completion requirements checklist:
 
-**If tests pass:** Continue to Step 2.
+- [ ] All planned features implemented
+- [ ] All edge cases handled
+- [ ] All error paths tested
+- [ ] Documentation updated (if applicable)
+- [ ] No TODOs or FIXMEs added
+
+**If ANY unchecked**: Work is NOT complete. Finish requirements first.
+
+#### 1.3: Code Review Obtained (if required)
+
+Check verification-before-completion code review gate:
+
+- [ ] Code review completed (or valid exception documented)
+- [ ] Critical issues: 0
+- [ ] Important issues: 0 or explicitly acknowledged
+
+**If code review required but not obtained**: STOP. Request code review first.
+
+#### 1.4: TDD Compliance
+
+Check verification-before-completion TDD certification:
+
+- [ ] TDD compliance certification completed
+- [ ] All new functions have tests written first
+- [ ] All functions watched fail → watched pass
+
+**If TDD violated**: Work is NOT complete. Violations must be fixed.
+
+#### 1.5: Pristine Output
+
+Verify no errors, warnings, or deprecations:
+
+- [ ] Test output is clean (no errors/warnings)
+- [ ] Linter passes (if applicable)
+- [ ] Build succeeds (if applicable)
+- [ ] No console.log/print statements in production code
+
+**If output not pristine**: Clean up before proceeding.
+
+### Completeness Verification Result:
+
+**ONLY if ALL sections (1.1-1.5) are complete**: Continue to Step 2.
+
+**If ANY section incomplete**:
+- STOP immediately
+- Fix the incomplete section
+- Do NOT proceed to Step 2
+- Do NOT present merge/PR options
+
+This is a GATE. You cannot proceed without complete verification.
 
 ### Step 2: Determine Base Branch
 
@@ -48,7 +106,14 @@ Or ask: "This branch split from main - is that correct?"
 
 ### Step 3: Present Options
 
-Present exactly these 4 options:
+**Prerequisites verified** (from Step 1):
+- ✓ All tests pass
+- ✓ All requirements met
+- ✓ Code review obtained
+- ✓ TDD compliance certified
+- ✓ Output is pristine
+
+Since work is VERIFIED complete, you have these options:
 
 ```
 Implementation complete. What would you like to do?
@@ -189,6 +254,24 @@ git worktree remove <worktree-path>
 - Present exactly 4 options
 - Get typed confirmation for Option 4
 - Clean up worktree for Options 1 & 4 only
+
+## Red Flags - STOP IMMEDIATELY
+
+If you find yourself:
+
+- Skipping Step 1 verification ("tests pass, that's good enough")
+- Presenting options before ALL Step 1 checks complete
+- Claiming exception to code review without documentation
+- Proceeding with unfixed TDD violations
+- Saying "work is done" without requirements verification
+
+THEN:
+- STOP immediately
+- Go back to Step 1
+- Complete ALL verification steps
+- This is not optional
+
+Proceeding without complete Step 1 verification violates verification-before-completion.
 
 ## Integration
 

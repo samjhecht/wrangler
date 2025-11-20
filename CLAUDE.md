@@ -56,13 +56,22 @@ Wrangler ensures you and your human partner are **of one mind** about:
 
 ```
 wrangler/
+├── .wrangler/                     # Centralized wrangler workspace (v1.1.0+)
+│   ├── issues/                    # Issue tracking (git-tracked)
+│   ├── specifications/            # Feature specs (git-tracked)
+│   ├── memos/                     # Reference material, RCA archives
+│   ├── governance/                # Constitution, roadmap, next steps
+│   ├── docs/                      # Auto-generated governance docs
+│   ├── cache/                     # Runtime cache (gitignored)
+│   └── config/                    # Runtime config (gitignored)
+│
 ├── skills/                        # Skills library (main value proposition)
 │   ├── testing/                   # TDD, async testing, anti-patterns
 │   ├── debugging/                 # Systematic debugging workflows
 │   ├── collaboration/             # Planning, code review, parallel work
 │   └── meta/                      # Meta skills (creating/testing skills)
 │
-├── mcp/                           # Built-in MCP server (NEW)
+├── mcp/                           # Built-in MCP server
 │   ├── types/                     # TypeScript type definitions
 │   │   ├── config.ts              # MCP configuration types
 │   │   ├── issues.ts              # Issue types + Zod schemas
@@ -91,10 +100,6 @@ wrangler/
 │   ├── dist/                      # Compiled output (gitignored)
 │   └── __tests__/                 # Comprehensive test suite (233 tests)
 │
-├── issues/                        # Issue tracking (git-tracked)
-├── specifications/                # Feature specs (git-tracked)
-│
-├── memos/                         # Reference material, lessons learned, RCA archives
 ├── docs/                          # User-facing product documentation
 ├── devops/
 │   └── docs/                      # Developer/maintainer documentation
@@ -121,7 +126,7 @@ wrangler/
 
 Use these directories for different file types:
 
-**`memos/` - Reference Material & Lessons Learned**
+**`.wrangler/memos/` - Wrangler Reference Material & Lessons Learned**
 - Root cause analyses (RCA-*.md)
 - Post-mortems and incident reports
 - Lessons learned from debugging sessions
@@ -153,8 +158,8 @@ Creating root cause analysis:
 # ❌ DON'T create at root
 RCA-AUTH-FAILURE.md
 
-# ✅ DO create in memos/
-memos/2025-11-17-auth-failure-rca.md
+# ✅ DO create in .wrangler/memos/
+.wrangler/memos/2025-11-17-auth-failure-rca.md
 ```
 
 Creating implementation summary:
@@ -162,8 +167,8 @@ Creating implementation summary:
 # ❌ DON'T create at root
 IMPLEMENTATION-SUMMARY-MCP.md
 
-# ✅ DO create in memos/
-memos/2024-10-29-mcp-integration-summary.md
+# ✅ DO create in .wrangler/memos/
+.wrangler/memos/2024-10-29-mcp-integration-summary.md
 ```
 
 Creating user documentation:
@@ -185,7 +190,7 @@ devops/docs/deployment-guide.md
 ```
 
 **When in doubt:**
-- If it's temporary analysis → `memos/`
+- If it's wrangler-specific analysis → `.wrangler/memos/`
 - If users read it → `docs/`
 - If only maintainers read it → `devops/docs/`
 - If it's no longer relevant → Delete it

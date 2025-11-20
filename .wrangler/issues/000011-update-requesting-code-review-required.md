@@ -2,7 +2,7 @@
 id: "000011"
 title: "Update requesting-code-review to change code review from optional to required"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["phase-3", "code-review", "workflow", "skill-update"]
 project: "Testing & Verification Enhancement"

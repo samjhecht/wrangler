@@ -2,7 +2,7 @@
 id: "000013"
 title: "Create frontend-e2e-user-journeys skill"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["phase-4", "frontend", "e2e", "new-skill"]
 project: "Testing & Verification Enhancement"

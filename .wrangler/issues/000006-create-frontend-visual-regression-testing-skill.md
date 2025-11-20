@@ -2,7 +2,7 @@
 id: "000006"
 title: "Create frontend-visual-regression-testing skill"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["phase-2", "frontend", "visual-testing", "new-skill"]
 project: "Testing & Verification Enhancement"

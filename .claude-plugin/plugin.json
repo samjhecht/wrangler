@@ -11,7 +11,7 @@
   "mcpServers": {
     "wrangler-mcp": {
       "command": "node",
-      "args": ["mcp/dist/index.js"],
+      "args": ["$PLUGIN_DIR/mcp/dist/index.js"],
       "env": {
         "WRANGLER_MCP_DEBUG": "false",
         "WRANGLER_ISSUES_DIRECTORY": ".wrangler/issues",

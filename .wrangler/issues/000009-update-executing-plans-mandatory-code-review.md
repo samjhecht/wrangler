@@ -2,12 +2,12 @@
 id: "000009"
 title: "Update executing-plans to make code review mandatory after each batch"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["phase-3", "code-review", "workflow", "skill-update"]
 project: "Testing & Verification Enhancement"
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-20T12:00:00.000Z"
 wranglerContext:
   parentTaskId: "000001"
   estimatedEffort: "2 hours"
@@ -341,3 +341,59 @@ After implementation:
 - Current file: `skills/executing-plans/SKILL.md`
 - Reference: `skills/subagent-driven-development/SKILL.md` (Step 3 requires code review)
 - Reference: `skills/requesting-code-review/SKILL.md` (how to request review)
+
+---
+
+## Completion Notes
+
+**Implementation completed: 2025-11-20**
+
+All acceptance criteria verified and met:
+
+### Changes Made
+
+1. **Step 3 updated** with "Report, Review, and Code Review" including 4 substeps (lines 64-133):
+   - 3.1: Report Batch Completion
+   - 3.2: Request Code Review (MANDATORY)
+   - 3.3: Address Review Feedback
+   - 3.4: Announce Batch Ready
+
+2. **Code Review Gate added** (lines 134-157): Decision tree that prevents proceeding without review approval
+
+3. **Pre-implementation checklist referenced** in Step 2.1 (line 39): Links to pre-implementation-checklist skill
+
+4. **Step 4 updated** to verify all batches reviewed (line 180): Checklist includes "All batches received code review"
+
+5. **Red flags section enhanced** (lines 229-234): Added 5 code review red flags
+
+6. **Integration section updated** (line 242): Added "requesting-code-review: MANDATORY after each batch"
+
+7. **Complete example added** (lines 247-292): Shows full workflow with:
+   - Batch 1: Implementation, code review, Important issue found, fix, approval
+   - Batch 2: Implementation, code review, approval
+   - Final verification including all batches reviewed
+
+8. **Mandatory language used throughout**: REQUIRED, MUST, MANDATORY, "no exceptions"
+
+9. **Matches subagent-driven-development standard**: Code review after each batch/task is now mandatory in both workflows
+
+10. **Correct cross-references**: Links to requesting-code-review and code-review skills
+
+### Verification Results
+
+- Step 3 is now comprehensive with mandatory code review: YES
+- Code review gate prevents proceeding without approval: YES (lines 134-157)
+- Pre-implementation checklist referenced: YES (line 39, line 245)
+- Step 4 verifies all batches reviewed: YES (line 180)
+- Red flags include code review warnings: YES (lines 229-234)
+- Integration section includes code review skills: YES (line 242)
+- Example shows complete code review workflow: YES (lines 247-292)
+- Language is mandatory throughout: YES (REQUIRED, MUST, MANDATORY used consistently)
+- Matches subagent-driven-development standard: YES (both now require review after each batch)
+- Cross-references are correct: YES (requesting-code-review, code-review skills)
+
+### Impact
+
+The executing-plans skill now has the same quality gate as subagent-driven-development, ensuring that code review is mandatory after each batch. This closes the gap identified in the verification analysis and brings both workflows to the same high standard.
+
+**File Updated**: `/Users/sam/medb/code/wrangler/skills/executing-plans/SKILL.md` (303 lines)

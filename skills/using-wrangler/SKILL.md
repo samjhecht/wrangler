@@ -62,14 +62,38 @@ If a skill has a checklist, YOU MUST create TodoWrite todos for EACH item.
 
 ## Announcing Skill Usage
 
-Before using a skill, announce that you are using it.
-"I'm using [Skill Name] to [what you're doing]."
+Before using a skill, you MUST announce it using this EXACT format:
+
+```
+═══════════════════════════════════════════════════════════
+🎯 SKILL: [skill-name]
+═══════════════════════════════════════════════════════════
+[Brief description of what you're doing with this skill]
+```
 
 **Examples:**
-- "I'm using the brainstorming skill to refine your idea into a design."
-- "I'm using the test-driven-development skill to implement this feature."
 
-**Why:** Transparency helps your human partner understand your process and catch errors early. It also confirms you actually read the skill.
+```
+═══════════════════════════════════════════════════════════
+🎯 SKILL: brainstorming
+═══════════════════════════════════════════════════════════
+Refining your idea into a fully-formed design through
+structured Socratic questioning before any code is written.
+```
+
+```
+═══════════════════════════════════════════════════════════
+🎯 SKILL: test-driven-development
+═══════════════════════════════════════════════════════════
+Writing failing test first, then implementing minimum code
+to pass, following RED-GREEN-REFACTOR cycle.
+```
+
+**Why:**
+- This format is highly visible in terminal output
+- Easy to scan when reviewing conversation history
+- Confirms you actually read and are using the skill
+- Helps your human partner understand your process
 
 # About these skills
 

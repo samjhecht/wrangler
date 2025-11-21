@@ -29,6 +29,7 @@ initialize_workspace() {
     mkdir -p "${GIT_ROOT}/.wrangler/cache"
     mkdir -p "${GIT_ROOT}/.wrangler/config"
     mkdir -p "${GIT_ROOT}/.wrangler/docs"
+    mkdir -p "${GIT_ROOT}/.wrangler/logs"
 
     # Add .gitkeep files
     touch "${GIT_ROOT}/.wrangler/issues/.gitkeep"
@@ -45,6 +46,7 @@ initialize_workspace() {
 cache/
 config/
 metrics/
+logs/
 
 # Backup directories (temporary)
 ../.wrangler-migration-backup-*/

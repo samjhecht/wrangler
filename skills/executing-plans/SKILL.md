@@ -11,6 +11,8 @@ Load plan, review critically, execute tasks in batches, report for review betwee
 
 **Core principle:** Batch execution with checkpoints for architect review and mandatory code review.
 
+**Works in main branch OR worktree (no preference)**
+
 **Announce at start:** "I'm using the executing-plans skill to implement this plan."
 
 ## The Process
@@ -46,10 +48,13 @@ See pre-implementation-checklist skill for full checklist.
 2. **GREEN**: Implement minimal code to pass
 3. **REFACTOR**: Improve code quality
 
+**IMPORTANT**: As you implement, create TDD Compliance Certification for each function (format specified in test-driven-development skill). You will need this for verification-before-completion.
+
 **Before moving to next task:**
 - [ ] Watched test fail first
 - [ ] Watched test pass after implementation
 - [ ] All tests still passing (no regressions)
+- [ ] TDD Compliance Certification created for functions implemented
 
 #### 2.3: Verify Task Complete
 
@@ -58,6 +63,7 @@ Use verification-before-completion for each task:
 - [ ] No errors or warnings
 - [ ] Requirements met
 - [ ] Evidence captured
+- [ ] TDD Compliance Certification created (see test-driven-development skill)
 
 Move to next task only when current task verified complete.
 
@@ -75,6 +81,9 @@ Show what was implemented in this batch:
 ### Tasks Completed
 - [Task 1 description] - Implemented, tests passing
 - [Task 2 description] - Implemented, tests passing
+
+### TDD Compliance Certification
+[Include certification entries for each function - see test-driven-development skill]
 
 ### Verification Output
 ```
@@ -114,16 +123,17 @@ See requesting-code-review skill for full instructions.
 **BEFORE proceeding to next batch:**
 
 - [ ] Review completed
-- [ ] Critical issues: 0 (must fix all)
-- [ ] Important issues: 0 or acknowledged
+- [ ] Critical issues: 0 (MUST be zero, no exceptions)
+- [ ] Important issues: 0 OR converted to tracked issue with ID
 - [ ] Minor issues: Noted for future
 
 **If Critical or Important issues found:**
 1. STOP - Do not proceed to next batch
-2. Fix issues in current batch
-3. Re-run tests
-4. Request follow-up review if needed
-5. Only proceed when review status: "Approved"
+2. Fix all Critical issues (MUST be 0)
+3. Fix all Important issues OR convert to tracked issue with ID (cannot be "acknowledged" without issue)
+4. Re-run tests
+5. Request follow-up review if needed
+6. Only proceed when review status: "Approved"
 
 #### 3.4: Announce Batch Ready
 
@@ -150,7 +160,7 @@ BEFORE proceeding to next batch or completion:
       NO → Continue
 
     Are there Important issues?
-      YES → STOP - Fix or acknowledge with plan
+      YES → STOP - Fix OR convert to tracked issue with ID
       NO → Continue
 
   ONLY THEN: Proceed to next batch
@@ -230,8 +240,10 @@ If you catch yourself:
 - Thinking "I'll do code review at the end"
 - Skipping code review for "small changes"
 - Proceeding to next batch with unresolved Critical issues
+- Proceeding to next batch with Important issues that are not converted to tracked issues
 - Claiming batch complete without requesting review
 - Not waiting for review approval before next batch
+- Claiming Important issues are "acknowledged" without issue ID
 
 ## Integration with Other Skills
 

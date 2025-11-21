@@ -177,6 +177,7 @@ You MUST complete each phase before proceeding to the next.
    - One-off test script if no framework
    - MUST have before fixing
    - **REQUIRED SUB-SKILL:** Use wrangler:test-driven-development for writing proper failing tests
+   - **IMPORTANT:** Must provide TDD Compliance Certification (see test-driven-development skill) for the fix
 
 2. **Implement Single Fix**
    - Address the root cause identified

@@ -2,7 +2,7 @@
 id: "000016"
 title: "Flaw: Code review stated as mandatory but enforcement mechanisms are weak and contradictory"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["skills", "workflow-flaw", "process", "enforcement"]
 createdAt: "2025-11-20T00:00:00.000Z"

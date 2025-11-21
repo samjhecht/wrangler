@@ -2,11 +2,25 @@
 id: "000017"
 title: "Flaw: TDD compliance certification required by verification-before-completion but not consistently referenced in implementation skills"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "tdd"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
+---
+
+## Resolution
+
+Successfully added TDD Compliance Certification format and references across all affected skills:
+
+1. **test-driven-development/SKILL.md** - Added full certification section with format, example, requirements, and rationale before "Verification Checklist"
+2. **executing-plans/SKILL.md** - Added certification requirements in Steps 2.2, 2.3, and 3.1
+3. **subagent-driven-development/SKILL.md** - Added certification requirement to subagent prompt template and Step 3 verification
+4. **systematic-debugging/SKILL.md** - Added certification note in Phase 4 Step 1
+5. **code-review/SKILL.md** - Replaced verbal attestation with certification request in Phase 4
+
+All skills now consistently reference the TDD Compliance Certification format, making it clear to agents when to create it (during implementation), where to include it (completion message), and why it's required (verification-before-completion).
+
 ---
 
 ## Flaw Description

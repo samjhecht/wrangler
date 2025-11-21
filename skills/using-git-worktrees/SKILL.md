@@ -213,10 +213,10 @@ Ready to implement auth feature
 
 **Called by:**
 
-- **brainstorming** (Phase 4) - REQUIRED when design is approved and implementation follows
+- **brainstorming** (Phase 5) - Optional for isolation when design is approved and implementation follows
 - Any skill needing isolated workspace
 
 **Pairs with:**
 
-- **finishing-a-development-branch** - REQUIRED for cleanup after work complete
-- **executing-plans** or **subagent-driven-development** - Work happens in this worktree
+- **finishing-a-development-branch** - Optional cleanup after work complete (handles both worktree and non-worktree cases)
+- **executing-plans** or **subagent-driven-development** - Work happens in worktree or main branch

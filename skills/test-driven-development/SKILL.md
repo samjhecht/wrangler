@@ -401,6 +401,43 @@ PASS
 **REFACTOR**
 Extract validation for multiple fields if needed.
 
+## TDD Compliance Certification
+
+BEFORE claiming work complete, certify TDD compliance:
+
+For each new function/method implemented:
+
+- [ ] **Function name**: [function_name]
+  - **Test name**: [test_function_name]
+  - **Watched fail**: YES / NO (if NO, explain why)
+  - **Failure reason**: [expected failure message you saw]
+  - **Implemented minimal code**: YES / NO
+  - **Watched pass**: YES / NO
+  - **Refactored**: YES / NO / N/A
+
+### Example Certification:
+
+- [x] **Function name**: retryOperation
+  - **Test name**: test_retries_failed_operations_3_times
+  - **Watched fail**: YES
+  - **Failure reason**: "ReferenceError: retryOperation is not defined"
+  - **Implemented minimal code**: YES
+  - **Watched pass**: YES
+  - **Refactored**: YES (extracted delay logic)
+
+**Requirements:**
+- If ANY "NO" answers: Work is NOT complete. Delete and restart with TDD.
+- This certification MUST be included in your completion message.
+- One entry required for each new function/method.
+
+**Why this matters:**
+- Required by verification-before-completion skill
+- Proves you followed TDD (not just testing after)
+- Creates audit trail for code review
+- Makes rationalization harder (explicit lying vs fuzzy thinking)
+
+**Cross-reference:** See verification-before-completion skill for complete requirements.
+
 ## Verification Checklist
 
 Before marking work complete:
@@ -413,6 +450,7 @@ Before marking work complete:
 - [ ] Output pristine (no errors, warnings)
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and errors covered
+- [ ] TDD Compliance Certification created (see section above)
 
 Can't check all boxes? You skipped TDD. Start over.
 

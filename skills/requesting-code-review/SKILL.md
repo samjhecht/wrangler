@@ -13,27 +13,44 @@ Dispatch a subagent using the `code-review` skill to catch issues before they ca
 
 ## When to Request Review
 
+Code review MUST always be obtained (without exception) for ALL code changes.
+
 **Mandatory** (code review IS REQUIRED):
 - After each task in subagent-driven-development
-- After completing ANY feature (major or minor)
-- After ANY bug fix (regardless of severity)
-- After ANY refactoring (regardless of scope)
+- After completing ANY feature (any size, any language/framework)
+- After ANY bug fix (any severity, any language/framework)
+- After ANY refactoring (any scope, any language/framework)
 - Before merge to main
 - Before creating pull request
 - Before claiming work complete
-- Changes >50 lines of code
+- ALL code changes (regardless of lines changed)
 - Changes to critical paths (auth, payment, data handling)
+- Test code changes
+- Configuration changes with logic
+- Database migrations
+- Infrastructure-as-code changes
 
-**Exceptions** (code review NOT required):
-- Documentation-only changes (README, comments, markdown files)
-- Configuration changes with no logic (JSON, YAML config files)
-- Test-only changes when adding tests to previously untested code
-- Changes <50 lines AND your human partner explicitly waived review
-- Emergency hotfixes (must be reviewed immediately after deployment)
+**Exceptions** (ONLY these, code review NOT required):
 
-**When in doubt**: Request code review. Better to over-review than under-review.
+1. **Pure documentation**: *.md files in docs/ directory only
+   - ZERO code changes
+   - ZERO configuration changes
+   - Documentation ONLY
 
-**If you skip review without explicit exception**: You violate verification-before-completion and cannot claim work complete.
+2. **Configuration-only**: Dependency updates in package.json, tsconfig.json
+   - NO logic changes
+   - NO script modifications
+   - Updates ONLY
+
+3. **Emergency hotfix**: Production down, security breach
+   - MUST be reviewed within 24 hours after deployment
+   - MUST create incident ticket
+   - Emergency = production completely down, active security breach, data loss occurring
+   - NOT emergency = "important", "urgent", "CEO wants it", "customer demo"
+
+**When in doubt**: Request code review. There are ONLY 3 exceptions above, no others.
+
+**If you skip review without valid exception 1, 2, or 3**: You violate verification-before-completion and cannot claim work complete.
 
 ## Cannot Proceed Without Review
 
@@ -67,7 +84,7 @@ BEFORE proceeding to next step:
       NO → Continue
 
     Are there Important issues?
-      YES → STOP - Fix or explicitly acknowledge with plan
+      YES → STOP - Fix OR convert to tracked issue with ID
       NO → Continue
 
     Review status: [Approved / Approved with minor items]
@@ -174,8 +191,8 @@ Critical or Important issues found.
 
 Action:
 1. STOP - Do not proceed
-2. Fix all Critical issues
-3. Fix all Important issues (or explicitly acknowledge why deferring)
+2. Fix all Critical issues (MUST be 0)
+3. Fix all Important issues OR convert to tracked issue with ID (cannot be "acknowledged" without issue)
 4. Re-run tests
 5. Provide evidence of fixes
 6. Request follow-up review if needed
@@ -292,6 +309,20 @@ You: [Continue to Task 3]
 - Review before merge
 - Review when stuck
 
+## Common Rationalizations (DO NOT ACCEPT)
+
+| Rationalization | Why It's Wrong | Correct Action |
+|----------------|----------------|----------------|
+| "This is too trivial to review" | Trivial changes cause production incidents | Request review anyway (takes 2 minutes) |
+| "I'm the expert, no one else can review" | Experts have blind spots review catches | Request review from anyone on team |
+| "We're too busy for review" | Busy doesn't exempt safety | If too busy to review, too busy to merge safely |
+| "I'll get review after merging" | Post-merge review never happens | Review BEFORE merge, always |
+| "The tests pass, that's enough" | Tests necessary but not sufficient | Tests + human review both required |
+| "It's only N lines changed" | Size doesn't determine bug potential | ALL code changes require review |
+| "No one else is available" | If not P0, it can wait | Wait for reviewer or escalate |
+| "This is blocking me" | Being blocked doesn't exempt review | Work on different task while waiting |
+| "I'll skip review just this once" | "Just once" becomes habit | Follow process every time without exception |
+
 ## Red Flags - STOP IMMEDIATELY
 
 If you catch yourself:
@@ -303,6 +334,8 @@ If you catch yourself:
 - Assuming review is optional for your workflow
 - Creating PR without code review first
 - Merging to main without code review
+- Claiming any exception other than 1, 2, or 3
+- Using vague exception language ("it's simple", "it's small")
 
 THEN:
 - STOP immediately

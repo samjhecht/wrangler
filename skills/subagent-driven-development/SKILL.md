@@ -17,6 +17,8 @@ Execute plan by dispatching fresh subagent per task, with code review after each
 - Code review after each task (catch issues early)
 - Faster iteration (no human-in-loop between tasks)
 
+**Works in main branch OR worktree (no preference)**
+
 **When to use:**
 - Staying in this session
 - Tasks are mostly independent
@@ -51,14 +53,22 @@ Task tool (general-purpose):
     4. Commit your work
     5. Report back
 
+    IMPORTANT: Create TDD Compliance Certification for each function you implement
+    (format specified in test-driven-development skill). Include this in your report.
+
     Work from: [directory]
 
-    Report: What you implemented, what you tested, test results, files changed, any issues
+    Report: What you implemented, what you tested, test results, files changed,
+    TDD Compliance Certification, any issues
 ```
 
 **Subagent reports back** with summary of work.
 
 ### 3. Review Subagent's Work
+
+**Verify subagent provided TDD Compliance Certification:**
+- If certification missing or incomplete: Request it before proceeding to code review
+- Certification must have entry for each new function
 
 **Dispatch code-reviewer subagent:**
 ```

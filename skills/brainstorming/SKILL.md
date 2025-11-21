@@ -36,7 +36,7 @@ Brainstorming Progress:
 - [ ] Phase 2: Exploration (2-3 approaches proposed and evaluated)
 - [ ] Phase 3: Design Presentation (design validated in sections)
 - [ ] Phase 4: Design Documentation (design written to docs/plans/)
-- [ ] Phase 5: Worktree Setup (if implementing)
+- [ ] Phase 5: Worktree Setup (optional - for isolation)
 - [ ] Phase 6: Planning Handoff (if implementing)
 ```
 
@@ -89,12 +89,13 @@ After validating the design, write it to a permanent document:
 - **Content:** Capture the design as discussed and validated in Phase 3, organized into sections that emerged from the conversation
 - Commit the design document to git before proceeding
 
-### Phase 5: Worktree Setup (for implementation)
+### Phase 5: Worktree Setup (optional for implementation)
 When design is approved and implementation will follow:
 - Announce: "I'm using the using-git-worktrees skill to set up an isolated workspace."
-- **REQUIRED SUB-SKILL:** Use wrangler:using-git-worktrees
+- **OPTIONAL SUB-SKILL:** Use wrangler:using-git-worktrees for isolation
 - Follow that skill's process for directory selection, safety verification, and setup
-- Return here when worktree ready
+- If skipped, work will continue in current branch
+- Return here when ready
 
 ### Phase 6: Planning Handoff
 Ask: "Ready to create the implementation plan?"
@@ -102,7 +103,7 @@ Ask: "Ready to create the implementation plan?"
 When your human partner confirms (any affirmative response):
 - Announce: "I'm using the writing-plans skill to create the implementation plan."
 - **REQUIRED SUB-SKILL:** Use wrangler:writing-plans
-- Create detailed plan in the worktree
+- Create detailed plan (in worktree if one was created, or in current location)
 
 ## Question Patterns
 

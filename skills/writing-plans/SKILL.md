@@ -15,7 +15,7 @@ Create both:
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
-**Context:** This should be run in a dedicated worktree (created by brainstorming skill).
+**Works in main branch OR worktree (no preference)**
 
 **Headless mode:** If run as subagent, do not stop to ask for feedback during execution.
 

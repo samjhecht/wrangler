@@ -112,35 +112,66 @@ Making this certification explicit:
 
 BEFORE claiming work complete:
 
-### When Code Review is REQUIRED:
+### When Code Review is MANDATORY:
 
-IF this work involves:
-- New features (any size)
-- Bug fixes (any severity)
-- Refactoring (any scope)
-- Changes to >50 lines of code
+Code review MUST always be obtained (without exception) for ALL code changes.
+
+**ALL of these MUST be true to proceed WITHOUT review:**
+
+1. Changes are EXCLUSIVELY documentation (*.md files in docs/ directory only)
+2. Changes contain ZERO code logic modifications
+3. Changes contain ZERO configuration logic modifications
+
+**If ANY of the above is false, code review is MANDATORY.**
+
+This means code review IS MANDATORY for:
+- New features (any size, any language/framework)
+- Bug fixes (any severity, any language/framework)
+- Refactoring (any scope, any language/framework)
+- ALL code changes (regardless of lines changed)
 - Security-sensitive code
 - Performance-critical code
 - Public API changes
-
-THEN code review IS REQUIRED.
+- Test code changes
+- Configuration changes with logic (scripts, build configs)
+- Database migrations
+- Infrastructure-as-code changes
 
 ### Code Review Checklist:
 
+ALL of these MUST be true to claim work complete:
+
 - [ ] **Code review requested**: Used requesting-code-review skill
 - [ ] **Review completed**: code-reviewer subagent dispatched and finished
-- [ ] **Critical issues**: 0 (MUST be zero)
-- [ ] **Important issues**: 0 or explicitly acknowledged/deferred
+- [ ] **Critical issues**: 0 (MUST be zero, no exceptions)
+- [ ] **Important issues**: 0 (MUST be zero OR converted to tracked issue with ID)
 - [ ] **Review status**: Approved / Approved with minor items
 - [ ] **Review reference**: [link to review output or summary]
 
-### EXCEPTIONS (code review NOT required):
+### EXCEPTIONS (ONLY these, no others):
 
-- Documentation-only changes (no code logic)
-- Configuration-only changes (no code logic)
-- Changes <50 lines AND your human partner explicitly waived review
-- Typo fixes in comments
-- Test-only changes when adding tests to existing untested code
+Valid exceptions (code review NOT required):
+
+1. **Pure documentation**: *.md files in docs/ directory only
+   - ZERO code changes
+   - ZERO configuration changes
+   - Documentation ONLY
+
+2. **Configuration-only**: Dependency updates in package.json, tsconfig.json
+   - NO logic changes
+   - NO script modifications
+   - Updates ONLY
+
+3. **Emergency hotfix**: Production down, security breach
+   - MUST be reviewed within 24 hours after deployment
+   - MUST create incident ticket
+   - Emergency = production completely down, active security breach, data loss occurring
+   - NOT emergency = "important", "urgent", "CEO wants it", "customer demo"
+
+**If attempting to use exception:**
+- Document which exception (1, 2, or 3) and why
+- Provide evidence exception criteria met
+- Cannot claim generic "too small" or "too simple"
 
 ### Example Review Gate Completion:
 
@@ -150,27 +181,39 @@ THEN code review IS REQUIRED.
 - [x] **Code review requested**: Used requesting-code-review skill
 - [x] **Review completed**: code-reviewer subagent finished analysis
 - [x] **Critical issues**: 0
-- [x] **Important issues**: 1 acknowledged (will address in follow-up)
+- [x] **Important issues**: 0 (1 converted to issue #123)
 - [x] **Review status**: Approved with minor items
 - [x] **Review reference**: See code review output below
 
 Critical Issues: 0
-Important Issues: 1
-  - Missing error handling in edge case (acknowledged, will fix in issue #123)
+Important Issues: 0 (1 deferred: Created issue #123 for missing error handling edge case)
 Minor Issues: 3
   - All addressed
 
-Review approved for merge with follow-up issue created.
+Review approved for merge.
 ```
 
 ### Cannot Proceed Without:
 
 You **CANNOT** claim completion without:
-1. Code review completed (unless explicit exception applies)
-2. Critical issues fixed (MUST be 0)
-3. Important issues fixed OR explicitly documented why deferred
+1. Code review completed (unless explicit exception 1, 2, or 3 applies with documentation)
+2. Critical issues fixed (MUST be 0, no exceptions)
+3. Important issues MUST be 0 OR converted to tracked issue with ID (cannot be "acknowledged" or "deferred" without issue ID)
 
 **Attempting to skip code review without valid exception violates verification-before-completion.**
+
+### Common Rationalizations (DO NOT ACCEPT):
+
+| Rationalization | Why It's Wrong | Correct Action |
+|----------------|----------------|----------------|
+| "This is too trivial to review" | Trivial changes cause production incidents | Request review anyway (takes 2 minutes) |
+| "I'm the expert, no one else can review" | Experts have blind spots review catches | Request review from anyone on team |
+| "We're too busy for review" | Busy doesn't exempt safety | If too busy to review, too busy to merge safely |
+| "I'll get review after merging" | Post-merge review never happens | Review BEFORE merge, always |
+| "The tests pass, that's enough" | Tests necessary but not sufficient | Tests + human review both required |
+| "It's only N lines changed" | Size doesn't determine bug potential | ALL code changes require review |
+| "No one else is available" | If not P0, it can wait | Wait for reviewer or escalate |
+| "This is blocking me" | Being blocked doesn't exempt review | Work on different task while waiting |
 
 ## Frontend Verification Checklist
 
@@ -338,8 +381,9 @@ Tested interactions:
 - Wrote tests and implementation "together"
 - Skipping code review because "it's simple"
 - Planning to "get review later"
-- Claiming exception without explicit approval
+- Claiming exception without documenting which (1, 2, or 3) and providing evidence
 - Proceeding with unfixed Critical or Important issues
+- Claiming Important issues are "acknowledged" without tracked issue ID
 
 **Frontend-specific red flags:**
 - Claiming "looks good" without DevTools verification

@@ -52,15 +52,23 @@ Check verification-before-completion requirements checklist:
 
 **If ANY unchecked**: Work is NOT complete. Finish requirements first.
 
-#### 1.3: Code Review Obtained (if required)
+#### 1.3: Code Review Obtained (MANDATORY)
 
 Check verification-before-completion code review gate:
 
-- [ ] Code review completed (or valid exception documented)
-- [ ] Critical issues: 0
-- [ ] Important issues: 0 or explicitly acknowledged
+- [ ] Code review completed (or valid exception 1, 2, or 3 documented)
+- [ ] Critical issues: 0 (MUST be zero)
+- [ ] Important issues: 0 OR converted to tracked issue with ID
+
+**Valid exceptions (ONLY these):**
+
+1. **Pure documentation**: *.md files in docs/ directory only (ZERO code/config changes)
+2. **Configuration-only**: Dependency updates in package.json, tsconfig.json (NO logic changes)
+3. **Emergency hotfix**: Production completely down, active security breach (MUST be reviewed within 24 hours)
 
 **If code review required but not obtained**: STOP. Request code review first.
+
+**If claiming exception**: Document which exception (1, 2, or 3) and provide evidence.
 
 #### 1.4: TDD Compliance
 
@@ -198,7 +206,7 @@ git branch -D <feature-branch>
 
 Then: Cleanup worktree (Step 5)
 
-### Step 5: Cleanup Worktree
+### Step 5: Cleanup Worktree (if applicable)
 
 **For Options 1, 2, 4:**
 
@@ -207,12 +215,15 @@ Check if in worktree:
 git worktree list | grep $(git branch --show-current)
 ```
 
-If yes:
+**If in worktree:**
 ```bash
 git worktree remove <worktree-path>
 ```
 
-**For Option 3:** Keep worktree.
+**If NOT in worktree (main branch):**
+- Skip worktree cleanup (no action needed)
+
+**For Option 3:** Keep worktree (if one exists).
 
 ## Quick Reference
 
@@ -261,9 +272,10 @@ If you find yourself:
 
 - Skipping Step 1 verification ("tests pass, that's good enough")
 - Presenting options before ALL Step 1 checks complete
-- Claiming exception to code review without documentation
+- Claiming exception to code review without documenting which (1, 2, or 3) and providing evidence
 - Proceeding with unfixed TDD violations
 - Saying "work is done" without requirements verification
+- Claiming Important issues are "acknowledged" without tracked issue ID
 
 THEN:
 - STOP immediately
@@ -280,4 +292,4 @@ Proceeding without complete Step 1 verification violates verification-before-com
 - **executing-plans** (Step 5) - After all batches complete
 
 **Pairs with:**
-- **using-git-worktrees** - Cleans up worktree created by that skill
+- **using-git-worktrees** - Cleans up worktree if one was created (optional)

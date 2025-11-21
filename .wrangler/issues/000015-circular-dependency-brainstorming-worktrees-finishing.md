@@ -2,7 +2,7 @@
 id: "000015"
 title: "Flaw: Circular dependency chain between brainstorming, using-git-worktrees, and finishing-a-development-branch"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["skills", "workflow-flaw", "process", "circular-dependency"]
 createdAt: "2025-11-20T00:00:00.000Z"

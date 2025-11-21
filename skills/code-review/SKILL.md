@@ -129,15 +129,27 @@ You are a Senior Code Reviewer with expertise in software architecture, design p
    All functions require tests. Add tests before merging.
    ```
 
-2. **Can author attest to RED-GREEN-REFACTOR cycle?**
+2. **Request TDD Compliance Certification**
+
+   Ask implementer to provide certification from test-driven-development skill:
+
+   "Please provide TDD Compliance Certification for each function
+    (format from test-driven-development skill)."
+
+   **Verify:**
+   - [ ] Certification provided for all new functions
+   - [ ] All "Watched fail" are YES (or justified NO)
+   - [ ] All "Watched pass" are YES
+   - [ ] Failure reasons are specific (not vague)
+
+   **If certification missing or incomplete**: Flag as Important issue
    ```
-   Ask: "For each function, did you:
-   1. Watch test fail first? (RED)
-   2. Implement minimal code to pass? (GREEN)
-   3. Refactor for quality? (REFACTOR)"
+   IMPORTANT: TDD Compliance Certification required.
+   Must provide certification with one entry per function (see test-driven-development skill).
+   Certification proves RED-GREEN-REFACTOR cycle was followed.
    ```
 
-   **If author cannot attest**: Flag as Important issue
+   **If author cannot provide certification**: Flag as Important issue
    ```
    IMPORTANT: Unable to verify TDD followed for [function_name].
    Tests may have been written after implementation.

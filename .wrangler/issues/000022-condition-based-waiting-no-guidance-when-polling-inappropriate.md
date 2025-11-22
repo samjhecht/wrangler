@@ -2,12 +2,28 @@
 id: "000022"
 title: "Flaw: condition-based-waiting teaches polling pattern but provides no guidance when polling is inappropriate (WebSockets, events)"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "low"
 labels: ["skills", "workflow-flaw", "process", "async-patterns"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
+
+## Completion Note
+
+Updated condition-based-waiting/SKILL.md to add guidance on when polling is inappropriate:
+- Updated skill description to mention preferring event-based waiting when available
+- Added "When NOT to Poll" section with three categories:
+  1. Event-Based Systems Available (WebSockets, EventEmitter, DOM events)
+  2. Native Async Patterns Available (Promises, async/await)
+  3. High-Frequency State Changes (Redux, RxJS, reactive state)
+- Each category includes examples showing bad (polling) vs good (event-based) approaches
+- Added "When Polling IS Appropriate" section clarifying valid use cases
+- Added "Choosing Polling Interval" section with guidance on:
+  - Default intervals (10-50ms)
+  - Shorter intervals for animations (1-10ms)
+  - Longer intervals for background tasks (100-1000ms)
+  - Exponential backoff with complete example implementation
 
 ## Flaw Description
 

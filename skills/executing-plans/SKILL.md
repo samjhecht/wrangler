@@ -13,8 +13,6 @@ Load plan, review critically, execute tasks in batches, report for review betwee
 
 **Works in main branch OR worktree (no preference)**
 
-**Announce at start:** "I'm using the executing-plans skill to implement this plan."
-
 ## The Process
 
 ### Step 1: Load and Review Plan

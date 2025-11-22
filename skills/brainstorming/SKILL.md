@@ -11,8 +11,6 @@ Transform rough ideas into fully-formed designs through structured questioning a
 
 **Core principle:** Research first, ask targeted questions to fill gaps, explore alternatives, present design incrementally for validation.
 
-**Announce at start:** "I'm using the brainstorming skill to refine your idea into a design."
-
 ## Quick Reference
 
 | Phase | Key Activities | Tool Usage | Output |

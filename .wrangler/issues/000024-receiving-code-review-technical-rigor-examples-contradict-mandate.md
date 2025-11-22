@@ -2,12 +2,24 @@
 id: "000024"
 title: "Flaw: receiving-code-review mandates technical rigor but examples show accepting vague feedback without verification"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "code-review"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
+
+## Resolution
+
+Fixed by adding three detailed examples showing verification in action:
+
+**Scenario 1**: Shows agent verifying "valid" concern by measuring operation duration, analyzing UX impact, and evaluating implementation cost before accepting feedback.
+
+**Scenario 2**: Shows agent performing cost-benefit analysis and pushing back with technical reasoning when configurability suggestion has low benefit vs medium cost.
+
+**Scenario 3**: Shows agent recognizing incorrect suggestion (Promise.all() would exhaust connection pool) and pushing back with technical explanation of why sequential processing is correct.
+
+All examples demonstrate "technical rigor" mandate: verify first, analyze, then respond with reasoning (not "great point!").
 
 ## Flaw Description
 

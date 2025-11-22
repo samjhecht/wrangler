@@ -213,6 +213,128 @@ You MUST complete each phase before proceeding to the next.
 
    This is NOT a failed hypothesis - this is a wrong architecture.
 
+## Distinguishing Architectural vs Implementation Problems
+
+### Architectural Problem Indicators
+
+**Strong signals** (any one indicates architectural issue):
+
+1. **Shared state in multiple places**
+   - Same data stored in 3+ locations (localStorage, context, store, DB cache)
+   - Updates to one location don't propagate to others
+   - Synchronization bugs appear repeatedly
+
+2. **Tight coupling across modules**
+   - Fix in module A breaks module B unexpectedly
+   - Can't change one component without changing 5 others
+   - Dependencies are circular or tangled
+
+3. **Missing abstraction layer**
+   - Similar code repeated in 10+ places
+   - Fix requires updating all instances
+   - No central place to change behavior
+
+4. **Wrong separation of concerns**
+   - UI logic mixed with business logic
+   - Database queries in presentation layer
+   - Can't test one piece without testing everything
+
+### Implementation Problem Indicators
+
+**Strong signals** (indicates implementation bug, not architecture):
+
+1. **Single root cause, multiple symptoms**
+   - All failures trace back to one incorrect assumption
+   - Fix in one place resolves all symptoms
+   - Not coupled to other modules
+
+2. **Edge case handling**
+   - Works in 99% of cases, fails on corner cases
+   - Fix is adding bounds checking or validation
+   - Isolated to one function/module
+
+3. **Timing or concurrency issue**
+   - Race condition with clear sequence
+   - Fix is synchronization primitive
+   - Not a design problem, execution order problem
+
+### When to Question Architecture
+
+After 3 failed fix attempts:
+
+**IF any Strong architectural signal present:**
+  Stop fixing symptoms
+  Discuss architectural refactor with your human partner
+
+**IF only Implementation signals:**
+  Return to Phase 1 (re-investigate with new information)
+  May still be solvable without architectural change
+
+## Examples
+
+### Example: Architectural Problem
+
+**Scenario:** Auth token refresh bug
+
+Fix attempts:
+1. Add refresh in API client → Store not updated
+2. Update store in API client → Components not re-rendering
+3. Add re-render trigger → Race condition with logout
+
+**Analysis:**
+- Pattern: Each fix reveals new shared state issue
+- Root cause: Auth state stored in 4 places (localStorage, React context, API client, URL params)
+- Architectural issue: No single source of truth for auth state
+
+**Correct action:** Refactor to single auth state manager. Fixes are band-aids.
+
+### Example: Implementation Problem
+
+**Scenario:** Token refresh happening 100ms early
+
+Fix attempts:
+1. Adjust expiry check to `< expiryTime - 100` → Still fails occasionally
+2. Adjust to `< expiryTime - 200` → Works but feels wrong
+3. Check token validity in addition to expiry → Reveals expiry time parsing bug
+
+**Analysis:**
+- Pattern: Getting closer to root cause with each attempt
+- Root cause: Expiry time parsing doesn't account for timezone
+- Implementation issue: Single bug with misleading symptoms
+
+**Correct action:** Fix parsing logic. Architecture is fine.
+
+## Having the Architectural Discussion
+
+When you've determined it's an architectural problem:
+
+**Prepare your case:**
+
+1. **Summarize the issue:**
+   "I've attempted 3 fixes for [problem]. Each revealed new issues in [places]. This indicates an architectural problem: [specific issue]."
+
+2. **Present the evidence:**
+   - Fix 1: [what you tried] → [what failed]
+   - Fix 2: [what you tried] → [what failed]
+   - Fix 3: [what you tried] → [what failed]
+   - Pattern: [which architectural indicator matches]
+
+3. **Propose options:**
+   "Possible approaches:
+    A) Refactor [component] to [new architecture] (high effort, solves root cause)
+    B) Continue fixing symptoms (low effort, technical debt)
+    C) Defer to later, document workaround (lowest effort, future pain)
+
+   I recommend A because [reasoning]."
+
+4. **Ask for decision:**
+   "Should we refactor the architecture now, or work around it?"
+
+**Don't:**
+- Just say "I'm stuck"
+- Propose fixes without explaining why architecture is wrong
+- Make the decision unilaterally (this is strategic, not tactical)
+
 ## Red Flags - STOP and Follow Process
 
 If you catch yourself thinking:
@@ -226,11 +348,13 @@ If you catch yourself thinking:
 - "Here are the main problems: [lists fixes without investigation]"
 - Proposing solutions before tracing data flow
 - **"One more fix attempt" (when already tried 2+)**
+  → Stop. Count your attempts. If ≥3, question architecture (see "Distinguishing Architectural vs Implementation Problems")
 - **Each fix reveals new problem in different place**
+  → Stop. This is architectural indicator. See criteria in "Distinguishing Architectural vs Implementation Problems" to confirm.
 
 **ALL of these mean: STOP. Return to Phase 1.**
 
-**If 3+ fixes failed:** Question the architecture (see Phase 4.5)
+**If 3+ fixes failed:** Question the architecture (see "Distinguishing Architectural vs Implementation Problems")
 
 ## your human partner's Signals You're Doing It Wrong
 

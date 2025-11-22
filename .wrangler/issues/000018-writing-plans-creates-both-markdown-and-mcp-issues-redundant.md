@@ -2,11 +2,11 @@
 id: "000018"
 title: "Flaw: writing-plans creates both plan file AND MCP issues, creating redundant artifacts and unclear source of truth"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "redundancy"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
 
 ## Flaw Description
@@ -256,3 +256,34 @@ After fix:
 6. Agent implements according to plan
 7. Agent marks issue as closed
 8. No confusion about which to update or reference
+
+## Resolution
+
+**Status:** CLOSED
+
+**Fix implemented:** Updated `skills/writing-plans/SKILL.md` to make MCP issues the source of truth.
+
+**Changes made:**
+1. Updated skill description to emphasize "creates tracked MCP issues" with "optional reference plan file"
+2. Changed overview to state "MCP issues are the source of truth - each tracked task contains complete implementation details"
+3. Made plan file OPTIONAL (for architecture overview and design decisions only)
+4. Renamed "Plan Document Header" to "Optional Plan Document (Reference Only)"
+5. Updated Phase 3 to "Create MCP Issues (Source of Truth)" with complete implementation details:
+   - All 5 TDD steps with exact code examples
+   - Exact commands with expected output
+   - Complete acceptance criteria
+   - Added note: "Issues are the single source of truth - include complete code examples and exact commands"
+   - Added note: "If creating optional plan file, it should reference issues, NOT duplicate their content"
+6. Replaced "Task Structure" section with "MCP Issue Content Requirements" that clarifies:
+   - What MUST be in issues (exact paths, complete code, exact commands, all 5 TDD steps)
+   - What should NOT be in issues (architecture rationale, design alternatives - goes in optional plan file)
+7. Updated "Remember" section to emphasize MCP issues as source of truth
+8. Updated Phase 2 to "Plan Task Breakdown" (removed "Draft Plan Document")
+9. Updated execution handoff to list issues first, plan file second (if created)
+10. Updated checklist to ensure "Every task has corresponding MCP issue with COMPLETE details"
+
+**Result:** 
+- No duplication between plan file and issues
+- Clear separation: issues = implementation details, plan file = architecture context
+- Single source of truth for what needs to be done (MCP issues)
+- Optional reference documentation for why/how decisions were made (plan file)

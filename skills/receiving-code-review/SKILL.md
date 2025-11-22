@@ -200,6 +200,113 @@ You understand 1,2,3,6. Unclear on 4,5.
 ✅ "Understand 1,2,3,6. Need clarification on 4 and 5 before implementing."
 ```
 
+## Extended Example: Receiving Feedback with Technical Rigor
+
+### Scenario 1: Verifying "Valid" Concern
+
+**Reviewer:** "IMPORTANT: Missing progress reporting for long-running operations."
+
+**You (Verify first):**
+
+1. Check operation duration:
+   - Tested with 10,000 items: 2.3 seconds
+   - Tested with 100,000 items: 24 seconds
+
+2. User experience impact:
+   - Operations >10s appear frozen without feedback
+   - Progress reporting is valuable for 100k+ items
+
+3. Implementation cost:
+   - Logging every item: expensive (24s becomes 40s)
+   - Report every 100 items: reasonable (every ~250ms)
+
+**Verification result:** Valid concern for 100k+ datasets
+
+**Response to reviewer:**
+```
+"Verified with 100k items - operation takes 24s which would appear frozen. I'll add progress reporting every 100 items (approximately every 250ms). Implementation: log to console with percentage complete."
+```
+
+**Notice:** No "great point!" - just verification work and technical decision.
+
+---
+
+### Scenario 2: Cost-Benefit Analysis Leading to Pushback
+
+**Reviewer:** "Consider making chunk size configurable instead of hardcoded 100."
+
+**You (Verify first):**
+
+1. Is there a use case for different chunk sizes?
+   - Current: 100 items per batch
+   - Why 100? Based on memory testing (1MB per 100 items)
+   - Different sizes: Could help if memory constrained
+
+2. What's the cost?
+   - Add parameter: `{ chunkSize?: number }`
+   - Add validation (10 ≤ chunkSize ≤ 1000)
+   - Add tests for different chunk sizes
+   - Document safe ranges
+   - Cost: ~30 min implementation, ongoing maintenance
+
+3. What's the benefit?
+   - Users with limited memory: use chunkSize: 10
+   - Users wanting speed: use chunkSize: 500
+   - Benefit: Flexibility for edge cases
+
+**Cost-benefit analysis:** Low benefit (most users fine with 100), medium cost (validation, testing, docs)
+
+**Verification result:** Not worth implementing currently
+
+**Response to reviewer:**
+```
+"I analyzed cost vs benefit. Chunk size of 100 is based on memory testing (1MB per 100 items). Making it configurable adds ~30 min implementation + ongoing maintenance (validation, tests, docs) but benefit is low since most users don't need to change it. I think keeping it internal and optimizing for the common case is better. If we get user requests for configurability, we can add it later. Do you have a specific use case I'm missing?"
+```
+
+**Notice:** Pushing back with technical reasoning, not accepting immediately as "good idea".
+
+---
+
+### Scenario 3: Recognizing Incorrect Suggestion and Pushing Back
+
+**Reviewer:** "You should use Promise.all() instead of sequential processing for better performance."
+
+**You (Verify first):**
+
+1. Current implementation:
+   ```typescript
+   for (const conversation of conversations) {
+     await verifyConversation(conversation); // Sequential
+   }
+   ```
+
+2. Reviewer suggests:
+   ```typescript
+   await Promise.all(
+     conversations.map(c => verifyConversation(c)) // Parallel
+   );
+   ```
+
+3. Why current is sequential:
+   - verifyConversation() writes to database
+   - Database has connection pool limit (10 connections)
+   - 10,000 conversations = 10,000 concurrent writes = pool exhaustion
+   - Sequential: slow but safe
+   - Parallel: fast but crashes with "too many connections"
+
+**Verification result:** Reviewer suggestion would break the system
+
+**Response to reviewer:**
+```
+"I don't think Promise.all() would work here. verifyConversation() writes to the database, and we have a connection pool limit of 10. Processing 10,000 conversations in parallel would exhaust the pool and crash. Current sequential approach is intentionally conservative. If we want better performance, we'd need batched parallelism (process 10 at a time) rather than full parallelism. Should I implement batched parallelism, or is sequential acceptable?"
+```
+
+**Reviewer:** "Oh, good point. I didn't realize it was writing to DB. Sequential is fine."
+
+**You:** "Keeping it sequential then."
+
+**Notice:** No apology for pushing back. Just state the technical reality and move on.
+
 ## The Bottom Line
 
 **External feedback = suggestions to evaluate, not orders to follow.**

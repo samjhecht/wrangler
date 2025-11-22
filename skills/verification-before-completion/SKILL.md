@@ -221,13 +221,15 @@ IF your work involves UI (HTML, CSS, JSX, templates, components):
 
 BEFORE claiming UI work complete, verify ALL of these:
 
+**For detailed guidance on frontend testing patterns, see the testing-anti-patterns skill:**
+- Anti-Pattern 6: Testing Implementation Details (test user-visible behavior, not internals)
+- Anti-Pattern 7: No Accessibility Testing (comprehensive a11y verification)
+- Anti-Pattern 8: Testing Happy Path Only (all states: loading, error, empty, partial)
+
 ### Visual Verification
 - [ ] **Open browser DevTools** (F12 or Cmd+Option+I)
 - [ ] **Inspect rendered output** in Elements panel
-- [ ] **Test responsive breakpoints**:
-  - Mobile: 375x667 (iPhone SE)
-  - Tablet: 768x1024 (iPad)
-  - Desktop: 1920x1080
+- [ ] **Test responsive breakpoints** (mobile, tablet, desktop)
 - [ ] **Take screenshot** for visual regression baseline
 - [ ] **Compare against baseline** (if exists)
 - [ ] **Review differences**: Intentional or regression?
@@ -236,8 +238,7 @@ BEFORE claiming UI work complete, verify ALL of these:
 
 ### Console Verification
 - [ ] **Open Console panel** in DevTools
-- [ ] **Refresh page** (Cmd+R or Ctrl+R)
-- [ ] **Verify NO errors** (0 red messages)
+- [ ] **Refresh page** and verify **0 errors** (0 red messages)
 - [ ] **Verify NO warnings** (or document expected ones)
 - [ ] **Take console screenshot** showing clean output
 
@@ -245,58 +246,32 @@ BEFORE claiming UI work complete, verify ALL of these:
 
 ### Network Verification
 - [ ] **Open Network panel** in DevTools
-- [ ] **Refresh page** and perform actions
-- [ ] **Verify expected API calls made**:
-  - Check URLs are correct
-  - Check request methods (GET, POST, etc.)
-  - Check response status codes (200, 201, etc.)
-- [ ] **Verify no unexpected requests**:
-  - No failed requests (red in network tab)
-  - No requests to wrong endpoints
-  - No tracking/analytics if not expected
+- [ ] **Verify expected API calls** made with correct URLs/methods/status codes
+- [ ] **Verify no failed requests** (no red in network tab)
 - [ ] **Check response data** is correct
 
 **Evidence required**: Network tab screenshot or description of verified requests
 
-### Accessibility Verification
-- [ ] **Run axe-core test** (automated):
-  ```typescript
-  await injectAxe(page);
-  await checkA11y(page); // Expect 0 violations
-  ```
-- [ ] **Test keyboard navigation**:
-  - Tab through all interactive elements
-  - Verify Enter/Space activates buttons
-  - Verify Escape closes modals
-  - No keyboard traps found
-- [ ] **Verify screen reader compatibility**:
-  - All buttons have accessible names
-  - All form inputs have labels
-  - All images have alt text or are decorative
-- [ ] **Verify focus visible** on all elements
-- [ ] **Run Lighthouse accessibility audit**:
-  - Open Lighthouse in DevTools
-  - Select "Accessibility" category
-  - Run audit
-  - Verify score ≥95
+### Accessibility Verification (See testing-anti-patterns Anti-Pattern 7 for detailed guidance)
+- [ ] **Run axe-core test**: 0 violations
+- [ ] **Test keyboard navigation**: All interactive elements accessible via Tab/Enter/Escape
+- [ ] **Verify screen reader compatibility**: All elements have accessible names
+- [ ] **Run Lighthouse accessibility audit**: Score ≥95
 
 **Evidence required**: axe-core output (0 violations) + Lighthouse score
 
-### Interaction Verification
-- [ ] **Test all user interactions**:
-  - Click all buttons → Verify expected result
-  - Fill all forms → Verify validation works
-  - Hover states → Verify visible
-- [ ] **Test loading states**:
-  - Verify spinner/skeleton renders during loading
-  - Verify loading completes correctly
-- [ ] **Test error states**:
-  - Trigger errors (invalid input, network failure)
-  - Verify error messages display correctly
-- [ ] **Test empty states**:
-  - Verify empty state message renders when no data
+**For detailed examples and test code, see testing-anti-patterns skill Anti-Pattern 7.**
 
-**Evidence required**: Description of tested interactions and results
+### UI States Verification (See testing-anti-patterns Anti-Pattern 8 for detailed guidance)
+- [ ] **Test loading states**: Spinner/skeleton renders during loading
+- [ ] **Test success states**: Data displays correctly
+- [ ] **Test error states**: Error messages display on failures
+- [ ] **Test empty states**: Empty message when no data
+- [ ] **Test partial states**: Handles missing fields gracefully
+
+**Evidence required**: Description of tested states and results
+
+**For detailed examples and test code, see testing-anti-patterns skill Anti-Pattern 8.**
 
 ## Frontend Verification Gate
 

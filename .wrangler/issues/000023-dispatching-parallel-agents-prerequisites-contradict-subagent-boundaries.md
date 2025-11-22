@@ -2,12 +2,27 @@
 id: "000023"
 title: "Flaw: dispatching-parallel-agents prerequisites say failures must be independent but prerequisites list contradicts this"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "parallelization"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
+
+## Completion Note
+
+Updated dispatching-parallel-agents/SKILL.md to clarify prerequisites and resolve contradictions:
+- Updated skill description to separate logical independence from infrastructure concerns
+- Added clear "Prerequisites" section with two distinct concepts:
+  1. Failures Are Logically Independent (different features, different root causes)
+  2. Investigation Is Parallel-Safe (can work concurrently without interfering)
+- Added guidance for when failures are independent BUT not parallel-safe (dispatch for investigation, fix sequentially)
+- Added "Decision Tree: When to Use Parallel Agents" with clear flow
+- Added three comprehensive examples:
+  1. Independent + Parallel-Safe → Use Skill
+  2. Independent but NOT Parallel-Safe → Modified Approach
+  3. NOT Independent → Don't Use Skill
+- Each example includes independence check, parallel safety check, and decision with rationale
 
 ## Flaw Description
 

@@ -30,22 +30,93 @@ If you changed UI code (HTML, CSS, JSX, templates):
 
 ## Visual TDD Cycle
 
-Visual regression fits into TDD:
+Visual regression testing integrates with TDD through TWO sequential cycles:
 
-1. **RED**: No baseline exists (or baseline shows old state)
-2. **GREEN**: Implement UI, screenshot becomes new baseline
-3. **REFACTOR**: Change code, screenshot comparison catches visual regressions
+### Phase 1: Component Functionality (Traditional TDD)
 
-### Example Visual TDD Flow:
+**RED Phase:**
+```typescript
+test('checkout form renders with required fields', async ({ mount }) => {
+  const component = await mount('<checkout-form></checkout-form>');
 
+  // Test functionality (TDD RED - this will fail)
+  await expect(component.locator('[name="cardNumber"]')).toBeVisible();
+  await expect(component.locator('[name="expiry"]')).toBeVisible();
+  await expect(component.locator('[name="cvc"]')).toBeVisible();
+});
 ```
-1. Write component test (RED - component doesn't exist)
-2. Implement component (GREEN - test passes)
-3. Take screenshot → becomes baseline
-4. Refactor CSS (changes detected in screenshot)
-5. Review diff → intentional or regression?
-6. Update baseline if intentional
+Run test: FAILS (component doesn't exist)
+
+**GREEN Phase:**
+```typescript
+// Implement checkout-form component
+// Add cardNumber, expiry, cvc fields
 ```
+Run test: PASSES (component renders fields)
+
+**REFACTOR Phase:**
+Improve component structure, styling, accessibility
+
+---
+
+### Phase 2: Visual Correctness (Visual TDD)
+
+**After component functionally works**, add visual verification:
+
+```typescript
+test('checkout form visual appearance', async ({ mount, page }) => {
+  await mount('<checkout-form></checkout-form>');
+
+  // Visual regression test
+  await expect(page.locator('.checkout-form'))
+    .toHaveScreenshot('checkout-form.png');
+});
+```
+
+**First run (Baseline Generation):**
+- No baseline exists
+- Test generates baseline screenshot
+- Review baseline: Does it look correct?
+- Commit baseline to git
+
+**RED Phase (Visual Regression):**
+After baseline exists, make CSS change:
+```css
+/* Change button color from blue to red */
+.submit-button { background: red; }
+```
+Run test: FAILS (screenshot doesn't match baseline)
+Review diff: Is change intentional?
+
+**GREEN Phase (Update Baseline if Intentional):**
+If red button is intentional:
+```bash
+npm test -- --update-snapshots
+```
+New baseline committed
+Run test: PASSES
+
+If red button is NOT intentional (regression):
+```css
+/* Revert change */
+.submit-button { background: blue; }
+```
+Run test: PASSES
+
+---
+
+### Summary: Two TDD Cycles
+
+1. **Functional TDD** (first): Write test for component behavior → Implement → Refactor
+2. **Visual TDD** (second): Generate baseline → Make changes → Verify no regressions
+
+**Integration:**
+- Functional tests come FIRST (component must work before visual testing)
+- Visual tests come SECOND (component must look right)
+- Both follow TDD, but visual baseline generation is a special case
+- Baseline generation doesn't violate "watch it fail" - the failure comes when you change CSS and screenshot differs
+
+**Cross-reference:** See test-driven-development skill for core RED-GREEN-REFACTOR principles.
 
 ## Step-by-Step Process
 

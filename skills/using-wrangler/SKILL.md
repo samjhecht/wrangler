@@ -20,10 +20,11 @@ Before responding to ANY user message, you MUST complete this checklist:
 1. ☐ List available skills in your mind
 2. ☐ Ask yourself: "Does ANY skill match this request?"
 3. ☐ If yes → Use the Skill tool to read and run the skill file
-4. ☐ Announce which skill you're using
-5. ☐ Follow the skill exactly
+4. ☐ Follow the skill exactly
 
 **Responding WITHOUT completing this checklist = automatic failure.**
+
+**Note:** The Skill tool automatically announces skill loading. No separate announcement needed.
 
 ## Critical Rules
 
@@ -62,38 +63,38 @@ If a skill has a checklist, YOU MUST create TodoWrite todos for EACH item.
 
 ## Announcing Skill Usage
 
-Before using a skill, you MUST announce it using this EXACT format:
+When you use the Skill tool to load a skill, the system automatically announces:
 
 ```
-═══════════════════════════════════════════════════════════
-🎯 SKILL: [skill-name]
-═══════════════════════════════════════════════════════════
-[Brief description of what you're doing with this skill]
+<command-message>The "{skill-name}" skill is loading</command-message>
 ```
 
-**Examples:**
+**This automatic announcement is sufficient.** You do NOT need to announce skill usage separately.
+
+### If Using Skill Without Skill Tool
+
+If you are following a skill's process without using the Skill tool (e.g., from memory or prior context):
+
+You MUST announce with this simple format:
 
 ```
-═══════════════════════════════════════════════════════════
-🎯 SKILL: brainstorming
-═══════════════════════════════════════════════════════════
-Refining your idea into a fully-formed design through
-structured Socratic questioning before any code is written.
+I'm using the [skill-name] skill to [brief description].
 ```
 
+**Example:**
 ```
-═══════════════════════════════════════════════════════════
-🎯 SKILL: test-driven-development
-═══════════════════════════════════════════════════════════
-Writing failing test first, then implementing minimum code
-to pass, following RED-GREEN-REFACTOR cycle.
+I'm using the brainstorming skill to refine your idea into a fully-formed design.
 ```
 
-**Why:**
-- This format is highly visible in terminal output
-- Easy to scan when reviewing conversation history
-- Confirms you actually read and are using the skill
-- Helps your human partner understand your process
+**Why announce when not using tool:**
+- Confirms you're following a specific skill process
+- Helps your human partner understand your approach
+- Makes conversation history clear
+
+**Why NOT announce when using tool:**
+- Tool already announces skill loading
+- Avoids redundant announcements
+- Keeps conversation focused on work, not process overhead
 
 # About these skills
 
@@ -116,9 +117,8 @@ Your human partner's specific instructions describe WHAT to do, not HOW.
 ## Summary
 
 **Starting any task:**
-1. If relevant skill exists → Use the skill
-3. Announce you're using it
-4. Follow what it says
+1. If relevant skill exists → Use the Skill tool to load it
+2. Follow what it says
 
 **Skill has checklist?** TodoWrite for every item.
 

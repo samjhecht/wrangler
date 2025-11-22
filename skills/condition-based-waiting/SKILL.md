@@ -1,6 +1,6 @@
 ---
 name: condition-based-waiting
-description: Use when tests have race conditions, timing dependencies, or inconsistent pass/fail behavior - replaces arbitrary timeouts with condition polling to wait for actual state changes, eliminating flaky tests from timing guesses
+description: Use when tests have race conditions, timing dependencies, or inconsistent pass/fail behavior - replaces arbitrary timeouts with condition polling; prefer event-based waiting when available (WebSockets, EventEmitters, Observables)
 ---
 
 # Condition-Based Waiting
@@ -34,7 +34,88 @@ digraph when_to_use {
 
 **Don't use when:**
 - Testing actual timing behavior (debounce, throttle intervals)
+- Event-based systems available (see "When NOT to Poll" below)
 - Always document WHY if using arbitrary timeout
+
+## When NOT to Poll
+
+Polling is NOT appropriate when:
+
+### 1. Event-Based Systems Available
+
+**Use event listeners instead of polling for:**
+- WebSockets / Server-Sent Events
+- EventEmitter / Message Bus
+- DOM events (click, change, etc.)
+- Process signals (SIGTERM, etc.)
+
+**Example:**
+```typescript
+// ❌ BAD: Polling for WebSocket message
+let lastMessage;
+ws.on('message', msg => lastMessage = msg);
+await waitForCondition(() => lastMessage?.type === 'ready');
+
+// ✅ GOOD: Event-based waiting
+await new Promise((resolve, reject) => {
+  const timeout = setTimeout(() => reject(new Error('Timeout')), 5000);
+  ws.once('message', (msg) => {
+    if (msg.type === 'ready') {
+      clearTimeout(timeout);
+      resolve(msg);
+    }
+  });
+});
+```
+
+### 2. Native Async Patterns Available
+
+**Use await instead of polling for:**
+- Promises
+- async/await
+- Observable.toPromise()
+
+**Example:**
+```typescript
+// ❌ BAD: Polling to check if promise resolved
+let result;
+apiCall().then(r => result = r);
+await waitForCondition(() => result !== undefined);
+
+// ✅ GOOD: Just await the promise
+const result = await apiCall();
+```
+
+### 3. High-Frequency State Changes
+
+**Use reactive patterns instead of polling for:**
+- Redux/state management subscriptions
+- RxJS observables
+- Vue/React reactive state
+
+**Example:**
+```typescript
+// ❌ BAD: Polling Redux store
+await waitForCondition(() => store.getState().user.loggedIn);
+
+// ✅ GOOD: Subscribe to store changes
+await new Promise(resolve => {
+  const unsubscribe = store.subscribe(() => {
+    if (store.getState().user.loggedIn) {
+      unsubscribe();
+      resolve();
+    }
+  });
+});
+```
+
+## When Polling IS Appropriate
+
+Use polling when:
+- Checking external system with no event mechanism (third-party API, file system)
+- State not controlled by you (browser API, DOM state)
+- Testing environment where you can't easily subscribe to events
+- Prototyping (event-based can come later)
 
 ## Core Pattern
 
@@ -85,6 +166,51 @@ async function waitFor<T>(
 ```
 
 See @example.ts for complete implementation with domain-specific helpers (`waitForEvent`, `waitForEventCount`, `waitForEventMatch`) from actual debugging session.
+
+## Choosing Polling Interval
+
+**Default: 10-50ms** (recommended for most test cases)
+
+**Shorter intervals (1-10ms):**
+- Animations (target 60fps = 16ms)
+- Real-time interactions (games, live collaboration)
+- High-precision timing requirements
+- **Warning:** High CPU usage, use sparingly
+
+**Longer intervals (100-1000ms):**
+- Background tasks (file watching, health checks)
+- Non-urgent state changes
+- Resource-constrained environments
+- Polling external APIs (avoid rate limits)
+
+**Exponential backoff:**
+- Retrying failed operations (start 100ms, double each attempt, max 5s)
+- Unknown timing (connection establishment)
+- Balancing responsiveness vs resource usage
+
+**Example: Exponential backoff**
+```typescript
+async function waitWithBackoff<T>(
+  condition: () => T | undefined | null | false,
+  description: string,
+  maxTimeoutMs = 30000
+): Promise<T> {
+  const startTime = Date.now();
+  let interval = 100; // Start at 100ms
+
+  while (true) {
+    const result = condition();
+    if (result) return result;
+
+    if (Date.now() - startTime > maxTimeoutMs) {
+      throw new Error(`Timeout waiting for ${description} after ${maxTimeoutMs}ms`);
+    }
+
+    await new Promise(r => setTimeout(r, interval));
+    interval = Math.min(interval * 2, 5000); // Double, max 5s
+  }
+}
+```
 
 ## Common Mistakes
 

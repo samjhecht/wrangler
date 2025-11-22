@@ -2,11 +2,11 @@
 id: "000019"
 title: "Flaw: verification-before-completion Frontend Verification Checklist duplicates content from testing-anti-patterns Anti-Patterns 6-8"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "low"
 labels: ["skills", "workflow-flaw", "process", "duplication"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
 
 ## Flaw Description

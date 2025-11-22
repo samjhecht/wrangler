@@ -2,11 +2,11 @@
 id: "000025"
 title: "Flaw: writing-skills and testing-skills-with-subagents describe identical TDD process but exist as separate skills"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "low"
 labels: ["skills", "workflow-flaw", "process", "duplication"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
 
 ## Flaw Description
@@ -286,3 +286,45 @@ After merge:
 6. No confusion about which skill to use
 7. No jumping between two skills
 8. Single checklist covers everything
+
+## Resolution
+
+**Status:** CLOSED
+
+**Fix implemented:** Consolidated `testing-skills-with-subagents` into `writing-skills` following Option A (Merge).
+
+**Changes made:**
+
+**1. Enhanced writing-skills skill:**
+   - Updated description to include testing triggers: "testing skills with pressure scenarios"
+   - Added comprehensive "Testing Skills: Detailed Methodology" section at end (before "The Bottom Line")
+   - Merged all content from testing-skills-with-subagents:
+     - When to test skills
+     - Writing pressure scenarios (bad/good/great examples)
+     - Pressure types table
+     - Key elements of good scenarios
+     - Testing setup
+     - VERIFY GREEN: Pressure Testing Process
+     - Plugging Each Hole (4-step process)
+     - Re-verify After Refactoring
+     - Meta-Testing (When GREEN Isn't Working)
+     - When Skill is Bulletproof
+     - Example: TDD Skill Bulletproofing
+     - Reference to complete worked example
+   - Updated REFACTOR section reference to point to Testing Skills section (removed sub-skill reference)
+
+**2. Deprecated testing-skills-with-subagents:**
+   - Replaced entire skill content with deprecation notice
+   - Updated description: "DEPRECATED - Use writing-skills instead"
+   - Added migration notice explaining where content went
+   - Explained rationale for merge (duplication, token waste, confusion, maintenance)
+   - Directed users to writing-skills for all needs
+   - Maintained reference to examples directory for historical worked examples
+
+**Result:**
+- Single comprehensive skill for both creating AND testing skills
+- No content duplication (eliminated ~300 lines of redundant TDD explanation)
+- Clear organization with dedicated "Testing Skills" section
+- Reduced token usage when loading skills
+- Single source of truth for skill creation methodology
+- testing-skills-with-subagents remains as redirect/deprecation notice

@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when design is complete and you need detailed implementation tasks - creates comprehensive implementation plans with exact file paths, complete code examples, and verification steps. Creates both markdown plan file AND tracked issues via MCP tools for full traceability.
+description: Use when design is complete and you need detailed implementation tasks - creates tracked MCP issues with exact file paths, complete code examples, and verification steps. Optional reference plan file for architecture overview.
 ---
 
 # Writing Plans
@@ -9,11 +9,10 @@ description: Use when design is complete and you need detailed implementation ta
 
 Write comprehensive implementation plans assuming the engineer has zero context for our codebase. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
 
-Create both:
-1. **Plan file** (`plans/YYYY-MM-DD-PLAN_<spec>.md`) - Detailed implementation guide
-2. **MCP issues** (via `issues_create`) - Tracked tasks in issue system
+**MCP issues are the source of truth** - each tracked task contains complete implementation details.
 
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
+Optionally create:
+- **Plan file** (`plans/YYYY-MM-DD-PLAN_<spec>.md`) - Architecture overview and design decisions (reference only)
 
 **Works in main branch OR worktree (no preference)**
 
@@ -29,9 +28,15 @@ Create both:
 - "Run the tests and make sure they pass" - step
 - "Commit" - step
 
-## Plan Document Header
+## Optional Plan Document (Reference Only)
 
-**Every plan MUST start with this header:**
+**Plan files are OPTIONAL** - use when architecture/design context needs documentation.
+
+**If creating plan file**, it should contain:
+- Architecture overview and design decisions
+- Technology choices and rationale
+- Cross-cutting concerns
+- References to MCP issues (NOT duplicate content)
 
 ```markdown
 # [Feature Name] Implementation Plan
@@ -44,59 +49,31 @@ Create both:
 
 **Tech Stack:** [Key technologies/libraries]
 
+**Implementation tracking:** See MCP issues (project: [specification filename])
+
 ---
 ```
 
-## Task Structure
+## MCP Issue Content Requirements
 
-````markdown
-### Task N: [Component Name]
+**Each issue MUST contain:**
+- Exact file paths (create/modify/test)
+- Complete code examples (not "add validation")
+- Exact commands with expected output
+- All 5 TDD steps (write test, verify fails, implement, verify passes, commit)
+- Clear acceptance criteria
+- Dependencies on other tasks
 
-**Files:**
-
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
-
-**Step 1: Write the failing test**
-
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-```
-````
-
-**Step 2: Run test to verify it fails**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-**Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
-```
-
-**Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-**Step 5: Commit**
-
-```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
-```
-
-```
+**NOT in issues:**
+- Architecture rationale (goes in optional plan file)
+- Design alternatives considered (goes in optional plan file)
+- Cross-cutting concerns (goes in optional plan file)
 
 ## Remember
-- Exact file paths always
-- Complete code in plan (not "add validation")
-- Exact commands with expected output
+- MCP issues are source of truth
+- Include complete implementation details in each issue
+- Optional plan file for architecture/design context only
+- No duplication between issues and plan file
 - Reference relevant skills with @ syntax
 - DRY, YAGNI, TDD, frequent commits
 
@@ -112,15 +89,14 @@ git commit -m "feat: add specific feature"
 3. Think deeply about best implementation approach
 4. Consider architecture, design patterns, maintainability
 
-### Phase 2: Draft Plan Document
+### Phase 2: Plan Task Breakdown
 
-1. Create draft plan at `plans/.drafts/YYYY-MM-DD-PLAN_<spec>.md`
-2. Break specification into logical tasks
-3. For each task, document:
+1. Break specification into logical tasks
+2. For each task, prepare complete details:
    - Exact files to create/modify
-   - Complete code examples
+   - Complete code examples for all 5 TDD steps
    - Test requirements
-   - Verification steps
+   - Exact commands and expected output
    - Commit message
 
 **Think deeply** about task ordering:
@@ -128,13 +104,13 @@ git commit -m "feat: add specific feature"
 - Each task should be small (<250 LOC when implemented)
 - No gaps - every step builds on earlier work
 
-3. Review draft and refine task breakdown
+3. Review and refine task breakdown
 4. Ensure tasks are right-sized and ordered correctly
-5. Save final draft (this refreshes your memory during issue creation)
+5. Optionally draft plan file for architecture overview (if needed)
 
-### Phase 3: Create MCP Issues
+### Phase 3: Create MCP Issues (Source of Truth)
 
-For each task in the plan, call `issues_create` with:
+**MCP issues contain ALL implementation details.** For each task, call `issues_create` with complete information:
 
 ```typescript
 {
@@ -144,7 +120,7 @@ For each task in the plan, call `issues_create` with:
 
 ## Context
 Reference: [specification filename]
-[Relevant context from spec]
+[Relevant architectural context and design decisions]
 
 ## Files
 - Create: \`path/to/new/file.ts\`
@@ -152,13 +128,43 @@ Reference: [specification filename]
 - Test: \`path/to/test.ts\`
 
 ## Implementation Steps
-1. Write failing test
-2. Implement minimal code to pass
-3. Verify tests pass
-4. Commit changes
 
-## Code Examples
-[Include key code snippets from plan]
+**Step 1: Write the failing test**
+
+\`\`\`typescript
+// Complete test code
+describe('feature', () => {
+  it('should behave correctly', () => {
+    // Exact test implementation
+  });
+});
+\`\`\`
+
+**Step 2: Run test to verify it fails**
+
+Run: \`npm test -- path/to/test.ts\`
+Expected: FAIL with "[expected error message]"
+
+**Step 3: Write minimal implementation**
+
+\`\`\`typescript
+// Complete implementation code
+export function feature() {
+  // Exact minimal implementation
+}
+\`\`\`
+
+**Step 4: Run test to verify it passes**
+
+Run: \`npm test -- path/to/test.ts\`
+Expected: PASS
+
+**Step 5: Commit**
+
+\`\`\`bash
+git add path/to/test.ts path/to/file.ts
+git commit -m "feat: add specific feature"
+\`\`\`
 
 ## Acceptance Criteria
 - [ ] Test written and failing (RED)
@@ -183,7 +189,10 @@ Reference: [specification filename]
 }
 ```
 
-**Important**: Use `issues_update` if you need to refine an issue after creation (don't create duplicates).
+**Important**:
+- Issues are the single source of truth - include complete code examples and exact commands
+- Use `issues_update` if you need to refine an issue after creation (don't create duplicates)
+- If creating optional plan file, it should reference issues, NOT duplicate their content
 
 ### Phase 4: Verify and Report
 
@@ -197,11 +206,11 @@ Reference: [specification filename]
 
 ## Execution Handoff
 
-After creating plan and issues, offer execution choice:
+After creating issues, offer execution choice:
 
 **"Plan complete:**
-- **Plan file**: `plans/YYYY-MM-DD-PLAN_<spec>.md`
 - **Issues created**: [N] tasks in issue tracker (project: [spec])
+- **Plan file** (if created): `plans/YYYY-MM-DD-PLAN_<spec>.md` (architecture reference)
 
 **Execution options:**
 
@@ -215,10 +224,12 @@ After creating plan and issues, offer execution choice:
 - **REQUIRED SUB-SKILL:** Use `subagent-driven-development`
 - Stay in this session
 - Fresh subagent per task + code review
+- Load issues for implementation details
 
 **If Parallel Session chosen:**
 - Guide them to open new session in worktree
 - **REQUIRED SUB-SKILL:** New session uses `executing-plans`
+- Load issues for implementation details
 
 ## Issue Update Pattern
 
@@ -238,12 +249,14 @@ issues_update({
 
 - [ ] Specification fully read and analyzed
 - [ ] Existing codebase reviewed for patterns
-- [ ] Draft plan created and refined
-- [ ] Every task in plan has corresponding MCP issue
+- [ ] Task breakdown created and refined
+- [ ] Every task has corresponding MCP issue with COMPLETE details
+- [ ] All issues include exact file paths, code examples, commands
 - [ ] All issues reference the specification
 - [ ] Issue list reviewed and verified (using `issues_list`)
 - [ ] Tasks are ordered correctly
 - [ ] No gaps in implementation steps
+- [ ] Optional plan file created (if architecture context needed)
 - [ ] Plan covers entire specification without overscoping
 
 ## Integration with Specifications

@@ -528,10 +528,109 @@ THEN:
 - Use Page Objects and user-centric selectors
 - Fix test isolation and waiting issues
 
+## E2E Testing with TDD
+
+E2E tests CAN follow TDD, but require incremental approach:
+
+### Approach 1: Incremental E2E (Recommended)
+
+Build E2E test one page at a time following TDD:
+
+**Iteration 1: Login Page**
+
+RED:
+```typescript
+test('user can log in', async ({ page }) => {
+  await page.goto('/login');
+  await page.fill('[name="email"]', 'test@example.com');
+  await page.fill('[name="password"]', 'password123');
+  await page.click('button[type="submit"]');
+
+  await expect(page).toHaveURL('/dashboard'); // FAILS - login doesn't work
+});
+```
+
+GREEN: Implement login page and authentication
+
+REFACTOR: Improve login page code
+
+**Iteration 2: Add to Cart**
+
+RED:
+```typescript
+test('user can add product to cart', async ({ page }) => {
+  // Reuse login from iteration 1
+  await loginPage.goto();
+  await loginPage.login('test@example.com', 'password123');
+
+  // New functionality (RED - doesn't exist yet)
+  await page.goto('/product/123');
+  await page.click('button[name="add-to-cart"]');
+
+  await expect(page.locator('.cart-badge')).toHaveText('1'); // FAILS
+});
+```
+
+GREEN: Implement add to cart functionality
+
+REFACTOR: Improve cart code
+
+**Iteration 3-5: Continue incrementally**
+
+---
+
+### Approach 2: Skeleton E2E First (Alternative)
+
+Write skeleton E2E test with all steps, expect ALL to fail:
+
+RED:
+```typescript
+test('complete checkout flow', async ({ page }) => {
+  // Step 1: Login (exists)
+  await loginPage.login('test@example.com', 'password123');
+  await expect(page).toHaveURL('/dashboard');
+
+  // Step 2: Add to cart (doesn't exist - will fail here)
+  await page.goto('/product/123');
+  await page.click('button[name="add-to-cart"]');
+
+  // Step 3: Checkout (doesn't exist)
+  await page.goto('/checkout');
+  await checkoutPage.fillShippingInfo({...});
+
+  // Step 4: Payment (doesn't exist)
+  await checkoutPage.fillPaymentInfo({...});
+  await checkoutPage.submitOrder();
+
+  // Step 5: Confirmation (doesn't exist)
+  await expect(page.locator('.order-confirmation')).toBeVisible();
+});
+```
+
+Run test: FAILS at step 2 (add to cart doesn't exist)
+
+GREEN: Implement add to cart
+Run test: FAILS at step 3 (checkout doesn't exist)
+
+GREEN: Implement checkout
+Run test: FAILS at step 4 (payment doesn't exist)
+
+... continue until all steps implemented
+
+**When to use each approach:**
+- Incremental: When iterating rapidly, want fast feedback
+- Skeleton: When have complete flow spec, want to track overall progress
+
+**Both approaches follow TDD**: Write test, watch fail, implement, watch pass.
+
+**Cross-reference:** See test-driven-development skill for core RED-GREEN-REFACTOR principles.
+
+---
+
 ## Integration with Other Skills
 
 **Combines with:**
-- test-driven-development: Write E2E test BEFORE implementing flow
+- test-driven-development: Write E2E test BEFORE implementing flow (see E2E TDD section above)
 - condition-based-waiting: Wait for conditions, not time
 - verification-before-completion: E2E tests required for critical flows
 - frontend-component-testing: Use component tests for most UI testing

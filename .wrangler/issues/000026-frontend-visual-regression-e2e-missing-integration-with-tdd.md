@@ -2,12 +2,22 @@
 id: "000026"
 title: "Flaw: frontend-visual-regression-testing and frontend-e2e-user-journeys claim to integrate with TDD but don't explain how to follow RED-GREEN-REFACTOR"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "frontend", "tdd"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
+
+## Resolution
+
+Fixed TDD integration in all three frontend skills:
+
+**frontend-visual-regression-testing**: Clarified TWO sequential TDD cycles - (1) Functional TDD first (component must work), then (2) Visual TDD second (baseline generation, then future changes trigger RED when screenshots differ). Added cross-reference to test-driven-development skill.
+
+**frontend-e2e-user-journeys**: Added new "E2E Testing with TDD" section showing two approaches - (1) Incremental (build E2E test one page at a time with RED-GREEN-REFACTOR per iteration), and (2) Skeleton (write entire flow, implement incrementally). Both follow TDD: write test, watch fail, implement, watch pass.
+
+**test-driven-development**: Added new "Frontend-Specific TDD" section explaining how visual regression (baseline generation after functional impl), E2E (incremental or skeleton), and component tests integrate with RED-GREEN-REFACTOR.
 
 ## Flaw Description
 

@@ -2,12 +2,23 @@
 id: "000021"
 title: "Flaw: systematic-debugging Phase 4 Step 5 says question architecture after 3+ failed fixes but provides no criteria for what constitutes 'architectural problem'"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "medium"
 labels: ["skills", "workflow-flaw", "process", "debugging"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
+
+## Completion Note
+
+Updated systematic-debugging/SKILL.md to add comprehensive architectural vs implementation problem criteria:
+- Added "Distinguishing Architectural vs Implementation Problems" section with specific indicators
+- 4 architectural problem indicators (shared state, tight coupling, missing abstraction, wrong separation of concerns)
+- 3 implementation problem indicators (single root cause, edge case handling, timing/concurrency)
+- Clear guidance on when to question architecture after 3+ failed fixes
+- Added two detailed examples (auth token architectural problem vs implementation problem)
+- Added "Having the Architectural Discussion" section with structured approach for presenting case to human partner
+- Updated Red Flags section to reference new criteria with specific guidance
 
 ## Flaw Description
 

@@ -2,11 +2,11 @@
 id: "000020"
 title: "Flaw: using-wrangler says use Skill tool AND announce usage, but announcement format differs from Skill tool loading message"
 type: "issue"
-status: "open"
+status: "closed"
 priority: "low"
 labels: ["skills", "workflow-flaw", "process", "ux"]
 createdAt: "2025-11-20T00:00:00.000Z"
-updatedAt: "2025-11-20T00:00:00.000Z"
+updatedAt: "2025-11-21T00:00:00.000Z"
 ---
 
 ## Flaw Description

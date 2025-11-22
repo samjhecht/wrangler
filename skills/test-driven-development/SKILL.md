@@ -438,6 +438,50 @@ For each new function/method implemented:
 
 **Cross-reference:** See verification-before-completion skill for complete requirements.
 
+## Frontend-Specific TDD
+
+Frontend testing has special cases:
+
+### Visual Regression Tests
+
+**First run generates baseline** (special case):
+1. Write functional test (RED-GREEN-REFACTOR)
+2. Add visual test (generates baseline)
+3. Future changes: Visual test catches regressions (RED if broken)
+
+**How this follows TDD:**
+- Functional test still follows RED-GREEN-REFACTOR
+- Baseline generation happens AFTER functional implementation
+- The "RED" phase for visual tests comes when you change CSS and screenshot differs
+- Baseline generation doesn't violate "watch it fail" - the test will fail on future unintended changes
+
+See frontend-visual-regression-testing skill for details.
+
+### E2E Tests
+
+**Build incrementally** (recommended):
+- Write E2E test for page 1 (RED-GREEN-REFACTOR)
+- Extend E2E test to page 2 (RED-GREEN-REFACTOR)
+- Continue until complete flow tested
+
+**Alternative: Skeleton approach**
+- Write entire E2E test upfront (will fail at first unimplemented step)
+- Implement each step (test progresses further before failing)
+- Continue until all steps pass
+
+See frontend-e2e-user-journeys skill for detailed approaches.
+
+### Component Tests
+
+**Standard TDD applies:**
+1. RED: Write test for component behavior
+2. GREEN: Implement component
+3. REFACTOR: Improve code
+
+No special cases for component tests - follow standard RED-GREEN-REFACTOR.
+
+---
+
 ## Verification Checklist
 
 Before marking work complete:

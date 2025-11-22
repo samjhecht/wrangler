@@ -24,9 +24,9 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Systematic issue and specification tracking
    - Automated governance verification and maintenance
 
-2. **Skills Library** (36 skills)
+2. **Skills Library** (39 skills)
    - Proven techniques, patterns, and workflows
-   - Covers testing, debugging, planning, code review, governance
+   - Covers testing, debugging, planning, code review, governance, design systems
    - Mandatory when applicable - no rationalizing away
    - Discoverable and composable
 
@@ -419,6 +419,122 @@ When working with issues, you have access to these 11 tools:
 - Single, simple tasks
 - Trivial changes
 - Informational queries
+
+---
+
+## Figma Design Workflow
+
+### What It Does
+
+The Figma integration bridges the design-implementation gap by providing systematic design workflows:
+1. **Design System Setup** - Initialize design systems from templates or custom Q&A
+2. **Mockup Generation** - Create Figma mockups from specifications
+3. **Design Governance** - Track token drift between Figma and code
+
+### Key Components
+
+**3 Skills:**
+- `design-system-setup` - Initialize design systems (3 templates: minimal, modern, vibrant)
+- `figma-design-workflow` - Generate mockups from specs with hierarchical file structure
+- `design-system-governance` - Detect drift, create issues (report-only, no auto-fix)
+
+**3 Templates:**
+- **Minimal**: 9 colors, 5 font sizes, 4 components
+- **Modern**: 61 colors, 9 sizes, 20+ components (recommended default)
+- **Vibrant**: 44 colors, bold typography, playful aesthetic
+
+**3 Slash Commands:**
+- `/wrangler:setup-design-system` - Initialize design system
+- `/wrangler:generate-figma-mocks` - Create mockups from spec
+- `/wrangler:check-design-drift` - Audit token drift
+
+### Prerequisites
+
+**Required:**
+- Figma account (free tier sufficient)
+- `FIGMA_ACCESS_TOKEN` environment variable
+  - Get token: https://www.figma.com/developers/api#access-tokens
+  - Add to environment: `export FIGMA_ACCESS_TOKEN=your-token-here`
+
+**Optional:**
+- Organization/Enterprise Figma plan for Code Connect features
+
+### Quick Start
+
+1. **Set up design system:**
+   ```
+   /wrangler:setup-design-system
+   ```
+   Choose template or custom Q&A workflow
+
+2. **Generate mockups from spec:**
+   ```
+   /wrangler:generate-figma-mocks
+   ```
+   Provide spec ID or let agent infer from context
+
+3. **Check for drift:**
+   ```
+   /wrangler:check-design-drift
+   ```
+   Creates issues for any detected drift
+
+### Metadata Storage
+
+Design system metadata stored in wrangler issues/specs:
+- `figmaFileUrl` - URL to Figma design system file
+- `figmaFileKey` - Figma file key
+- `figmaFrameUrls` - Map of page names to frame URLs
+- `approvalStatus` - pending_review | approved | rejected
+- `verificationBaseline` - true for approved mocks
+
+### Token Export Formats
+
+**CSS Variables:**
+```css
+:root {
+  --color-primary: #3B82F6;
+  --spacing-md: 1rem;
+}
+```
+
+**Tailwind Config:**
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: { primary: '#3B82F6' },
+      spacing: { md: '1rem' }
+    }
+  }
+}
+```
+
+**Design Tokens JSON (W3C):**
+```json
+{
+  "color": {
+    "primary": { "$value": "#3B82F6", "$type": "color" }
+  }
+}
+```
+
+### Workflow Integration
+
+**Typical flow:**
+1. User creates specification → agent detects no design system
+2. Agent prompts: setup-design-system skill
+3. User creates UI spec → agent runs figma-design-workflow
+4. User reviews mockups in Figma, approves
+5. Agent implements with design context
+6. Periodic governance checks detect drift
+
+### Future Enhancements
+
+- Visual regression testing (pixel-perfect verification)
+- Automated mock refinement
+- Design system versioning
+- Component usage analytics
 
 ---
 

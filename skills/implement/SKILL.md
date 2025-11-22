@@ -734,3 +734,240 @@ Issue encountered
   └─ Is it just a warning/minor issue?
      └─ → Document, continue
 ```
+
+## Final Verification & Completion
+
+After all tasks complete, verify entire implementation before presenting to user.
+
+### Verification Phase
+
+#### 1. Run Full Test Suite
+
+Execute complete test suite to verify no regressions:
+
+```bash
+# Run all tests (adjust command for project's test framework)
+npm test  # or: pytest, cargo test, go test, etc.
+```
+
+**Capture:**
+- Total tests run
+- Pass/fail counts
+- Execution time
+- Any warnings or errors
+
+**Expected:** All tests pass, exit code 0
+
+**If tests fail:**
+1. Check if failures are in newly implemented code → Dispatch fix subagent
+2. Check if failures are regressions → Dispatch fix subagent
+3. If fix fails after 2 attempts → ESCALATE (blocker)
+
+**Do NOT proceed to completion if tests failing.**
+
+#### 2. Verify Requirements Met
+
+Re-read original scope (specification/plan/issues) and create checklist:
+
+```markdown
+## Requirements Verification
+
+Scope: [spec/plan/issues reference]
+
+### Requirements Checklist
+
+From original scope:
+- [ ] Requirement 1: [description]
+  → Implemented in: [files]
+  → Verified by: [tests]
+
+- [ ] Requirement 2: [description]
+  → Implemented in: [files]
+  → Verified by: [tests]
+
+...
+
+Status: [X/Y] requirements met
+```
+
+**Check each requirement:**
+- ✅ Code exists for this requirement
+- ✅ Tests exist for this requirement
+- ✅ Tests pass for this requirement
+
+**If any requirement not met:**
+→ STOP - This is a gap in implementation
+→ ESCALATE to user: "Requirement [X] not fully implemented"
+
+#### 3. Aggregate TDD Compliance Certifications
+
+Collect TDD Compliance Certifications from all implementation subagents:
+
+```markdown
+## TDD Compliance Summary
+
+[Aggregate all certification tables from subagent reports]
+
+### Task 1: [title]
+| Function | Test File | Watched Fail? | Watched Pass? | Notes |
+|----------|-----------|---------------|---------------|-------|
+| funcA    | test.ts:5 | YES           | YES           | ✓     |
+| funcB    | test.ts:12| YES           | YES           | ✓     |
+
+### Task 2: [title]
+| Function | Test File | Watched Fail? | Watched Pass? | Notes |
+|----------|-----------|---------------|---------------|-------|
+| funcC    | test.ts:20| YES           | YES           | ✓     |
+
+...
+
+### Summary
+- Total functions: [N]
+- Followed RED-GREEN-REFACTOR: [N/N]
+- Deviations: [list any "NO" entries with justification]
+```
+
+**Verify:**
+- Every new function has certification entry
+- No missing certifications (subagents provided complete reports)
+- Any "NO" entries are justified with valid reason
+
+#### 4. Code Review Summary
+
+Aggregate all code review feedback across tasks:
+
+```markdown
+## Code Review Summary
+
+### Reviews Completed: [N]
+
+### Issues Found and Fixed
+- Critical: [N] found, [N] fixed
+- Important: [N] found, [N] fixed
+- Minor: [N] found, [N] deferred
+
+### Outstanding Minor Issues
+[List any Minor issues documented but not fixed]
+
+### Assessment
+All Critical and Important issues resolved ✓
+Ready for merge/PR
+```
+
+#### 5. Git Status Check
+
+Verify working directory is clean:
+
+```bash
+git status
+```
+
+**Expected:**
+- All changes committed (working tree clean)
+- No uncommitted changes
+- On correct branch
+
+**If uncommitted changes exist:**
+→ Review what's uncommitted
+→ If valid work: Commit it
+→ If accidental: Clean up
+
+### Completion Presentation
+
+Present comprehensive summary to user:
+
+```markdown
+## ✅ Implementation Complete
+
+### Summary
+Implemented [N] tasks from [scope]:
+
+**Tasks Completed:**
+1. Task 1: [title] ✓
+2. Task 2: [title] ✓
+...
+
+**Duration:** [time estimate if tracked]
+
+### Verification Results
+
+✅ **Tests:** [X/X] passing
+✅ **Requirements:** [Y/Y] met
+✅ **TDD Compliance:** [Z] functions, all certified
+✅ **Code Reviews:** [N] completed, 0 Critical, 0 Important, [M] Minor deferred
+✅ **Git Status:** Working tree clean, all changes committed
+
+### Files Changed
+- [file1] (modified, +X/-Y lines)
+- [file2] (new, +X lines)
+- [file3] (modified, +X/-Y lines)
+...
+
+### TDD Compliance Summary
+[Show aggregate certification - see Step 3 above]
+
+### Code Review Summary
+[Show aggregate reviews - see Step 4 above]
+
+### Outstanding Items
+[If any Minor issues deferred, list here]
+
+---
+
+Ready for next steps.
+```
+
+### Integration with Finishing-a-Development-Branch
+
+After presenting summary, automatically invoke skill:
+
+```markdown
+I'm using the finishing-a-development-branch skill to present completion options.
+```
+
+**Use Skill tool:** `finishing-a-development-branch`
+
+That skill will:
+1. Verify tests pass (redundant check, but ensures compliance)
+2. Present options:
+   - Merge to main
+   - Create pull request
+   - Continue working
+   - Discard changes
+3. Execute user's choice
+
+**Do NOT duplicate finishing-a-development-branch logic** - just invoke it.
+
+### Verification Example
+
+```
+All 7 tasks complete
+
+FINAL VERIFICATION:
+
+1. Run test suite:
+   → npm test
+   → 147 tests, 147 passing, 0 failing ✓
+
+2. Check requirements:
+   → Requirement 1: JWT auth ✓ (implemented in auth.ts, tested in auth.test.ts)
+   → Requirement 2: Token refresh ✓ (implemented in tokens.ts, tested in tokens.test.ts)
+   → Requirement 3: Rate limiting ✓ (implemented in middleware.ts, tested in middleware.test.ts)
+   → Status: 3/3 met ✓
+
+3. TDD Compliance:
+   → 12 functions implemented
+   → 12/12 followed RED-GREEN-REFACTOR
+   → 0 deviations ✓
+
+4. Code Reviews:
+   → 7 reviews completed
+   → 2 Critical found, 2 fixed ✓
+   → 3 Important found, 3 fixed ✓
+   → 5 Minor found, 5 deferred (documented)
+
+5. Git status:
+   → Working tree clean ✓
+
+PRESENT SUMMARY TO USER + INVOKE finishing-a-development-branch
+```

@@ -1,6 +1,6 @@
 {
   "name": "wrangler",
-  "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+  "description": "Core skills library for Claude Code: TDD, debugging, testing gates, subagent parallelization, etc.",
   "version": "1.0.0",
   "author": {
     "name": "Sam",

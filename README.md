@@ -1,43 +1,41 @@
 # Wrangler
 
-Skills library and workflow system for AI coding assistants.
+Skills library and MCP server for AI coding assistants.
 
-## What Wrangler Provides
+## Components
 
 ### Skills Library
 
-25 skills covering testing, debugging, collaboration, issue management, and workflow orchestration.
+46 skills across testing, debugging, collaboration, governance, and code analysis.
 
-### Built-in MCP Server
+### MCP Server
 
-Local issue and specification management system with 11 tools. Issues and specifications are stored as markdown files with YAML frontmatter in `issues/` and `specifications/` directories.
+Issue and specification tracking using markdown files with YAML frontmatter. Stored in `.wrangler/issues/` and `.wrangler/specifications/`. Provides 11 MCP tools for CRUD operations.
 
 ### Slash Commands
 
-Three commands that activate corresponding skills:
-- `/wrangler:brainstorm`
-- `/wrangler:write-plan`
-- `/wrangler:execute-plan`
+7 commands that activate skills:
+- `/wrangler:brainstorm` - Design refinement
+- `/wrangler:write-plan` - Implementation planning
+- `/wrangler:implement` - Autonomous execution
+- `/wrangler:run-tests` - Test execution
+- `/wrangler:scan-dependencies` - Dependency analysis
+- `/wrangler:update-yourself` - Version migration
+- `/wrangler:analyze-session-gaps` - Workflow analysis
 
-### Automatic Initialization
+### Session Hooks
 
-Session start hook creates workspace directories and loads the `using-wrangler` skill.
+Automatic workspace initialization on session start creates `.wrangler/` directory structure and loads core skills.
 
 ## Installation
 
-Install via Claude Code plugin system.
-
-Verify installation:
-```bash
-/help
-```
-
-Expected output includes `/wrangler:brainstorm`, `/wrangler:write-plan`, and `/wrangler:execute-plan`.
+Install via Claude Code plugin system. Run `/help` to verify - should list `/wrangler:*` commands.
 
 ## Skills
 
 ### Testing
 - **test-driven-development** - RED-GREEN-REFACTOR cycle enforcement
+- **run-the-tests** - Test suite execution with failure fixing
 - **condition-based-waiting** - Async test patterns replacing arbitrary timeouts
 - **testing-anti-patterns** - Prevents testing mock behavior and test-only production methods
 
@@ -48,37 +46,57 @@ Expected output includes `/wrangler:brainstorm`, `/wrangler:write-plan`, and `/w
 - **defense-in-depth** - Multi-layer validation to prevent invalid data propagation
 
 ### Collaboration
-- **brainstorming** - Socratic design refinement through structured questioning
-- **writing-plans** - Implementation plan creation with exact file paths and code examples
+- **brainstorming** - Socratic design refinement
+- **writing-plans** - Implementation plan creation with MCP issues
 - **implement** - Autonomous implementation via subagents with TDD and code review
-- **dispatching-parallel-agents** - Concurrent investigation of independent failures
+- **code-review** - Comprehensive code review framework
 - **requesting-code-review** - Pre-merge review workflow
-- **receiving-code-review** - Technical rigor in responding to feedback
+- **receiving-code-review** - Technical rigor in feedback responses
+- **reviewing-implementation-progress** - Mid-implementation checkpoint
+- **dispatching-parallel-agents** - Concurrent investigation of independent failures
 
 ### Git Workflows
 - **using-git-worktrees** - Isolated workspace creation with smart directory selection
 - **finishing-a-development-branch** - Structured options for merge, PR, or cleanup
 
 ### Issue Management
-- **create-new-issue** - Creates issues via MCP `issues_create` tool with proper metadata
-- **writing-specifications** - Technical specification creation with comprehensive structure
+- **create-new-issue** - Creates issues via MCP `issues_create` tool
+- **writing-specifications** - Technical specification creation
 
-### Workflows
-- **housekeeping** - Multi-phase workflow coordinating three parallel agents:
-  - Updates project roadmap
-  - Reconciles open issues with implementation
-  - Moves completed issues to archive
-  - Detects documentation drift
-  - Generates summary report with metrics
+### Governance
+- **housekeeping** - Updates roadmap, reconciles issues, detects drift
+- **initialize-governance** - Creates constitution, roadmap, next steps
+- **verify-governance** - Validates governance file structure
+- **refresh-metrics** - Updates status counts
+- **check-constitutional-alignment** - Validates feature alignment
+- **validating-roadmap** - Checks specification consistency
+- **refining-specifications** - Reviews specs for ambiguity
 
-### Frontend
-- **frontend-design** - Production-grade interface creation avoiding generic AI aesthetics
+### Frontend Testing
+- **frontend-design** - Production-grade interface creation
+- **frontend-e2e-user-journeys** - End-to-end user flow testing
+- **frontend-visual-regression-testing** - Visual diff testing
+- **frontend-accessibility-verification** - A11y compliance checks
 
-### Meta
-- **writing-skills** - TDD approach to creating new skills
-- **sharing-skills** - Contribution workflow via branch and PR
-- **testing-skills-with-subagents** - Skill validation using RED-GREEN-REFACTOR
-- **using-wrangler** - Skills discovery and mandatory workflow establishment
+### Code Analysis
+- **locating-code** - Finds files by topic/feature
+- **analyzing-implementations** - Documents how code works
+- **finding-code-patterns** - Finds similar implementations
+- **analyzing-research-documents** - Extracts insights from research docs
+- **researching-web-sources** - Strategic web research
+- **dependency-opportunity-scanner** - Identifies replacement opportunities
+
+### Wrangler System
+- **using-wrangler** - Skills discovery and workflow establishment
+- **migration-detector** - Version check on startup
+- **migration-executor** - LLM-driven migrations
+- **startup-checklist** - Session start validation
+
+### Meta Skills
+- **writing-skills** - TDD for creating skills
+- **testing-skills-with-subagents** - Skill validation
+- **sharing-skills** - Contribution workflow
+- **organize-root-files** - Cleans up markdown files at root
 
 ## MCP Server
 
@@ -96,62 +114,41 @@ Provides 11 tools for issue and specification management:
 - `issues_mark_complete` - Mark issues as closed
 - `issues_all_complete` - Check completion status
 
-### Storage
+### Storage Format
 
-Issues stored in `issues/` directory as markdown files:
-- Filename format: `{counter}-{slug}.md` (e.g., `000001-add-authentication.md`)
-- YAML frontmatter with metadata (id, title, status, priority, labels, etc.)
-- Markdown body with issue content
+Markdown files with YAML frontmatter:
+- Location: `.wrangler/issues/`, `.wrangler/specifications/`
+- Filename: `{counter}-{slug}.md` (e.g., `000001-add-auth.md`)
+- Frontmatter: id, title, type, status, priority, labels, assignee, project, dates
+- Body: Markdown content
 
-Specifications stored in `specifications/` directory with same format but `type: "specification"`.
-
-### Configuration
-
-Environment variables in `.claude-plugin/plugin.json`:
-- `WRANGLER_ISSUES_DIRECTORY` - Default: `issues`
-- `WRANGLER_SPECIFICATIONS_DIRECTORY` - Default: `specifications`
-- `WRANGLER_MCP_DEBUG` - Enable verbose logging
-
-See [docs/MCP-USAGE.md](docs/MCP-USAGE.md) for complete documentation.
-
-## Slash Commands
-
-Located in `commands/` directory:
-
-- **brainstorm.md** - Activates `brainstorming` skill
-- **write-plan.md** - Activates `writing-plans` skill
-- **implement.md** - Activates `implement` skill for autonomous execution
-
-## Workflow System
-
-Workflows coordinate multiple agents in parallel for complex tasks. See [docs/WORKFLOW-PATTERNS.md](docs/WORKFLOW-PATTERNS.md) for patterns and architecture.
-
-Implemented workflows:
-- **housekeeping** - Three-phase workflow with parallel reconciliation agents
-
-Additional workflow ideas documented in [docs/WORKFLOW-IDEAS.md](docs/WORKFLOW-IDEAS.md).
+See [docs/MCP-USAGE.md](docs/MCP-USAGE.md) for details.
 
 ## How It Works
 
-1. SessionStart hook (`hooks/session-start.sh`) runs on session initialization
-2. Creates `issues/` and `specifications/` directories if missing
+1. Session start hook (`hooks/session-start.sh`) initializes workspace
+2. Creates `.wrangler/` directory structure if missing
 3. Loads `using-wrangler` skill
-4. Skills activate automatically when relevant to user's task
-5. MCP server provides issue management tools
-6. Workflow skills coordinate parallel agents for complex operations
+4. Skills activate when relevant to task
+5. MCP server provides issue/spec tracking
+6. Slash commands trigger specific workflows
 
 ## Directory Structure
 
 ```
 wrangler/
-├── skills/                  # 25 skills
-├── commands/                # 3 slash commands
-├── hooks/                   # session-start.sh
-├── mcp/                     # MCP server implementation
+├── skills/                  # 46 skills
+├── commands/                # 7 slash commands
+├── hooks/                   # Session hooks
+├── mcp/                     # MCP server (TypeScript)
 ├── docs/                    # Documentation
-├── issues/                  # Issue tracking (created on first use)
-├── specifications/          # Specifications (created on first use)
-└── .claude-plugin/          # Plugin configuration
+├── .wrangler/               # Workspace (created on session start)
+│   ├── issues/              # Issue tracking
+│   ├── specifications/      # Specifications
+│   ├── plans/               # Implementation plans (optional)
+│   ├── memos/               # RCA, research, lessons learned
+│   └── governance/          # Constitution, roadmap
+└── .claude-plugin/          # Plugin config + MCP server registration
 ```
 
 ## Requirements
@@ -160,23 +157,19 @@ wrangler/
 - Git repository (for workspace initialization)
 - Node.js 20+ (for MCP server)
 
-## Contributing
-
-1. Fork repository
-2. Create branch for new skill
-3. Follow `writing-skills` skill guidelines
-4. Validate with `testing-skills-with-subagents` skill
-5. Submit pull request
-
-See `skills/writing-skills/SKILL.md` for skill creation guide.
-
 ## Documentation
 
-- [MCP Usage Guide](docs/MCP-USAGE.md) - Complete MCP server documentation
-- [Workflow Patterns](docs/WORKFLOW-PATTERNS.md) - Multi-agent workflow architecture
-- [Workflow Ideas](docs/WORKFLOW-IDEAS.md) - 20+ potential workflows
-- [Implementation Summary](IMPLEMENTATION-SUMMARY.md) - MCP integration details
-- [Technical Specification](SPEC-WRANGLER-MCP-INTEGRATION.md) - Original MCP spec
+- [MCP Usage](docs/MCP-USAGE.md) - MCP server tools and usage
+- [Governance](docs/GOVERNANCE.md) - Constitutional framework
+- [Session Hooks](docs/SESSION-HOOKS.md) - Hook system and state management
+- [Versioning](docs/VERSIONING.md) - Version tracking and migration
+- [Slash Commands](docs/SLASH-COMMANDS.md) - Command reference
+- [Workflow Patterns](docs/WORKFLOW-PATTERNS.md) - Multi-agent workflows
+- [Workflow Ideas](docs/WORKFLOW-IDEAS.md) - Potential workflows
+
+## Contributing
+
+Use `writing-skills` and `testing-skills-with-subagents` skills to create new skills. Submit PRs via `sharing-skills` workflow.
 
 ## License
 

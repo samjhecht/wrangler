@@ -8,7 +8,7 @@
     {
       "name": "wrangler",
       "source": "./",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, and proven techniques",
+      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, templates, etc.",
       "version": "1.0.0",
       "strict": true
     }

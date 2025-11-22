@@ -41,7 +41,7 @@ Optionally create:
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use wrangler:executing-plans to implement this plan task-by-task.
+> **For Claude:** REQUIRED SUB-SKILL: Use /wrangler:implement to implement this plan task-by-task.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -214,22 +214,18 @@ After creating issues, offer execution choice:
 
 **Execution options:**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+**Ready to implement?**
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+Use `/wrangler:implement` with one of these scopes:
+- `/wrangler:implement` (auto-infers from plan file in context)
+- `/wrangler:implement issues 1-N` (specific issue range)
+- `/wrangler:implement plan-filename.md` (explicit plan file)
 
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use `subagent-driven-development`
-- Stay in this session
-- Fresh subagent per task + code review
-- Load issues for implementation details
-
-**If Parallel Session chosen:**
-- Guide them to open new session in worktree
-- **REQUIRED SUB-SKILL:** New session uses `executing-plans`
-- Load issues for implementation details
+The implement skill will:
+- Execute all tasks autonomously via subagents
+- Run code review after each task with automatic fixes
+- Only stop for genuine blockers (unclear requirements, flummoxed agents)
+- Present completion summary when done
 
 ## Issue Update Pattern
 

@@ -50,11 +50,10 @@ Expected output includes `/wrangler:brainstorm`, `/wrangler:write-plan`, and `/w
 ### Collaboration
 - **brainstorming** - Socratic design refinement through structured questioning
 - **writing-plans** - Implementation plan creation with exact file paths and code examples
-- **executing-plans** - Batch execution with review checkpoints
+- **implement** - Autonomous implementation via subagents with TDD and code review
 - **dispatching-parallel-agents** - Concurrent investigation of independent failures
 - **requesting-code-review** - Pre-merge review workflow
 - **receiving-code-review** - Technical rigor in responding to feedback
-- **subagent-driven-development** - Fresh subagent per task with code review gates
 
 ### Git Workflows
 - **using-git-worktrees** - Isolated workspace creation with smart directory selection
@@ -121,7 +120,7 @@ Located in `commands/` directory:
 
 - **brainstorm.md** - Activates `brainstorming` skill
 - **write-plan.md** - Activates `writing-plans` skill
-- **execute-plan.md** - Activates `executing-plans` skill
+- **implement.md** - Activates `implement` skill for autonomous execution
 
 ## Workflow System
 

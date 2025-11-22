@@ -135,3 +135,180 @@ interface Task {
 - Tasks with dependencies wait until prerequisite tasks complete
 - If circular dependencies detected: ERROR and escalate to user
 - If dependency references non-existent task: ERROR and escalate
+
+## Task Executor Workflow
+
+After scope is parsed and tasks are loaded, execute them in order.
+
+### Setup Phase
+
+1. **Create TodoWrite tracking**
+
+   Create one todo per task:
+   ```
+   - Task 1: [title] (status: pending)
+   - Task 2: [title] (status: pending)
+   ...
+   ```
+
+2. **Verify working directory**
+
+   Check current working directory:
+   ```bash
+   pwd
+   git branch --show-current
+   ```
+
+   You can work in main branch OR worktree - no preference.
+   If in worktree, subagents inherit that directory.
+
+3. **Check dependencies**
+
+   Build dependency graph:
+   - If task has dependencies, mark as "blocked"
+   - Only tasks with no pending dependencies are "ready"
+
+### Execution Loop
+
+For each task in "ready" state:
+
+#### 1. Mark Task In Progress
+
+```
+TodoWrite: Mark task as in_progress
+```
+
+#### 2. Dispatch Implementation Subagent
+
+Use the Task tool (general-purpose subagent):
+
+```markdown
+Tool: Task
+Description: "Implement Task [N]: [title]"
+Prompt: |
+  You are implementing Task [N] from [scope reference].
+
+  ## Task Requirements
+
+  [Full task description from task.description]
+
+  ## Acceptance Criteria
+
+  [task.requirements]
+
+  ## Related Files
+
+  [task.relatedFiles]
+
+  ## Your Job
+
+  1. **Follow TDD** (test-driven-development skill):
+     - RED: Write failing test first
+     - GREEN: Implement minimal code to pass
+     - REFACTOR: Improve code quality
+
+  2. **Create TDD Compliance Certification**
+     For each function you implement, document:
+     - Function name and signature
+     - Test file path
+     - Whether you followed RED-GREEN-REFACTOR
+     - Any deviations justified
+
+     Format (from test-driven-development skill):
+     ```
+     | Function | Test File | Watched Fail? | Watched Pass? | Notes |
+     |----------|-----------|---------------|---------------|-------|
+     | funcName | test.ts:L | YES/NO        | YES/NO        | ...   |
+     ```
+
+  3. **Verify implementation works**
+     - Run tests
+     - Check for errors/warnings
+     - Ensure requirements met
+
+  4. **Commit your work**
+     ```bash
+     git add [files]
+     git commit -m "[type]: [description]"
+     ```
+
+  5. **Report back**
+     Provide:
+     - Summary of what you implemented
+     - Test results (pass/fail counts, output)
+     - TDD Compliance Certification table
+     - Files changed
+     - Any issues or blockers encountered
+
+  Work from: [current directory]
+
+  IMPORTANT: If you encounter unclear requirements or missing information,
+  STOP and report the blocker. Do not guess or make assumptions.
+```
+
+#### 3. Verify Subagent Response
+
+Check subagent's report for:
+
+- ✅ Implementation summary provided
+- ✅ Test results provided (all passing)
+- ✅ TDD Compliance Certification included
+- ✅ Files changed list provided
+- ✅ Work committed to git
+
+**If certification missing:**
+→ STOP and request: "Please provide TDD Compliance Certification for functions implemented"
+
+**If tests failing:**
+→ Continue to code review (reviewer will catch issues)
+
+**If blocker reported:**
+→ ESCALATE to user immediately with blocker details
+
+#### 4. Update Dependencies
+
+After task completes:
+
+1. Mark this task's ID as "complete" in dependency tracker
+2. Check all "blocked" tasks
+3. For each blocked task, remove this task from its dependency list
+4. If blocked task now has zero dependencies, mark as "ready"
+
+#### 5. Continue to Code Review
+
+(This will be added in next task - code review automation)
+
+### Dependency Resolution Example
+
+```
+Task graph:
+- Task A: no dependencies → "ready"
+- Task B: depends on [A] → "blocked"
+- Task C: depends on [A, B] → "blocked"
+
+Execution:
+1. Execute Task A
+2. Task A completes → mark "complete"
+3. Task B: remove A from dependencies → [empty] → "ready"
+4. Task C: remove A from dependencies → [B] → still "blocked"
+5. Execute Task B
+6. Task B completes → mark "complete"
+7. Task C: remove B from dependencies → [empty] → "ready"
+8. Execute Task C
+```
+
+### Error Handling
+
+**Subagent fails to complete:**
+- First attempt: Dispatch another subagent with same prompt (fresh context)
+- Second attempt: ESCALATE to user with failure details
+
+**Subagent reports blocker:**
+- ESCALATE immediately (unclear requirements, missing deps, etc.)
+
+**Tests fail after implementation:**
+- Continue to code review (will be fixed in review automation)
+
+**Circular dependencies detected:**
+- ERROR: "Circular dependency detected: [A → B → C → A]"
+- ESCALATE to user

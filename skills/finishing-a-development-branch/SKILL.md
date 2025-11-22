@@ -286,8 +286,7 @@ Proceeding without complete Step 1 verification violates verification-before-com
 ## Integration
 
 **Called by:**
-- **subagent-driven-development** (Step 7) - After all tasks complete
-- **executing-plans** (Step 5) - After all batches complete
+- **implement** - After all tasks complete and final verification passes
 
 **Pairs with:**
 - **using-git-worktrees** - Cleans up worktree if one was created (optional)

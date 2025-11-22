@@ -17,6 +17,13 @@
         "WRANGLER_ISSUES_DIRECTORY": ".wrangler/issues",
         "WRANGLER_SPECIFICATIONS_DIRECTORY": ".wrangler/specifications"
       }
+    },
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "@figma/mcp-server-figma"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      }
     }
   }
 }

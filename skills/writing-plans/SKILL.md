@@ -12,7 +12,7 @@ Write comprehensive implementation plans assuming the engineer has zero context 
 **MCP issues are the source of truth** - each tracked task contains complete implementation details.
 
 Optionally create:
-- **Plan file** (`plans/YYYY-MM-DD-PLAN_<spec>.md`) - Architecture overview and design decisions (reference only)
+- **Plan file** (`.wrangler/plans/YYYY-MM-DD-PLAN_<spec>.md`) - Architecture overview and design decisions (reference only)
 
 **Works in main branch OR worktree (no preference)**
 
@@ -32,10 +32,30 @@ Optionally create:
 
 **Plan files are OPTIONAL** - use when architecture/design context needs documentation.
 
-**If creating plan file**, it should contain:
+### When to Create Plan File
+
+Create optional plan file when ANY of these are true:
+
+✅ **10+ issues/tasks** - Need architectural overview to understand big picture
+✅ **Multiple interconnected components** - Need system diagram and component relationships
+✅ **Significant design decisions** - Need to document rationale and alternatives considered
+✅ **Complex patterns/conventions** - Need reference material that applies across multiple tasks
+✅ **Onboarding context needed** - Future agents/sessions would struggle understanding issues in isolation
+
+Skip plan file when:
+
+❌ **< 5 simple tasks** - Straightforward implementation, issues are sufficient
+❌ **No architectural complexity** - Changes are localized and self-explanatory
+❌ **Obvious approach** - No design decisions requiring rationale
+
+### Plan File Content (If Created)
+
+**Plan file should contain:**
 - Architecture overview and design decisions
 - Technology choices and rationale
-- Cross-cutting concerns
+- Cross-cutting concerns and patterns
+- Component relationships and system diagram
+- Design alternatives considered and why rejected
 - References to MCP issues (NOT duplicate content)
 
 ```markdown
@@ -210,7 +230,7 @@ After creating issues, offer execution choice:
 
 **"Plan complete:**
 - **Issues created**: [N] tasks in issue tracker (project: [spec])
-- **Plan file** (if created): `plans/YYYY-MM-DD-PLAN_<spec>.md` (architecture reference)
+- **Plan file** (if created): `.wrangler/plans/YYYY-MM-DD-PLAN_<spec>.md` (architecture reference)
 
 **Execution options:**
 

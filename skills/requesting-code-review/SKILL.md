@@ -268,7 +268,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 [Use Task tool with general-purpose subagent:]
 "Use the code-review skill to review my implementation of Task 2 from
-docs/plans/deployment-plan.md. Review changes from a7981ec..3df7661.
+.wrangler/plans/deployment-plan.md. Review changes from a7981ec..3df7661.
 
 I implemented verification and repair functions for conversation index
 (verifyIndex() and repairIndex() with 4 issue types). Please check if

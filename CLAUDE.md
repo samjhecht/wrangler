@@ -151,6 +151,15 @@ Use these directories for different file types:
 - Maintenance procedures
 - **Naming:** Organized by topic, lowercase-with-dashes.md
 
+**`.wrangler/plans/` - Implementation Plans & Design Documents**
+- Implementation plans created by `writing-plans` skill (OPTIONAL)
+- Architecture overviews and design decisions
+- Component relationships and system diagrams
+- Design rationale and alternatives considered
+- Cross-cutting concerns and patterns
+- **Naming:** `YYYY-MM-DD-PLAN_<spec>.md` for implementation plans, `YYYY-MM-DD-<topic>-design.md` for design docs
+- **Note:** Plan files are OPTIONAL - only create when architecture/design context needs documentation (10+ tasks, multiple components, significant design decisions). MCP issues are always the source of truth for implementation details.
+
 **Examples:**
 
 Creating root cause analysis:
@@ -189,8 +198,18 @@ DEPLOYMENT-GUIDE.md
 devops/docs/deployment-guide.md
 ```
 
+Creating implementation plan:
+```bash
+# ❌ DON'T create at root
+PLAN-AUTH-REFACTOR.md
+
+# ✅ DO create in .wrangler/plans/ (only if needed for architecture context)
+.wrangler/plans/2025-11-21-PLAN_auth-refactor.md
+```
+
 **When in doubt:**
 - If it's wrangler-specific analysis → `.wrangler/memos/`
+- If it's an implementation plan → `.wrangler/plans/` (but prefer MCP issues as source of truth)
 - If users read it → `docs/`
 - If only maintainers read it → `devops/docs/`
 - If it's no longer relevant → Delete it

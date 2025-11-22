@@ -19,7 +19,7 @@ Transform rough ideas into fully-formed designs through structured questioning a
 | **1. Understanding** | Share findings, ask only for missing context | AskUserQuestion for real decisions | Purpose, constraints, criteria (confirmed) |
 | **2. Exploration** | Propose 2-3 approaches | AskUserQuestion for approach selection | Architecture options with trade-offs |
 | **3. Design Presentation** | Present in 200-300 word sections | Open-ended questions | Complete design with validation |
-| **4. Design Documentation** | Write design document | writing-clearly-and-concisely skill | Design doc in docs/plans/ |
+| **4. Design Documentation** | Write design document | writing-clearly-and-concisely skill | Design doc in .wrangler/plans/ |
 | **5. Worktree Setup** | Set up isolated workspace | using-git-worktrees skill | Ready development environment |
 | **6. Planning Handoff** | Create implementation plan | writing-plans skill | Detailed task breakdown |
 
@@ -33,7 +33,7 @@ Brainstorming Progress:
 - [ ] Phase 1: Understanding (purpose, constraints, criteria gathered)
 - [ ] Phase 2: Exploration (2-3 approaches proposed and evaluated)
 - [ ] Phase 3: Design Presentation (design validated in sections)
-- [ ] Phase 4: Design Documentation (design written to docs/plans/)
+- [ ] Phase 4: Design Documentation (design written to .wrangler/plans/)
 - [ ] Phase 5: Worktree Setup (optional - for isolation)
 - [ ] Phase 6: Planning Handoff (if implementing)
 ```
@@ -82,7 +82,7 @@ I recommend the direct API approach because it matches existing patterns and min
 
 ### Phase 4: Design Documentation
 After validating the design, write it to a permanent document:
-- **File location:** `docs/plans/YYYY-MM-DD-<topic>-design.md` (use actual date and descriptive topic)
+- **File location:** `.wrangler/plans/YYYY-MM-DD-<topic>-design.md` (use actual date and descriptive topic)
 - **RECOMMENDED SUB-SKILL:** Use elements-of-style:writing-clearly-and-concisely (if available) for documentation quality
 - **Content:** Capture the design as discussed and validated in Phase 3, organized into sections that emerged from the conversation
 - Commit the design document to git before proceeding

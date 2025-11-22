@@ -153,8 +153,8 @@ Implementation issues should reference their specification:
 ### Creating Plan-Step Issues
 
 Use the `writing-plans` skill, which automatically:
-1. Creates plan file in `plans/`
-2. Creates MCP issues for each task
+1. Creates optional plan file in `.wrangler/plans/` (if architecture context needed)
+2. Creates MCP issues for each task (source of truth)
 3. Links issues to specification via `project` field
 4. Adds `plan-step` label
 

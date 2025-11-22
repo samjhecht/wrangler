@@ -52,7 +52,7 @@ The skill automatically determines what to implement based on your input.
 /wrangler:implement plan-refactor.md
 ```
 
-→ Loads plan from `plans/`
+→ Loads plan from `.wrangler/plans/`
 → Extracts task list from plan
 → Executes all tasks sequentially
 

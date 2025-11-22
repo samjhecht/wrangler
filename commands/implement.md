@@ -11,7 +11,7 @@ Analyze the user's message to determine what to implement:
 
 **If they specified a file:**
 - Pattern: `*.md` file reference
-- Examples: `spec-auth.md`, `plan-refactor.md`, `plans/plan-feature.md`
+- Examples: `spec-auth.md`, `plan-refactor.md`, `.wrangler/plans/plan-feature.md`
 - Extract: file path
 
 **If they specified issue(s):**

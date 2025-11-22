@@ -5,6 +5,9 @@
 .claude-flow/
 .swarm/
 
+# Wrangler runtime logs
+.wrangler/logs/
+
 # Node.js
 node_modules/
 npm-debug.log*

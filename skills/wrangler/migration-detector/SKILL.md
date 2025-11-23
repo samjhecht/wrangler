@@ -5,6 +5,23 @@ description: Detects when wrangler migration is needed and prompts user for appr
 
 # Migration Detector Skill
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: wrangler:migration-detector | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: wrangler:migration-detector | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 ## Purpose
 
 Automatically detect when a project needs to migrate to the new `.wrangler/` directory structure and prompt the user for approval with a clear summary of what will change.

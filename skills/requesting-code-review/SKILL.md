@@ -5,6 +5,23 @@ description: Use when completing tasks, implementing major features, or before m
 
 # Requesting Code Review
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: requesting-code-review | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: requesting-code-review | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 Dispatch a subagent using the `code-review` skill to catch issues before they cascade.
 
 **Core principle:** Review early, review often.

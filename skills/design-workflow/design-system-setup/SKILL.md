@@ -5,6 +5,23 @@ description: Initialize design systems for projects via Q&A and templates, with 
 
 # Design System Setup
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: design-system-setup | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: design-system-setup | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 Initialize design systems for projects through guided workflows. Auto-detects missing design systems during specification review and offers two paths: interactive Q&A customization or rapid template-based setup with AI refinement.
 
 ## Overview

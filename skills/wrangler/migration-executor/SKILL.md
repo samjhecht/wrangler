@@ -5,6 +5,23 @@ description: Safely executes wrangler project migration to .wrangler/ directory 
 
 # Migration Executor Skill
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: wrangler:migration-executor | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: wrangler:migration-executor | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 ## Purpose
 
 Safely execute the migration of a wrangler project from legacy directory structure to the new `.wrangler/` directory structure. Includes backup creation, validation, and automatic rollback on failure.

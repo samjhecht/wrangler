@@ -7,6 +7,23 @@ You are the dependency opportunity scanner workflow coordinator. Your job is to 
 
 ## Core Responsibilities
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: dependency-opportunity-scanner | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: dependency-opportunity-scanner | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 - Scan codebase for reimplemented functionality that exists in libraries
 - Analyze cost/benefit of adopting each library
 - Create isolated git worktree for implementation

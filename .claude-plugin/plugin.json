@@ -19,11 +19,9 @@
       }
     },
     "figma": {
-      "command": "npx",
-      "args": ["-y", "@figma/mcp-server-figma"],
-      "env": {
-        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
-      }
+      "command": "node",
+      "args": ["/Users/sam/medb/code/figma-mcp-write-server/dist/index.js"],
+      "env": {}
     }
   }
 }

@@ -1,4 +1,24 @@
+---
+name: design-system-governance
+description: Detect and track design token drift between Figma design systems and code implementations - report-only skill that identifies inconsistencies and creates wrangler issues for resolution
+---
+
 # Design System Governance
+
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: design-system-governance | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: design-system-governance | Auditing design token drift between Figma and codebase
+```
+
+This creates an audit trail showing which skills were applied during the session.
 
 ## Overview
 

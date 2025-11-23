@@ -5,6 +5,23 @@ description: Validates project wrangler version on session start, detects breaki
 
 # Startup Checklist Skill
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: wrangler:startup-checklist | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: wrangler:startup-checklist | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 ## Purpose
 
 Run automatically on session start to ensure project is using current wrangler version. Detects breaking changes and provides clear upgrade path.

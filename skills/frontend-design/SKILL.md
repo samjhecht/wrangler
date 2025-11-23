@@ -9,6 +9,23 @@ The user provides frontend requirements: a component, page, application, or inte
 
 ## Design Thinking
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: frontend-design | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: frontend-design | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 Before coding, understand the context and commit to a BOLD aesthetic direction:
 
 - **Purpose**: What problem does this interface solve? Who uses it?

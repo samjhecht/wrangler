@@ -5,6 +5,23 @@ description: Verify integrity and completeness of governance framework - checks 
 
 # Verify Governance Framework
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: verify-governance | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: verify-governance | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 You are verifying the integrity and completeness of the project's governance framework, ensuring all components are present, properly formatted, and mutually consistent.
 
 ## Purpose

@@ -5,6 +5,23 @@ description: Generate Figma mockups from wrangler specifications with hierarchic
 
 # Figma Design Workflow
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: figma-design-workflow | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: figma-design-workflow | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 Generate production-ready Figma mockups from wrangler specifications using a hierarchical design system architecture. Creates master design system file plus child feature files, tracks approval status in wrangler metadata, and establishes verification baselines for implementation.
 
 ## Overview

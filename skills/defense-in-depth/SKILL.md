@@ -5,6 +5,23 @@ description: Use when invalid data causes failures deep in execution, requiring 
 
 # Defense-in-Depth Validation
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: defense-in-depth | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: defense-in-depth | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 ## Overview
 
 When you fix a bug caused by invalid data, adding validation at one place feels sufficient. But that single check can be bypassed by different code paths, refactoring, or mocks.

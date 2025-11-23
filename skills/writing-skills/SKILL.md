@@ -5,6 +5,23 @@ description: Use when creating new skills, editing existing skills, testing skil
 
 # Writing Skills
 
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: writing-skills | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: writing-skills | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
+
 ## Overview
 
 **Writing skills IS Test-Driven Development applied to process documentation.**

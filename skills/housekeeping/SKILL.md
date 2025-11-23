@@ -1,11 +1,28 @@
 ---
 name: housekeeping
-description: Perform comprehensive project housekeeping - update roadmap, reconcile issues with implementation reality, organize completed work, and identify drift. This is a workflow skill that coordinates multiple parallel subagents for efficiency.
+description: Perform comprehensive project housekeeping - update roadmap, reconcile issues with implementation reality, organize completed work, and identify drift. This is a workflow skill that coordinates multiple parallel subagents for efficiency.  Use when user says something like "run housekeeping", "do your housekeeping" or "clean up project state".
 ---
 
 You are the housekeeping workflow coordinator. Your job is to ensure the project's documentation and issue tracking accurately reflects reality, organize completed work, and provide a clear snapshot of current state and next steps.
 
 ## Core Responsibilities
+
+## Skill Usage Announcement
+
+**MANDATORY**: When using this skill, announce it at the start with:
+
+```
+🔧 Using Skill: housekeeping | [brief purpose based on context]
+```
+
+**Example:**
+```
+🔧 Using Skill: housekeeping | [Provide context-specific example of what you're doing]
+```
+
+This creates an audit trail showing which skills were applied during the session.
+
+
 
 - Update `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` to reflect current reality
 - Refresh governance metrics across all governance documents
@@ -30,6 +47,7 @@ This is a **workflow skill** - it coordinates multiple subagents in parallel for
 **1.1 Refresh Governance Metrics**
 
 Use the `refresh-metrics` skill (invoke with Skill tool) to update:
+
 - `.wrangler/issues/README.md` - Issue counts and status percentages
 - `.wrangler/specifications/README.md` - Spec counts and constitutional compliance
 - `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` - Implementation status and overall % complete
@@ -61,6 +79,7 @@ grep -L "Constitutional Alignment" .wrangler/specifications/*.md | grep -v "_CON
 If found, note for Agent C (Documentation Drift) to flag.
 
 **Output:**
+
 - Updated governance metrics
 - Updated roadmap Next Steps
 - List of specs needing constitutional alignment sections
@@ -251,6 +270,7 @@ Housekeeping workflow completed successfully.
 ## Governance Refresh
 
 ✅ **Metrics Updated**:
+
 - `.wrangler/issues/README.md` - Updated issue counts and status percentages
 - `.wrangler/specifications/README.md` - Updated spec counts and constitutional compliance
 - `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md` - Updated implementation status
@@ -272,6 +292,7 @@ Housekeeping workflow completed successfully.
 - [Blocker 1 if any]
 
 **Constitutional Compliance**:
+
 - Specifications with alignment: [X]/[Y] ([Z]%)
 - Specifications needing alignment sections: [count]
 

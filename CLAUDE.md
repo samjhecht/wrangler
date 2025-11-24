@@ -66,10 +66,17 @@ wrangler/
 │   └── config/                    # Runtime config (gitignored)
 │
 ├── skills/                        # Skills library (main value proposition)
-│   ├── testing/                   # TDD, async testing, anti-patterns
-│   ├── debugging/                 # Systematic debugging workflows
-│   ├── collaboration/             # Planning, code review, parallel work
-│   └── meta/                      # Meta skills (creating/testing skills)
+│   ├── codebase-analysis/         # Locating, analyzing, understanding code
+│   ├── collaboration/             # Code review, team workflows, parallel work
+│   ├── debugging/                 # Systematic debugging, root cause analysis
+│   ├── design/                    # Frontend design, Figma workflows
+│   ├── governance/                # Constitution, roadmap, verification
+│   ├── implement/                 # Implementation orchestration
+│   ├── planning/                  # Brainstorming, roadmap validation, research
+│   ├── project-management-artifacts/ # Creating/managing issues, specs, plans
+│   ├── quality/                   # Pre-completion verification, dependency scanning
+│   ├── testing/                   # TDD, anti-patterns, frontend testing
+│   └── wrangler/                  # Wrangler meta skills (housekeeping, migrations)
 │
 ├── mcp/                           # Built-in MCP server
 │   ├── types/                     # TypeScript type definitions

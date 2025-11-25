@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.2.0",
+  "description": "Wrangler workspace directory and file structure schema",
+
+  "workspace": {
+    "root": ".wrangler",
+    "description": "Central wrangler workspace directory containing all project governance and tracking files"
+  },
+
+  "directories": {
+    "issues": {
+      "path": ".wrangler/issues",
+      "description": "Issue tracking files (git-tracked)",
+      "gitTracked": true,
+      "subdirectories": {
+        "completed": {
+          "path": ".wrangler/issues/completed",
+          "description": "Archived completed/closed issues"
+        }
+      }
+    },
+    "specifications": {
+      "path": ".wrangler/specifications",
+      "description": "Feature specifications (git-tracked)",
+      "gitTracked": true
+    },
+    "ideas": {
+      "path": ".wrangler/ideas",
+      "description": "Ideas and proposals not yet promoted to specifications (git-tracked)",
+      "gitTracked": true
+    },
+    "memos": {
+      "path": ".wrangler/memos",
+      "description": "Reference material, RCAs, lessons learned (git-tracked)",
+      "gitTracked": true
+    },
+    "plans": {
+      "path": ".wrangler/plans",
+      "description": "Implementation plans and design documents (git-tracked)",
+      "gitTracked": true
+    },
+    "docs": {
+      "path": ".wrangler/docs",
+      "description": "Auto-generated governance documentation (git-tracked)",
+      "gitTracked": true
+    },
+    "templates": {
+      "path": ".wrangler/templates",
+      "description": "Issue and specification templates (git-tracked)",
+      "gitTracked": true
+    },
+    "cache": {
+      "path": ".wrangler/cache",
+      "description": "Runtime cache (gitignored)",
+      "gitTracked": false
+    },
+    "config": {
+      "path": ".wrangler/config",
+      "description": "Runtime configuration (gitignored)",
+      "gitTracked": false
+    },
+    "logs": {
+      "path": ".wrangler/logs",
+      "description": "Runtime logs (gitignored)",
+      "gitTracked": false
+    }
+  },
+
+  "governanceFiles": {
+    "constitution": {
+      "path": ".wrangler/CONSTITUTION.md",
+      "description": "Immutable design principles - supreme law of the project",
+      "required": false,
+      "template": "skills/governance/constitution/templates/_CONSTITUTION.md"
+    },
+    "roadmap": {
+      "path": ".wrangler/ROADMAP.md",
+      "description": "Strategic multi-phase roadmap",
+      "required": false,
+      "template": "skills/governance/roadmap/templates/_ROADMAP.md"
+    },
+    "nextSteps": {
+      "path": ".wrangler/ROADMAP_NEXT_STEPS.md",
+      "description": "Tactical execution tracker with completion metrics",
+      "required": false,
+      "template": "skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md"
+    }
+  },
+
+  "readmeFiles": {
+    "issues": {
+      "path": ".wrangler/issues/README.md",
+      "description": "Issue management guide and metrics",
+      "template": "skills/governance/templates/issues-README.md"
+    },
+    "specifications": {
+      "path": ".wrangler/specifications/README.md",
+      "description": "Specification management guide and metrics",
+      "template": "skills/governance/templates/specifications-README.md"
+    },
+    "memos": {
+      "path": ".wrangler/memos/README.md",
+      "description": "Memos directory guide"
+    },
+    "plans": {
+      "path": ".wrangler/plans/README.md",
+      "description": "Plans directory guide"
+    }
+  },
+
+  "templateFiles": {
+    "issue": {
+      "path": ".wrangler/templates/issue.md",
+      "description": "Template for creating new issues",
+      "source": "skills/governance/templates/issue.md"
+    },
+    "specification": {
+      "path": ".wrangler/templates/specification.md",
+      "description": "Template for creating new specifications",
+      "source": "skills/governance/templates/specification.md"
+    }
+  },
+
+  "gitignorePatterns": [
+    "cache/",
+    "config/",
+    "logs/",
+    "metrics/"
+  ],
+
+  "artifactTypes": {
+    "issue": {
+      "directory": "issues",
+      "description": "Actionable work items and bug reports"
+    },
+    "specification": {
+      "directory": "specifications",
+      "description": "Feature specifications with requirements"
+    },
+    "idea": {
+      "directory": "ideas",
+      "description": "Ideas and proposals not yet promoted to specifications"
+    }
+  },
+
+  "mcpConfiguration": {
+    "issuesDirectory": ".wrangler/issues",
+    "specificationsDirectory": ".wrangler/specifications",
+    "ideasDirectory": ".wrangler/ideas"
+  }
+}

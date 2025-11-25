@@ -56,14 +56,21 @@ Wrangler ensures you and your human partner are **of one mind** about:
 
 ```
 wrangler/
-├── .wrangler/                     # Centralized wrangler workspace (v1.1.0+)
+├── .wrangler/                     # Centralized wrangler workspace (v1.2.0+)
+│   ├── workspace-schema.json      # Canonical schema defining all paths
+│   ├── CONSTITUTION.md            # Project constitution (design principles)
+│   ├── ROADMAP.md                 # Strategic multi-phase roadmap
+│   ├── ROADMAP_NEXT_STEPS.md      # Tactical execution tracker
 │   ├── issues/                    # Issue tracking (git-tracked)
 │   ├── specifications/            # Feature specs (git-tracked)
+│   ├── ideas/                     # Ideas and proposals (git-tracked)
 │   ├── memos/                     # Reference material, RCA archives
-│   ├── governance/                # Constitution, roadmap, next steps
+│   ├── plans/                     # Implementation plans (git-tracked)
 │   ├── docs/                      # Auto-generated governance docs
+│   ├── templates/                 # Issue and spec templates
 │   ├── cache/                     # Runtime cache (gitignored)
-│   └── config/                    # Runtime config (gitignored)
+│   ├── config/                    # Runtime config (gitignored)
+│   └── logs/                      # Runtime logs (gitignored)
 │
 ├── skills/                        # Skills library (main value proposition)
 │   ├── codebase-analysis/         # Locating, analyzing, understanding code
@@ -73,7 +80,7 @@ wrangler/
 │   ├── governance/                # Constitution, roadmap, verification
 │   ├── implement/                 # Implementation orchestration
 │   ├── planning/                  # Brainstorming, roadmap validation, research
-│   ├── project-management-artifacts/ # Creating/managing issues, specs, plans
+│   ├── project-management/        # Creating/managing issues, specs, plans, ideas
 │   ├── quality/                   # Pre-completion verification, dependency scanning
 │   ├── testing/                   # TDD, anti-patterns, frontend testing
 │   └── wrangler/                  # Wrangler meta skills (housekeeping, migrations)
@@ -114,7 +121,9 @@ wrangler/
 ├── commands/                      # Slash commands
 │   ├── brainstorm.md              # /wrangler:brainstorm
 │   ├── write-plan.md              # /wrangler:write-plan
-│   └── execute-plan.md            # /wrangler:execute-plan
+│   ├── execute-plan.md            # /wrangler:execute-plan
+│   ├── analyze-session-gaps.md    # /wrangler:analyze-session-gaps
+│   └── validate-session-adherence.md  # /wrangler:validate-session-adherence
 │
 ├── hooks/                         # Session hooks
 │   ├── session-start.sh           # Auto-initializes .wrangler/
@@ -229,7 +238,7 @@ Wrangler implements a three-tier governance hierarchy to ensure consistency acro
 
 ### Tier 1: Constitution (Immutable Principles)
 
-**File**: `specifications/_CONSTITUTION.md` (underscore prefix sorts to top)
+**File**: `.wrangler/CONSTITUTION.md`
 
 **Purpose**: Defines core design principles that guide all development decisions
 
@@ -246,7 +255,7 @@ Wrangler implements a three-tier governance hierarchy to ensure consistency acro
 
 ### Tier 2: Strategic Roadmap
 
-**File**: `specifications/_ROADMAP.md`
+**File**: `.wrangler/ROADMAP.md`
 
 **Purpose**: Maps vision to execution timeline with phases
 
@@ -261,7 +270,7 @@ Wrangler implements a three-tier governance hierarchy to ensure consistency acro
 
 ### Tier 3: Tactical Execution
 
-**File**: `specifications/_ROADMAP__NEXT_STEPS.md`
+**File**: `.wrangler/ROADMAP_NEXT_STEPS.md`
 
 **Purpose**: Detailed implementation status and next actions
 
@@ -313,11 +322,11 @@ Update NEXT_STEPS (Track progress)
 ### Initialization
 
 Run `/wrangler:initialize-governance` to create:
-- `specifications/_CONSTITUTION.md` (template)
-- `specifications/_ROADMAP.md` (template)
-- `specifications/_ROADMAP__NEXT_STEPS.md` (template)
-- `issues/README.md` (minimal guidance)
-- `specifications/README.md` (minimal guidance)
+- `.wrangler/CONSTITUTION.md` (template)
+- `.wrangler/ROADMAP.md` (template)
+- `.wrangler/ROADMAP_NEXT_STEPS.md` (template)
+- `.wrangler/issues/README.md` (minimal guidance)
+- `.wrangler/specifications/README.md` (minimal guidance)
 - `.wrangler/docs/governance.md` (comprehensive reference)
 
 ### Verification & Maintenance
@@ -542,6 +551,98 @@ module.exports = {
 - Automated mock refinement
 - Design system versioning
 - Component usage analytics
+
+---
+
+## Quality Assurance & Compliance
+
+### Session Adherence Validation
+
+**Purpose**: Validate whether AI agent followed wrangler's workflows and skill guidelines during a session.
+
+**Command**: `/wrangler:validate-session-adherence`
+
+**What It Does**:
+- Analyzes last 30-50 messages of conversation
+- Validates skill invocation compliance
+- Checks workflow step compliance (TDD, verification, code review)
+- Verifies evidence requirements were met
+- Detects violations with severity ratings
+- Generates comprehensive compliance report
+
+**When to Use**:
+- After completing complex implementations
+- When suspicious that processes weren't followed
+- Before claiming work is production-ready
+- As part of code review process
+- For "trust but verify" workflow validation
+
+**Example Usage**:
+
+```bash
+# General audit
+/wrangler:validate-session-adherence
+
+# Focused audit
+/wrangler:validate-session-adherence I don't think TDD was actually followed
+
+# Check specific concern
+/wrangler:validate-session-adherence Did code review happen for all changes?
+```
+
+**What It Validates**:
+
+1. **Skill Invocation Compliance**
+   - Were appropriate skills used for each task?
+   - Which skills were announced vs expected?
+   - Missing skill invocations
+
+2. **TDD Compliance**
+   - Tests written FIRST?
+   - RED phase verified (test failed)?
+   - GREEN phase verified (test passed)?
+   - TDD Compliance Certification provided?
+
+3. **Verification Compliance**
+   - Evidence provided for claims?
+   - Complete command output shown?
+   - Requirements verified?
+
+4. **Code Review Compliance**
+   - Code review obtained for all changes?
+   - Valid exceptions documented?
+   - Critical/Important issues fixed?
+
+5. **Subagent Usage**
+   - Subagents used when required?
+   - Subagent results verified independently?
+
+**Output**: Structured compliance report with:
+- Overall compliance score (PASS/PARTIAL/FAIL)
+- Violation count by severity (Critical/High/Medium/Low)
+- Specific violations with evidence (message references)
+- Systemic pattern analysis
+- Actionable recommendations
+- Trust level assessment
+
+**Comparison with Gap Analysis**:
+
+`/wrangler:analyze-session-gaps` asks:
+- What CAPABILITY is missing?
+- What SKILL should exist?
+- What GAP prevents success?
+
+`/wrangler:validate-session-adherence` asks:
+- Was the RIGHT SKILL used?
+- Were WORKFLOW STEPS followed?
+- Was EVIDENCE provided?
+- Did COMPLIANCE occur?
+
+**Documentation**:
+- Command: `commands/validate-session-adherence.md`
+- Workflows: `docs/workflows.md`
+- Verification Requirements: `docs/verification-requirements.md`
+- Skill Patterns: `docs/skill-invocation-patterns.md`
 
 ---
 
@@ -879,6 +980,27 @@ npm run mcp:dev                # Debug mode
   - Creating custom commands
   - Command best practices
   - Troubleshooting guide
+- **[docs/workflows.md](docs/workflows.md)** - Major workflows guide
+  - TDD workflow (RED-GREEN-REFACTOR)
+  - Verification workflow (evidence requirements)
+  - Code review workflow
+  - Subagent dispatch workflow
+  - Implementation planning workflow
+  - Constitutional alignment workflow
+- **[docs/verification-requirements.md](docs/verification-requirements.md)** - Evidence requirements
+  - Test verification requirements
+  - TDD evidence requirements
+  - Build verification requirements
+  - Code review requirements
+  - Frontend verification requirements
+  - Performance/security verification
+- **[docs/skill-invocation-patterns.md](docs/skill-invocation-patterns.md)** - Skill invocation patterns
+  - Task pattern → skill mapping
+  - Keyword → skill mapping
+  - File pattern → skill mapping
+  - Always-required skills
+  - Context-triggered skills
+  - Compliance validation guide
 
 ### For Developers
 

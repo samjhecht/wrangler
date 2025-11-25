@@ -27,8 +27,8 @@ You are setting up a complete project governance framework to ensure perfect ali
 ## Purpose
 
 This skill creates the three-tier governance hierarchy:
-1. **Constitution** (`_CONSTITUTION.md`) - Immutable design principles
-2. **Roadmap** (`_ROADMAP.md` + `_ROADMAP__NEXT_STEPS.md`) - Strategic + tactical plans
+1. **Constitution** (`CONSTITUTION.md`) - Immutable design principles
+2. **Roadmap** (`ROADMAP.md` + `ROADMAP_NEXT_STEPS.md`) - Strategic + tactical plans
 3. **Process Documentation** (README files, templates) - Operational guidance
 
 ## Initialization Process
@@ -43,13 +43,12 @@ Use Bash to check current state:
 # Check for git repository
 git rev-parse --show-toplevel
 
-# Check for existing governance files
-ls -la .wrangler/specifications/ 2>/dev/null || echo "No specifications directory"
-ls -la .wrangler/issues/ 2>/dev/null || echo "No issues directory"
+# Check for existing wrangler workspace
+ls -la .wrangler/ 2>/dev/null || echo "No .wrangler directory"
 
 # Check for existing governance docs
-[ -f .wrangler/specifications/_CONSTITUTION.md ] && echo "Constitution exists" || echo "No constitution"
-[ -f .wrangler/specifications/_ROADMAP.md ] && echo "Roadmap exists" || echo "No roadmap"
+[ -f .wrangler/CONSTITUTION.md ] && echo "Constitution exists" || echo "No constitution"
+[ -f .wrangler/ROADMAP.md ] && echo "Roadmap exists" || echo "No roadmap"
 ```
 
 **2. Ask User for Project Context**
@@ -98,14 +97,11 @@ Ensure all required directories exist:
 
 ```bash
 # Create directories if they don't exist
-mkdir -p .wrangler/specifications
-mkdir -p .wrangler/issues
+mkdir -p .wrangler
 mkdir -p .wrangler/docs
 mkdir -p plans
 
-# Add .gitkeep files
-touch .wrangler/specifications/.gitkeep
-touch .wrangler/issues/.gitkeep
+# Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
 ### Phase 2: Constitution Creation
@@ -152,7 +148,7 @@ Use the template from `skills/governance/constitution/templates/_CONSTITUTION.md
 
 ```bash
 # Copy template
-cp /path/to/wrangler/skills/governance/constitution/templates/_CONSTITUTION.md .wrangler/specifications/_CONSTITUTION.md
+cp /path/to/wrangler/skills/governance/constitution/templates/_CONSTITUTION.md .wrangler/CONSTITUTION.md
 ```
 
 Then use Edit tool to fill in:
@@ -204,7 +200,7 @@ Use template from `skills/governance/roadmap/templates/_ROADMAP.md`:
 
 ```bash
 # Copy template
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP.md .wrangler/specifications/_ROADMAP.md
+cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP.md .wrangler/ROADMAP.md
 ```
 
 Fill in with Edit tool:
@@ -219,7 +215,7 @@ Use template from `skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md`:
 
 ```bash
 # Copy template
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/ROADMAP_NEXT_STEPS.md
 ```
 
 Initial file should reflect current state:
@@ -282,19 +278,19 @@ If `CLAUDE.md` exists in project root, add governance section:
 This project uses a three-tier governance framework:
 
 ### Tier 1: Constitution (Immutable Principles)
-**File**: `.wrangler/specifications/_CONSTITUTION.md`
+**File**: `.wrangler/CONSTITUTION.md`
 
 Supreme law of the project. All features and decisions must align with constitutional principles.
 
 **Read this first** before working on any feature.
 
 ### Tier 2: Strategic Roadmap
-**File**: `.wrangler/specifications/_ROADMAP.md`
+**File**: `.wrangler/ROADMAP.md`
 
 Multi-phase strategic plan showing project direction and feature phasing.
 
 ### Tier 3: Tactical Execution
-**File**: `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md`
+**File**: `.wrangler/ROADMAP_NEXT_STEPS.md`
 
 Granular tracking of implementation status with % completion metrics.
 
@@ -318,9 +314,9 @@ Run verification:
 ```bash
 # List all governance files
 echo "=== Governance Files ==="
-ls -lh .wrangler/specifications/_CONSTITUTION.md
-ls -lh .wrangler/specifications/_ROADMAP.md
-ls -lh .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+ls -lh .wrangler/CONSTITUTION.md
+ls -lh .wrangler/ROADMAP.md
+ls -lh .wrangler/ROADMAP_NEXT_STEPS.md
 ls -lh .wrangler/specifications/README.md
 ls -lh .wrangler/issues/README.md
 ls -lh .wrangler/templates/issue.md
@@ -344,17 +340,17 @@ This project now has a complete governance framework to ensure alignment between
 
 ### Key Documents
 
-**Constitution** (\`.wrangler/specifications/_CONSTITUTION.md\`)
+**Constitution** (\`.wrangler/CONSTITUTION.md\`)
 - Immutable design principles
 - Decision framework
 - Amendment process
 
-**Roadmap** (\`.wrangler/specifications/_ROADMAP.md\`)
+**Roadmap** (\`.wrangler/ROADMAP.md\`)
 - Strategic multi-phase plan
 - Feature phasing
 - Success metrics
 
-**Next Steps** (\`.wrangler/specifications/_ROADMAP__NEXT_STEPS.md\`)
+**Next Steps** (\`.wrangler/ROADMAP_NEXT_STEPS.md\`)
 - Tactical execution tracker
 - % completion metrics
 - Prioritized work items
@@ -368,8 +364,8 @@ This project now has a complete governance framework to ensure alignment between
 
 ### Next Actions
 
-- [ ] Read _CONSTITUTION.md thoroughly
-- [ ] Review _ROADMAP.md phases
+- [ ] Read CONSTITUTION.md thoroughly
+- [ ] Review ROADMAP.md phases
 - [ ] Identify first features to implement
 - [ ] Create specifications for Phase 1 features
 - [ ] Begin implementation following governance
@@ -407,10 +403,10 @@ Your project now has a complete governance system ensuring we stay aligned on:
 
 ### Files Created
 
-**Core Governance** (in `.wrangler/specifications/`):
-- `_CONSTITUTION.md` - [X] principles ratified
-- `_ROADMAP.md` - [Y] phases planned
-- `_ROADMAP__NEXT_STEPS.md` - Execution tracker
+**Core Governance** (in `.wrangler/`):
+- `CONSTITUTION.md` - [X] principles ratified
+- `ROADMAP.md` - [Y] phases planned
+- `ROADMAP_NEXT_STEPS.md` - Execution tracker
 
 **Process Documentation** (in `.wrangler/`):
 - `issues/README.md` - Issue management guide
@@ -420,11 +416,11 @@ Your project now has a complete governance system ensuring we stay aligned on:
 
 ### Next Steps
 
-1. **Review Constitution**: Read `.wrangler/specifications/_CONSTITUTION.md`
+1. **Review Constitution**: Read `.wrangler/CONSTITUTION.md`
    - Verify principles match your vision
    - Use `constitution` skill if refinement needed
 
-2. **Review Roadmap**: Read `.wrangler/specifications/_ROADMAP.md`
+2. **Review Roadmap**: Read `.wrangler/ROADMAP.md`
    - Confirm phases and timelines
    - Adjust priorities if needed
 

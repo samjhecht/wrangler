@@ -43,9 +43,9 @@ This skill performs systematic verification to detect and report issues.
 ```bash
 # Core governance files
 echo "=== Checking Core Governance Files ==="
-[ -f .wrangler/specifications/_CONSTITUTION.md ] && echo "✓ Constitution exists" || echo "✗ MISSING: Constitution"
-[ -f .wrangler/specifications/_ROADMAP.md ] && echo "✓ Roadmap exists" || echo "✗ MISSING: Roadmap"
-[ -f .wrangler/specifications/_ROADMAP__NEXT_STEPS.md ] && echo "✓ Next Steps exists" || echo "✗ MISSING: Next Steps"
+[ -f .wrangler/CONSTITUTION.md ] && echo "✓ Constitution exists" || echo "✗ MISSING: Constitution"
+[ -f .wrangler/ROADMAP.md ] && echo "✓ Roadmap exists" || echo "✗ MISSING: Roadmap"
+[ -f .wrangler/ROADMAP_NEXT_STEPS.md ] && echo "✓ Next Steps exists" || echo "✗ MISSING: Next Steps"
 
 # Process documentation
 echo "=== Checking Process Documentation ==="
@@ -65,7 +65,7 @@ echo "=== Checking Templates ==="
 **Read constitution file:**
 
 ```bash
-cat .wrangler/specifications/_CONSTITUTION.md
+cat .wrangler/CONSTITUTION.md
 ```
 
 **Verify structure:**
@@ -116,7 +116,7 @@ Consider using `constitution` skill to refine ambiguous principles.
 **Read roadmap file:**
 
 ```bash
-cat .wrangler/specifications/_ROADMAP.md
+cat .wrangler/ROADMAP.md
 ```
 
 **Verify structure:**
@@ -138,7 +138,7 @@ cat .wrangler/specifications/_ROADMAP.md
 **Verify constitutional alignment**:
 
 Check that roadmap references constitution:
-- Links to `_CONSTITUTION.md`
+- Links to `CONSTITUTION.md`
 - Mentions design principles
 - Cites constitutional alignment
 
@@ -166,7 +166,7 @@ Check that roadmap references constitution:
 **Read next steps file:**
 
 ```bash
-cat .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+cat .wrangler/ROADMAP_NEXT_STEPS.md
 ```
 
 **Verify structure:**
@@ -215,19 +215,19 @@ Run `refresh-metrics` skill to update status counts.
 **Constitution → Roadmap:**
 ```bash
 # Check if roadmap mentions constitution
-grep -i "constitution" .wrangler/specifications/_ROADMAP.md
+grep -i "constitution" .wrangler/ROADMAP.md
 ```
 
 **Roadmap → Next Steps:**
 ```bash
 # Check if roadmap changelog mentions next steps updates
-grep -i "next.steps\|_ROADMAP__NEXT" .wrangler/specifications/_ROADMAP.md
+grep -i "next.steps\|ROADMAP_NEXT" .wrangler/ROADMAP.md
 ```
 
 **Next Steps → Constitution:**
 ```bash
 # Check if next steps references principles
-grep -i "constitution\|principle" .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+grep -i "constitution\|principle" .wrangler/ROADMAP_NEXT_STEPS.md
 ```
 
 **Verify link integrity:**
@@ -469,7 +469,7 @@ Based on findings, consider running:
 
 ```bash
 # Extract dates from files
-grep "Last Updated" .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+grep "Last Updated" .wrangler/ROADMAP_NEXT_STEPS.md
 grep "Last Updated" .wrangler/issues/README.md
 grep "Last Updated" .wrangler/specifications/README.md
 
@@ -496,10 +496,10 @@ grep -r "\[.*\](.*.md)" .wrangler/issues/
 
 ```bash
 # Extract version from frontmatter
-version=$(grep "^version:" .wrangler/specifications/_CONSTITUTION.md | cut -d'"' -f2)
+version=$(grep "^version:" .wrangler/CONSTITUTION.md | cut -d'"' -f2)
 
 # Extract latest version from history
-latest_history=$(grep "^- \*\*.*\*\*" .wrangler/specifications/_CONSTITUTION.md | head -1)
+latest_history=$(grep "^- \*\*.*\*\*" .wrangler/CONSTITUTION.md | head -1)
 
 # Compare
 # Report if mismatch
@@ -579,7 +579,7 @@ grep -L "Constitutional Alignment" .wrangler/specifications/*.md
 
 **Fix**: Update link syntax to use relative paths
 
-**Pattern**: Use `../specifications/_CONSTITUTION.md` not absolute paths
+**Pattern**: Use `../.wrangler/CONSTITUTION.md` not absolute paths
 
 ### Issue: Ambiguous Principles
 

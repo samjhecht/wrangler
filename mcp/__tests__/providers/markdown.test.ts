@@ -143,6 +143,21 @@ describe('MarkdownIssueProvider', () => {
       expect(files).toHaveLength(1);
     });
 
+    it('should create idea in correct directory', async () => {
+      const request: IssueCreateRequest = {
+        title: 'New Feature Idea',
+        description: 'We should add dark mode support',
+        type: 'idea',
+      };
+
+      const issue = await provider.createIssue(request);
+
+      expect(issue.type).toBe('idea');
+      const ideaDir = path.join(testDir, '.wrangler/ideas');
+      const files = await fs.readdir(ideaDir);
+      expect(files).toHaveLength(1);
+    });
+
     it('should increment counter correctly for multiple issues', async () => {
       const issue1 = await provider.createIssue({ title: 'First', description: 'First issue' });
       const issue2 = await provider.createIssue({ title: 'Second', description: 'Second issue' });

@@ -4,7 +4,7 @@
 
 import { z } from 'zod';
 
-export type IssueArtifactType = 'issue' | 'specification';
+export type IssueArtifactType = 'issue' | 'specification' | 'idea';
 
 export interface Issue {
   /** Unique issue identifier */
@@ -138,7 +138,7 @@ export interface IssueSearchOptions {
 
 // Zod Schemas
 
-export const IssueArtifactTypeSchema = z.enum(['issue', 'specification']);
+export const IssueArtifactTypeSchema = z.enum(['issue', 'specification', 'idea']);
 
 export const IssueStatusSchema = z.enum(['open', 'in_progress', 'closed', 'cancelled']);
 

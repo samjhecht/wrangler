@@ -11,8 +11,12 @@ const glob = fastGlob.glob;
 // ESM compat: fs-extra exports functions on the default export in ESM
 const fs = fsExtra.default || fsExtra;
 import { IssueProvider } from './base.js';
-const DEFAULT_ISSUE_DIR = '.wrangler/issues';
-const DEFAULT_SPEC_DIR = '.wrangler/specifications';
+import { getMCPDirectories } from '../workspace-schema.js';
+// Get defaults from workspace schema
+const schemaDefaults = getMCPDirectories();
+const DEFAULT_ISSUE_DIR = schemaDefaults.issuesDirectory;
+const DEFAULT_SPEC_DIR = schemaDefaults.specificationsDirectory;
+const DEFAULT_IDEA_DIR = schemaDefaults.ideasDirectory;
 export class MarkdownIssueProvider extends IssueProvider {
     basePath;
     settings;
@@ -29,6 +33,9 @@ export class MarkdownIssueProvider extends IssueProvider {
         }
         if (!collections['specification']) {
             collections['specification'] = { directory: DEFAULT_SPEC_DIR };
+        }
+        if (!collections['idea']) {
+            collections['idea'] = { directory: DEFAULT_IDEA_DIR };
         }
         for (const [type, details] of Object.entries(collections)) {
             this.registerCollection(type, details.directory);

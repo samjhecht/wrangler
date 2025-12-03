@@ -3,7 +3,7 @@
  */
 import { z } from 'zod';
 // Zod Schemas
-export const IssueArtifactTypeSchema = z.enum(['issue', 'specification']);
+export const IssueArtifactTypeSchema = z.enum(['issue', 'specification', 'idea']);
 export const IssueStatusSchema = z.enum(['open', 'in_progress', 'closed', 'cancelled']);
 export const IssuePrioritySchema = z.enum(['low', 'medium', 'high', 'critical']);
 export const WranglerIssueContextSchema = z.object({

@@ -203,14 +203,14 @@ Replace with:
 
 ### Phase 4: Update Roadmap Next Steps
 
-**File**: `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md`
+**File**: `.wrangler/ROADMAP_NEXT_STEPS.md`
 
 **This is the most complex update - requires analyzing feature implementation status**
 
 **1. Read Current Next Steps File**
 
 ```bash
-cat .wrangler/specifications/_ROADMAP__NEXT_STEPS.md
+cat .wrangler/ROADMAP_NEXT_STEPS.md
 ```
 
 **2. Scan for Feature Status Sections**
@@ -409,7 +409,7 @@ After completing all updates, generate summary:
 
 **Constitutional Compliance**: [X]% ([+/- change])
 
-### Next Steps (_ROADMAP__NEXT_STEPS.md)
+### Next Steps (ROADMAP_NEXT_STEPS.md)
 
 **Previous Overall Completion**: ~[old %]%
 

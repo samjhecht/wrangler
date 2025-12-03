@@ -22,6 +22,7 @@ import {
 } from '../types/issues.js';
 import { IssueProvider } from './base.js';
 import { MarkdownProviderSettings, IssueProviderConfig } from '../types/config.js';
+import { getMCPDirectories } from '../workspace-schema.js';
 
 interface ArtifactLocation {
   type: IssueArtifactType;
@@ -30,8 +31,11 @@ interface ArtifactLocation {
   absolutePath: string;
 }
 
-const DEFAULT_ISSUE_DIR = '.wrangler/issues';
-const DEFAULT_SPEC_DIR = '.wrangler/specifications';
+// Get defaults from workspace schema
+const schemaDefaults = getMCPDirectories();
+const DEFAULT_ISSUE_DIR = schemaDefaults.issuesDirectory;
+const DEFAULT_SPEC_DIR = schemaDefaults.specificationsDirectory;
+const DEFAULT_IDEA_DIR = schemaDefaults.ideasDirectory;
 
 export class MarkdownIssueProvider extends IssueProvider {
   private basePath: string;
@@ -53,6 +57,10 @@ export class MarkdownIssueProvider extends IssueProvider {
 
     if (!collections['specification']) {
       collections['specification'] = { directory: DEFAULT_SPEC_DIR };
+    }
+
+    if (!collections['idea']) {
+      collections['idea'] = { directory: DEFAULT_IDEA_DIR };
     }
 
     for (const [type, details] of Object.entries(collections)) {

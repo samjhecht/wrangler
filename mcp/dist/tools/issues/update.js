@@ -6,7 +6,7 @@ export const updateIssueSchema = z.object({
     id: z.string().min(1).describe('Issue ID to update'),
     title: z.string().min(1).max(200).optional().describe('New issue title'),
     description: z.string().min(1).optional().describe('New issue description'),
-    type: z.enum(['issue', 'specification']).optional().describe('Updated artifact type'),
+    type: z.enum(['issue', 'specification', 'idea']).optional().describe('Updated artifact type'),
     status: z.enum(['open', 'in_progress', 'closed', 'cancelled']).optional().describe('New issue status'),
     priority: z.enum(['low', 'medium', 'high', 'critical']).optional().describe('New issue priority'),
     labels: z.array(z.string()).optional().describe('New labels for the issue'),

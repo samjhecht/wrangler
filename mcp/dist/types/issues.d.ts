@@ -2,7 +2,7 @@
  * Issue management types
  */
 import { z } from 'zod';
-export type IssueArtifactType = 'issue' | 'specification';
+export type IssueArtifactType = 'issue' | 'specification' | 'idea';
 export interface Issue {
     /** Unique issue identifier */
     id: string;
@@ -125,7 +125,7 @@ export interface IssueSearchOptions {
     /** Sort direction */
     sortOrder?: 'asc' | 'desc';
 }
-export declare const IssueArtifactTypeSchema: z.ZodEnum<["issue", "specification"]>;
+export declare const IssueArtifactTypeSchema: z.ZodEnum<["issue", "specification", "idea"]>;
 export declare const IssueStatusSchema: z.ZodEnum<["open", "in_progress", "closed", "cancelled"]>;
 export declare const IssuePrioritySchema: z.ZodEnum<["low", "medium", "high", "critical"]>;
 export declare const WranglerIssueContextSchema: z.ZodObject<{
@@ -144,7 +144,7 @@ export declare const WranglerIssueContextSchema: z.ZodObject<{
 export declare const IssueCreateRequestSchema: z.ZodObject<{
     title: z.ZodString;
     description: z.ZodString;
-    type: z.ZodOptional<z.ZodEnum<["issue", "specification"]>>;
+    type: z.ZodOptional<z.ZodEnum<["issue", "specification", "idea"]>>;
     status: z.ZodOptional<z.ZodEnum<["open", "in_progress", "closed", "cancelled"]>>;
     priority: z.ZodOptional<z.ZodEnum<["low", "medium", "high", "critical"]>>;
     labels: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -169,7 +169,7 @@ export declare const IssueCreateRequestSchema: z.ZodObject<{
     labels?: string[] | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
     status?: "open" | "in_progress" | "closed" | "cancelled" | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
     wranglerContext?: {
@@ -183,7 +183,7 @@ export declare const IssueCreateRequestSchema: z.ZodObject<{
     labels?: string[] | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
     status?: "open" | "in_progress" | "closed" | "cancelled" | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
     wranglerContext?: {
@@ -196,7 +196,7 @@ export declare const IssueUpdateRequestSchema: z.ZodObject<{
     id: z.ZodString;
     title: z.ZodOptional<z.ZodString>;
     description: z.ZodOptional<z.ZodString>;
-    type: z.ZodOptional<z.ZodEnum<["issue", "specification"]>>;
+    type: z.ZodOptional<z.ZodEnum<["issue", "specification", "idea"]>>;
     status: z.ZodOptional<z.ZodEnum<["open", "in_progress", "closed", "cancelled"]>>;
     priority: z.ZodOptional<z.ZodEnum<["low", "medium", "high", "critical"]>>;
     labels: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -222,7 +222,7 @@ export declare const IssueUpdateRequestSchema: z.ZodObject<{
     labels?: string[] | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
     status?: "open" | "in_progress" | "closed" | "cancelled" | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | null | undefined;
     wranglerContext?: {
@@ -237,7 +237,7 @@ export declare const IssueUpdateRequestSchema: z.ZodObject<{
     labels?: string[] | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
     status?: "open" | "in_progress" | "closed" | "cancelled" | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | null | undefined;
     wranglerContext?: {
@@ -254,8 +254,8 @@ export declare const IssueFiltersSchema: z.ZodObject<{
     assignee: z.ZodOptional<z.ZodString>;
     project: z.ZodOptional<z.ZodString>;
     parentTaskId: z.ZodOptional<z.ZodString>;
-    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification"]>, "many">>;
-    type: z.ZodOptional<z.ZodEnum<["issue", "specification"]>>;
+    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification", "idea"]>, "many">>;
+    type: z.ZodOptional<z.ZodEnum<["issue", "specification", "idea"]>>;
     createdAfter: z.ZodOptional<z.ZodDate>;
     createdBefore: z.ZodOptional<z.ZodDate>;
     limit: z.ZodOptional<z.ZodNumber>;
@@ -265,11 +265,11 @@ export declare const IssueFiltersSchema: z.ZodObject<{
     priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
     status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
     parentTaskId?: string | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
     ids?: string[] | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     createdAfter?: Date | undefined;
     createdBefore?: Date | undefined;
     limit?: number | undefined;
@@ -279,11 +279,11 @@ export declare const IssueFiltersSchema: z.ZodObject<{
     priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
     status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
     parentTaskId?: string | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
     ids?: string[] | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     createdAfter?: Date | undefined;
     createdBefore?: Date | undefined;
     limit?: number | undefined;
@@ -300,8 +300,8 @@ export declare const IssueSearchOptionsSchema: z.ZodObject<{
         assignee: z.ZodOptional<z.ZodString>;
         project: z.ZodOptional<z.ZodString>;
         parentTaskId: z.ZodOptional<z.ZodString>;
-        types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification"]>, "many">>;
-        type: z.ZodOptional<z.ZodEnum<["issue", "specification"]>>;
+        types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification", "idea"]>, "many">>;
+        type: z.ZodOptional<z.ZodEnum<["issue", "specification", "idea"]>>;
         createdAfter: z.ZodOptional<z.ZodDate>;
         createdBefore: z.ZodOptional<z.ZodDate>;
         limit: z.ZodOptional<z.ZodNumber>;
@@ -311,11 +311,11 @@ export declare const IssueSearchOptionsSchema: z.ZodObject<{
         priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
         status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
         parentTaskId?: string | undefined;
-        type?: "issue" | "specification" | undefined;
+        type?: "issue" | "specification" | "idea" | undefined;
         assignee?: string | undefined;
         project?: string | undefined;
         ids?: string[] | undefined;
-        types?: ("issue" | "specification")[] | undefined;
+        types?: ("issue" | "specification" | "idea")[] | undefined;
         createdAfter?: Date | undefined;
         createdBefore?: Date | undefined;
         limit?: number | undefined;
@@ -325,11 +325,11 @@ export declare const IssueSearchOptionsSchema: z.ZodObject<{
         priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
         status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
         parentTaskId?: string | undefined;
-        type?: "issue" | "specification" | undefined;
+        type?: "issue" | "specification" | "idea" | undefined;
         assignee?: string | undefined;
         project?: string | undefined;
         ids?: string[] | undefined;
-        types?: ("issue" | "specification")[] | undefined;
+        types?: ("issue" | "specification" | "idea")[] | undefined;
         createdAfter?: Date | undefined;
         createdBefore?: Date | undefined;
         limit?: number | undefined;
@@ -345,11 +345,11 @@ export declare const IssueSearchOptionsSchema: z.ZodObject<{
         priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
         status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
         parentTaskId?: string | undefined;
-        type?: "issue" | "specification" | undefined;
+        type?: "issue" | "specification" | "idea" | undefined;
         assignee?: string | undefined;
         project?: string | undefined;
         ids?: string[] | undefined;
-        types?: ("issue" | "specification")[] | undefined;
+        types?: ("issue" | "specification" | "idea")[] | undefined;
         createdAfter?: Date | undefined;
         createdBefore?: Date | undefined;
         limit?: number | undefined;
@@ -365,11 +365,11 @@ export declare const IssueSearchOptionsSchema: z.ZodObject<{
         priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
         status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
         parentTaskId?: string | undefined;
-        type?: "issue" | "specification" | undefined;
+        type?: "issue" | "specification" | "idea" | undefined;
         assignee?: string | undefined;
         project?: string | undefined;
         ids?: string[] | undefined;
-        types?: ("issue" | "specification")[] | undefined;
+        types?: ("issue" | "specification" | "idea")[] | undefined;
         createdAfter?: Date | undefined;
         createdBefore?: Date | undefined;
         limit?: number | undefined;

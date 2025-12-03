@@ -50,7 +50,7 @@ Invoke this skill:
 **Load constitutional principles:**
 
 ```bash
-cat .wrangler/specifications/_CONSTITUTION.md
+cat .wrangler/CONSTITUTION.md
 ```
 
 **Extract key information:**

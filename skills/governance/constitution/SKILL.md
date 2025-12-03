@@ -47,7 +47,7 @@ When user has existing constitution needing improvement:
 **Read Current Constitution**:
 ```bash
 # Read existing file
-cat .wrangler/specifications/_CONSTITUTION.md
+cat .wrangler/CONSTITUTION.md
 ```
 
 **Analyze for Issues**:
@@ -342,7 +342,7 @@ Wait for user to explicitly approve amendment.
 
 ### 3. Update Constitution File
 
-Once approved, update `_CONSTITUTION.md`:
+Once approved, update `.wrangler/CONSTITUTION.md`:
 
 **Version increment**:
 - Major version (1.0.0 → 2.0.0): New principle added or principle removed
@@ -371,7 +371,7 @@ Once approved, update `_CONSTITUTION.md`:
 
 ### 4. Update Roadmap Changelog
 
-Add entry to `_ROADMAP.md` changelog:
+Add entry to `.wrangler/ROADMAP.md` changelog:
 
 ```markdown
 ## Changelog
@@ -388,6 +388,7 @@ Search for specifications that might conflict:
 # Search specs for mentions of modified principle
 grep -r "Principle [N]" .wrangler/specifications/*.md
 grep -r "[principle keyword]" .wrangler/specifications/*.md
+grep -r "[principle keyword]" .wrangler/CONSTITUTION.md
 ```
 
 Review each affected spec and propose updates if needed.
@@ -403,7 +404,7 @@ Mark amendment issue as closed with summary:
 **Date**: [YYYY-MM-DD]
 
 **Changes Made**:
-- Updated Principle [N] in _CONSTITUTION.md
+- Updated Principle [N] in .wrangler/CONSTITUTION.md
 - Version incremented to [X.Y.Z]
 - Roadmap changelog updated
 - [List any spec updates made]
@@ -623,7 +624,7 @@ When principles conflict, apply in this order:
 **Situation**: Current codebase doesn't follow constitution
 
 **Response**: Don't change constitution to match code. Instead:
-1. Document violations in `_ROADMAP__NEXT_STEPS.md` under Technical Debt
+1. Document violations in `.wrangler/ROADMAP__NEXT_STEPS.md` under Technical Debt
 2. Create issues to fix violations
 3. Mark with `constitutional-violation` label
 4. Prioritize based on severity

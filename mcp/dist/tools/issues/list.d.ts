@@ -11,8 +11,8 @@ export declare const listIssuesSchema: z.ZodObject<{
     assignee: z.ZodOptional<z.ZodString>;
     project: z.ZodOptional<z.ZodString>;
     parentTaskId: z.ZodOptional<z.ZodString>;
-    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification"]>, "many">>;
-    type: z.ZodOptional<z.ZodEnum<["issue", "specification"]>>;
+    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification", "idea"]>, "many">>;
+    type: z.ZodOptional<z.ZodEnum<["issue", "specification", "idea"]>>;
     limit: z.ZodOptional<z.ZodNumber>;
     offset: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
@@ -20,10 +20,10 @@ export declare const listIssuesSchema: z.ZodObject<{
     priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
     status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
     parentTaskId?: string | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     limit?: number | undefined;
     offset?: number | undefined;
 }, {
@@ -31,10 +31,10 @@ export declare const listIssuesSchema: z.ZodObject<{
     priority?: ("low" | "medium" | "high" | "critical")[] | undefined;
     status?: ("open" | "in_progress" | "closed" | "cancelled")[] | undefined;
     parentTaskId?: string | undefined;
-    type?: "issue" | "specification" | undefined;
+    type?: "issue" | "specification" | "idea" | undefined;
     assignee?: string | undefined;
     project?: string | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     limit?: number | undefined;
     offset?: number | undefined;
 }>;

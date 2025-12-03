@@ -2,13 +2,13 @@
 id: "000001"
 title: "Centralized .wrangler/ Directory Structure"
 type: "specification"
-status: "open"
+status: "closed"
 priority: "high"
 labels: ["governance", "refactoring", "architecture"]
 assignee: ""
 project: "Governance System"
 createdAt: "2025-11-18T00:00:00.000Z"
-updatedAt: "2025-11-18T00:00:00.000Z"
+updatedAt: "2025-12-03T21:16:00.000Z"
 wranglerContext:
   agentId: ""
   parentTaskId: ""
@@ -1199,6 +1199,36 @@ This specification aligns with wrangler's constitutional principles:
 
 ---
 
+## Completion Notes (2025-12-03)
+
+Core implementation complete:
+
+1. **Workspace Schema** (`.wrangler/workspace-schema.json`):
+   - Canonical JSON schema defining all paths (v1.2.0)
+   - Defines directories, governance files, templates, gitignore patterns
+   - Includes `ideas` directory for new artifact type
+
+2. **Schema Loader** (`mcp/workspace-schema.ts`):
+   - `loadWorkspaceSchema()` - loads from `.wrangler/workspace-schema.json`
+   - `getMCPDirectories()` - provides MCP configuration
+   - `getDefaultSchema()` - fallback when no schema file exists
+   - Helper functions for initialization, git tracking, gitignore patterns
+
+3. **MCP Provider Integration**:
+   - `MarkdownIssueProvider` uses schema for directory paths
+   - Issues go to `.wrangler/issues/`
+   - Specifications go to `.wrangler/specifications/`
+   - Ideas go to `.wrangler/ideas/`
+
+4. **Tests**: All 254 MCP tests pass
+
+**Not implemented** (deferred to future work):
+- Automated migration script for existing projects
+- Version detection and `/update-yourself` command
+- Release notes tracking system
+
+---
+
 **Document Version:** 1.0.0
-**Last Updated:** 2025-11-18
-**Next Review:** Upon implementation start
+**Last Updated:** 2025-12-03
+**Next Review:** N/A - Closed

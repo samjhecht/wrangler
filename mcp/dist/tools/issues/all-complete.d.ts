@@ -9,18 +9,18 @@ export declare const issuesAllCompleteSchema: z.ZodObject<{
     parentTaskId: z.ZodOptional<z.ZodString>;
     labels: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     project: z.ZodOptional<z.ZodString>;
-    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification"]>, "many">>;
+    types: z.ZodOptional<z.ZodArray<z.ZodEnum<["issue", "specification", "idea"]>, "many">>;
 }, "strip", z.ZodTypeAny, {
     labels?: string[] | undefined;
     parentTaskId?: string | undefined;
     project?: string | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     issueIds?: string[] | undefined;
 }, {
     labels?: string[] | undefined;
     parentTaskId?: string | undefined;
     project?: string | undefined;
-    types?: ("issue" | "specification")[] | undefined;
+    types?: ("issue" | "specification" | "idea")[] | undefined;
     issueIds?: string[] | undefined;
 }>;
 export type IssuesAllCompleteParams = z.infer<typeof issuesAllCompleteSchema>;

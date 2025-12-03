@@ -9,7 +9,7 @@ import { IssueCreateRequest, IssueArtifactType } from '../../types/issues.js';
 export const createIssueSchema = z.object({
   title: z.string().min(1).max(200).describe('Issue title'),
   description: z.string().min(1).describe('Issue description or content'),
-  type: z.enum(['issue', 'specification']).optional().describe('Artifact type to create'),
+  type: z.enum(['issue', 'specification', 'idea']).optional().describe('Artifact type to create'),
   status: z.enum(['open', 'in_progress', 'closed', 'cancelled']).optional().describe('Initial issue status'),
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional().describe('Issue priority level'),
   labels: z.array(z.string()).optional().describe('Labels to apply to the issue'),

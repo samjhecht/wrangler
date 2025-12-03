@@ -9,8 +9,8 @@ export const listIssuesSchema = z.object({
     assignee: z.string().optional().describe('Filter by assignee'),
     project: z.string().optional().describe('Filter by project'),
     parentTaskId: z.string().optional().describe('Filter issues whose wranglerContext.parentTaskId matches'),
-    types: z.array(z.enum(['issue', 'specification'])).optional().describe('Filter by artifact types'),
-    type: z.enum(['issue', 'specification']).optional().describe('Filter by a single artifact type'),
+    types: z.array(z.enum(['issue', 'specification', 'idea'])).optional().describe('Filter by artifact types'),
+    type: z.enum(['issue', 'specification', 'idea']).optional().describe('Filter by a single artifact type'),
     limit: z.number().int().positive().max(1000).optional().describe('Maximum number of issues to return'),
     offset: z.number().int().min(0).optional().describe('Number of issues to skip for pagination')
 });

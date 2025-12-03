@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { ProviderFactory } from '../../providers/factory.js';
 import { Issue, IssueFilters } from '../../types/issues.js';
 
-const issueArtifactTypeSchema = z.enum(['issue', 'specification']);
+const issueArtifactTypeSchema = z.enum(['issue', 'specification', 'idea']);
 
 export const issuesAllCompleteSchema = z
   .object({

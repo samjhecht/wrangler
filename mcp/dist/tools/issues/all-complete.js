@@ -2,7 +2,7 @@
  * issues_all_complete tool implementation
  */
 import { z } from 'zod';
-const issueArtifactTypeSchema = z.enum(['issue', 'specification']);
+const issueArtifactTypeSchema = z.enum(['issue', 'specification', 'idea']);
 export const issuesAllCompleteSchema = z
     .object({
     issueIds: z

@@ -16,13 +16,12 @@ You are a specialist at creating comprehensive technical specifications that ser
 ```
 
 **Example:**
+
 ```
 🔧 Using Skill: writing-specifications | [Provide context-specific example of what you're doing]
 ```
 
 This creates an audit trail showing which skills were applied during the session.
-
-
 
 - Analyze the feature/system requirements to extract all specification elements
 - Identify and resolve ambiguities through clarifying questions
@@ -35,6 +34,8 @@ This creates an audit trail showing which skills were applied during the session
 
 ### 1. Gather Information
 
+Explore the project context to understand the broader scope in which the specification fits. Explore what already exists in the project that the code created from the spec will be integrated.
+
 **Before writing the spec, clarify:**
 
 - **Scope:** What's included and explicitly excluded?
@@ -42,9 +43,9 @@ This creates an audit trail showing which skills were applied during the session
 - **Requirements:** What MUST the system do vs. what SHOULD it do vs. what's NICE to have?
 - **Constraints:** What technical, business, or resource constraints exist?
 - **Success criteria:** How will we measure success?
-- **Timeline:** When is this needed?
 
 **Use AskUserQuestion tool to resolve:**
+
 - Ambiguous requirements
 - Missing details about user flows
 - Unclear technical constraints
@@ -54,6 +55,7 @@ This creates an audit trail showing which skills were applied during the session
 ### 2. Choose Specification Depth
 
 **Full Technical Specification (use SPECIFICATION_TEMPLATE.md structure):**
+
 - Major features or systems
 - Cross-team initiatives
 - Complex architectural changes
@@ -61,6 +63,7 @@ This creates an audit trail showing which skills were applied during the session
 - Anything requiring detailed implementation guidance
 
 **Lightweight Specification:**
+
 - Small, well-understood features
 - Internal tools with single owner
 - Proof of concepts
@@ -71,6 +74,7 @@ This creates an audit trail showing which skills were applied during the session
 Use the template structure from [SPECIFICATION_TEMPLATE.md](templates/SPECIFICATION_TEMPLATE.md) as your guide. Key sections:
 
 **Always include:**
+
 - Executive Summary (what, why, scope)
 - Goals and Non-Goals
 - Requirements (functional and non-functional)
@@ -79,6 +83,7 @@ Use the template structure from [SPECIFICATION_TEMPLATE.md](templates/SPECIFICAT
 - Success criteria
 
 **Include when relevant:**
+
 - Detailed component specifications
 - Data models
 - API/interface definitions
@@ -91,6 +96,7 @@ Use the template structure from [SPECIFICATION_TEMPLATE.md](templates/SPECIFICAT
 - Open questions and decisions
 
 **Omit when not applicable:**
+
 - Don't include sections that don't apply
 - Don't write "N/A" - just remove the section
 - Focus on what's actually needed
@@ -172,6 +178,7 @@ Reference the full template structure: [SPECIFICATION_TEMPLATE.md](templates/SPE
 ## Specification vs. Other Document Types
 
 **Use Specification when:**
+
 - Defining how something should work technically
 - Designing architecture or system components
 - Specifying APIs, interfaces, or data models
@@ -179,11 +186,13 @@ Reference the full template structure: [SPECIFICATION_TEMPLATE.md](templates/SPE
 - Creating implementation guidance for teams
 
 **Use Feature Request when:**
+
 - Capturing user-facing feature ideas
 - Describing what users want/need (not how to build it)
 - Prioritizing product backlog items
 
 **Use Task/Issue when:**
+
 - Breaking down implementation work
 - Tracking specific development tasks
 - Managing bug fixes
@@ -195,6 +204,7 @@ Reference the full template structure: [SPECIFICATION_TEMPLATE.md](templates/SPE
 **Step 1: Gather information**
 
 Ask clarifying questions:
+
 - What authentication methods? (password, OAuth, SSO, MFA?)
 - What user types/roles?
 - Session management requirements?
@@ -366,9 +376,9 @@ issues_create({
   project: "User Platform v2",
   wranglerContext: {
     agentId: "spec-writer-agent",
-    estimatedEffort: "6 weeks implementation"
-  }
-})
+    estimatedEffort: "6 weeks implementation",
+  },
+});
 ```
 
 ## Best Practices
@@ -384,6 +394,7 @@ issues_create({
 ### Common Pitfalls to Avoid
 
 ❌ **Avoid:**
+
 - Ambiguous requirements ("should be fast", "easy to use")
 - Implementation details without rationale
 - Skipping non-functional requirements
@@ -392,6 +403,7 @@ issues_create({
 - Leaving decisions unmarked or implied
 
 ✅ **Instead:**
+
 - Quantify requirements ("p95 < 500ms", "completion in < 3 clicks")
 - Explain why decisions were made and alternatives considered
 - Explicitly specify performance, security, scalability needs

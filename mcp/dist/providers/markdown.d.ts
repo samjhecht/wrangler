@@ -26,6 +26,7 @@ export declare class MarkdownIssueProvider extends IssueProvider {
     private parseIssueFromFile;
     private matchesFilters;
     private normalizeTypes;
+    private getTypePrefix;
     private generateIssueId;
     private generateFileName;
     private slugify;

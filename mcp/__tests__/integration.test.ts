@@ -74,18 +74,18 @@ describe('MCP Server End-to-End Integration Tests', () => {
       );
 
       expect(createResult.isError).toBe(false);
-      expect(createResult.metadata?.issueId).toBe('000001');
+      expect(createResult.metadata?.issueId).toBe('ISS-000001');
 
       const issueId = createResult.metadata?.issueId!;
 
       // Verify file exists
-      const issueFile = path.join(testDir, '.wrangler/issues', '000001-implement-user-authentication.md');
+      const issueFile = path.join(testDir, '.wrangler/issues', 'ISS-000001-implement-user-authentication.md');
       expect(await fs.pathExists(issueFile)).toBe(true);
 
       // Verify file contents
       const fileContent = await fs.readFile(issueFile, 'utf-8');
       const parsed = matter(fileContent);
-      expect(parsed.data.id).toBe('000001');
+      expect(parsed.data.id).toBe('ISS-000001');
       expect(parsed.data.title).toBe('Implement user authentication');
       expect(parsed.data.status).toBe('open');
       expect(parsed.data.priority).toBe('high');
@@ -181,7 +181,7 @@ describe('MCP Server End-to-End Integration Tests', () => {
 
       const specFiles = await fs.readdir(specDir);
       expect(specFiles).toHaveLength(1);
-      expect(specFiles[0]).toMatch(/^000001-api-authentication-specification\.md$/);
+      expect(specFiles[0]).toMatch(/^SPEC-000001-api-authentication-specification\.md$/);
 
       // Create regular issue
       await createIssueTool(
@@ -737,44 +737,53 @@ describe('MCP Server End-to-End Integration Tests', () => {
   });
 
   describe('9. Counter Generation', () => {
-    it('should generate sequential counter IDs', async () => {
+    it('should generate sequential counter IDs with type prefix', async () => {
       const issue1 = await createIssueTool(
         { title: 'First', description: 'First issue' },
         factory
       );
-      expect(issue1.metadata?.issueId).toBe('000001');
+      expect(issue1.metadata?.issueId).toBe('ISS-000001');
 
       const issue2 = await createIssueTool(
         { title: 'Second', description: 'Second issue' },
         factory
       );
-      expect(issue2.metadata?.issueId).toBe('000002');
+      expect(issue2.metadata?.issueId).toBe('ISS-000002');
 
       const issue3 = await createIssueTool(
         { title: 'Third', description: 'Third issue' },
         factory
       );
-      expect(issue3.metadata?.issueId).toBe('000003');
+      expect(issue3.metadata?.issueId).toBe('ISS-000003');
     });
 
-    it('should handle counter across issue and specification types', async () => {
+    it('should use independent counters per type', async () => {
       const issue1 = await createIssueTool(
         { title: 'Issue 1', description: 'First issue', type: 'issue' },
         factory
       );
-      expect(issue1.metadata?.issueId).toBe('000001');
+      expect(issue1.metadata?.issueId).toBe('ISS-000001');
 
       const spec1 = await createIssueTool(
         { title: 'Spec 1', description: 'First spec', type: 'specification' },
         factory
       );
-      expect(spec1.metadata?.issueId).toBe('000002');
+      // Specs have their own counter, starts at 1
+      expect(spec1.metadata?.issueId).toBe('SPEC-000001');
 
       const issue2 = await createIssueTool(
         { title: 'Issue 2', description: 'Second issue', type: 'issue' },
         factory
       );
-      expect(issue2.metadata?.issueId).toBe('000003');
+      // Issues continue from 1
+      expect(issue2.metadata?.issueId).toBe('ISS-000002');
+
+      const idea1 = await createIssueTool(
+        { title: 'Idea 1', description: 'First idea', type: 'idea' },
+        factory
+      );
+      // Ideas have their own counter, starts at 1
+      expect(idea1.metadata?.issueId).toBe('IDEA-000001');
     });
   });
 

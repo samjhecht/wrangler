@@ -74,7 +74,7 @@ export class MarkdownIssueProvider extends IssueProvider {
     this.assertWithinWorkspace(targetDir, 'access issue directory');
     await fs.ensureDir(targetDir);
 
-    const issueId = await this.generateIssueId();
+    const issueId = await this.generateIssueId(artifactType);
     const fileName = this.generateFileName(issueId, request.title);
     const filePath = path.join(targetDir, fileName);
     this.assertWithinWorkspace(filePath, 'write issue file');
@@ -443,9 +443,23 @@ export class MarkdownIssueProvider extends IssueProvider {
     return undefined;
   }
 
-  private async generateIssueId(): Promise<string> {
-    this.issueCounter = await this.getNextCounter();
-    return this.issueCounter.toString().padStart(6, '0');
+  private getTypePrefix(artifactType: IssueArtifactType): string {
+    switch (artifactType) {
+      case 'issue':
+        return 'ISS';
+      case 'specification':
+        return 'SPEC';
+      case 'idea':
+        return 'IDEA';
+      default:
+        return 'ISS';
+    }
+  }
+
+  private async generateIssueId(artifactType: IssueArtifactType): Promise<string> {
+    const prefix = this.getTypePrefix(artifactType);
+    this.issueCounter = await this.getNextCounter(artifactType);
+    return `${prefix}-${this.issueCounter.toString().padStart(6, '0')}`;
   }
 
   private generateFileName(id: string, title: string): string {
@@ -479,22 +493,33 @@ export class MarkdownIssueProvider extends IssueProvider {
     return slug;
   }
 
-  private async getNextCounter(): Promise<number> {
+  private async getNextCounter(artifactType: IssueArtifactType): Promise<number> {
     const numbers: number[] = [];
+    const prefix = this.getTypePrefix(artifactType);
+    const directory = this.getCollectionDir(artifactType);
 
-    for (const { directory } of this.getCollections()) {
-      if (!await fs.pathExists(directory)) {
-        continue;
+    if (!await fs.pathExists(directory)) {
+      return 1;
+    }
+
+    const files = await glob('**/*.md', { cwd: directory });
+    for (const file of files) {
+      const basename = path.basename(file);
+      // Match files with the type prefix (e.g., ISS-000001, SPEC-000001)
+      const prefixedMatch = basename.match(new RegExp(`^${prefix}-(\\d+)`));
+      if (prefixedMatch) {
+        const value = parseInt(prefixedMatch[1], 10);
+        if (!isNaN(value)) {
+          numbers.push(value);
+        }
       }
-
-      const files = await glob('**/*.md', { cwd: directory });
-      for (const file of files) {
-        const match = path.basename(file).match(/^(\d+)/);
-        if (match) {
-          const value = parseInt(match[1], 10);
-          if (!isNaN(value)) {
-            numbers.push(value);
-          }
+      // Also match legacy files without prefix (e.g., 000001-title.md)
+      // to maintain backwards compatibility
+      const legacyMatch = basename.match(/^(\d{6})/);
+      if (legacyMatch && !prefixedMatch) {
+        const value = parseInt(legacyMatch[1], 10);
+        if (!isNaN(value)) {
+          numbers.push(value);
         }
       }
     }

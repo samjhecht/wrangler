@@ -83,7 +83,7 @@ describe('MarkdownIssueProvider', () => {
 
       const issue = await provider.createIssue(request);
 
-      expect(issue.id).toBe('000001');
+      expect(issue.id).toBe('ISS-000001');
       expect(issue.title).toBe('Test Issue');
       expect(issue.description).toBe('This is a test issue description');
       expect(issue.type).toBe('issue');
@@ -96,7 +96,7 @@ describe('MarkdownIssueProvider', () => {
       const issuesDir = path.join(testDir, '.wrangler/issues');
       const files = await fs.readdir(issuesDir);
       expect(files).toHaveLength(1);
-      expect(files[0]).toMatch(/^000001-test-issue\.md$/);
+      expect(files[0]).toMatch(/^ISS-000001-test-issue\.md$/);
     });
 
     it('should create file with correct frontmatter and content', async () => {
@@ -117,7 +117,7 @@ describe('MarkdownIssueProvider', () => {
       const filePath = path.join(issuesDir, files[0]);
       const content = await fs.readFile(filePath, 'utf-8');
 
-      expect(content).toContain('id: \'000001\'');
+      expect(content).toContain('id: ISS-000001');
       expect(content).toContain('title: Test Issue');
       expect(content).toContain('status: in_progress');
       expect(content).toContain('priority: high');
@@ -163,9 +163,24 @@ describe('MarkdownIssueProvider', () => {
       const issue2 = await provider.createIssue({ title: 'Second', description: 'Second issue' });
       const issue3 = await provider.createIssue({ title: 'Third', description: 'Third issue' });
 
-      expect(issue1.id).toBe('000001');
-      expect(issue2.id).toBe('000002');
-      expect(issue3.id).toBe('000003');
+      expect(issue1.id).toBe('ISS-000001');
+      expect(issue2.id).toBe('ISS-000002');
+      expect(issue3.id).toBe('ISS-000003');
+    });
+
+    it('should use per-type counters (issues and specs have independent IDs)', async () => {
+      const issue1 = await provider.createIssue({ title: 'Issue 1', description: 'First issue', type: 'issue' });
+      const spec1 = await provider.createIssue({ title: 'Spec 1', description: 'First spec', type: 'specification' });
+      const idea1 = await provider.createIssue({ title: 'Idea 1', description: 'First idea', type: 'idea' });
+      const issue2 = await provider.createIssue({ title: 'Issue 2', description: 'Second issue', type: 'issue' });
+      const spec2 = await provider.createIssue({ title: 'Spec 2', description: 'Second spec', type: 'specification' });
+
+      // Each type has its own counter
+      expect(issue1.id).toBe('ISS-000001');
+      expect(spec1.id).toBe('SPEC-000001');
+      expect(idea1.id).toBe('IDEA-000001');
+      expect(issue2.id).toBe('ISS-000002');
+      expect(spec2.id).toBe('SPEC-000002');
     });
 
     it('should handle special characters in title', async () => {
@@ -178,7 +193,7 @@ describe('MarkdownIssueProvider', () => {
 
       const issuesDir = path.join(testDir, '.wrangler/issues');
       const files = await fs.readdir(issuesDir);
-      expect(files[0]).toMatch(/^000001-fix-bug-with-userpackage-urgent\.md$/);
+      expect(files[0]).toMatch(/^ISS-000001-fix-bug-with-userpackage-urgent\.md$/);
     });
 
     it('should handle wranglerContext correctly', async () => {
@@ -595,8 +610,8 @@ describe('MarkdownIssueProvider', () => {
     });
 
     it('should sort by priority', async () => {
-      await provider.updateIssue({ id: '000001', priority: 'high' });
-      await provider.updateIssue({ id: '000002', priority: 'low' });
+      await provider.updateIssue({ id: 'ISS-000001', priority: 'high' });
+      await provider.updateIssue({ id: 'ISS-000002', priority: 'low' });
 
       const results = await provider.searchIssues({
         query: '',
@@ -768,12 +783,13 @@ describe('MarkdownIssueProvider', () => {
   describe('counter generation', () => {
     it('should start counter at 1', async () => {
       const issue = await provider.createIssue({ title: 'First', description: 'Desc' });
-      expect(issue.id).toBe('000001');
+      expect(issue.id).toBe('ISS-000001');
     });
 
-    it('should detect highest existing counter', async () => {
+    it('should detect highest existing counter for same type', async () => {
       const issuesDir = path.join(testDir, '.wrangler/issues');
       await fs.ensureDir(issuesDir);
+      // Create legacy format file (without prefix)
       await fs.writeFile(
         path.join(issuesDir, '000005-existing.md'),
         '---\nid: \'000005\'\ntitle: Existing\n---\nContent'
@@ -782,21 +798,43 @@ describe('MarkdownIssueProvider', () => {
       const newProvider = new MarkdownIssueProvider(settings, config);
       const issue = await newProvider.createIssue({ title: 'New', description: 'Desc' });
 
-      expect(issue.id).toBe('000006');
+      // Should continue from highest counter in issues dir (legacy support)
+      expect(issue.id).toBe('ISS-000006');
     });
 
-    it('should scan across all collection types', async () => {
-      const specsDir = path.join(testDir, '.wrangler/specifications');
-      await fs.ensureDir(specsDir);
+    it('should detect highest existing counter with new prefix format', async () => {
+      const issuesDir = path.join(testDir, '.wrangler/issues');
+      await fs.ensureDir(issuesDir);
+      // Create new format file (with prefix)
       await fs.writeFile(
-        path.join(specsDir, '000010-spec.md'),
-        '---\nid: \'000010\'\ntitle: Spec\n---\nContent'
+        path.join(issuesDir, 'ISS-000007-existing.md'),
+        '---\nid: ISS-000007\ntitle: Existing\n---\nContent'
       );
 
       const newProvider = new MarkdownIssueProvider(settings, config);
       const issue = await newProvider.createIssue({ title: 'New', description: 'Desc' });
 
-      expect(issue.id).toBe('000011');
+      expect(issue.id).toBe('ISS-000008');
+    });
+
+    it('should use independent counters per type (not scan across types)', async () => {
+      const specsDir = path.join(testDir, '.wrangler/specifications');
+      await fs.ensureDir(specsDir);
+      await fs.writeFile(
+        path.join(specsDir, 'SPEC-000010-spec.md'),
+        '---\nid: SPEC-000010\ntitle: Spec\n---\nContent'
+      );
+
+      const newProvider = new MarkdownIssueProvider(settings, config);
+      // Creating an issue should NOT be affected by spec counter
+      const issue = await newProvider.createIssue({ title: 'New', description: 'Desc', type: 'issue' });
+
+      // Issue counter starts at 1 (independent of specs)
+      expect(issue.id).toBe('ISS-000001');
+
+      // Spec counter continues from 10
+      const spec = await newProvider.createIssue({ title: 'New Spec', description: 'Desc', type: 'specification' });
+      expect(spec.id).toBe('SPEC-000011');
     });
   });
 
@@ -812,7 +850,7 @@ describe('MarkdownIssueProvider', () => {
 
       const issuesDir = path.join(testDir, '.wrangler/issues');
       const files = await fs.readdir(issuesDir);
-      expect(files[0]).toMatch(/^000001-test-issue\.md$/);
+      expect(files[0]).toMatch(/^ISS-000001-test-issue\.md$/);
     });
 
     it('should use slug naming strategy', async () => {
@@ -826,7 +864,7 @@ describe('MarkdownIssueProvider', () => {
 
       const issuesDir = path.join(testDir, '.wrangler/issues');
       const files = await fs.readdir(issuesDir);
-      expect(files[0]).toMatch(/^test-issue-000001\.md$/);
+      expect(files[0]).toMatch(/^test-issue-ISS-000001\.md$/);
     });
 
     it('should use timestamp naming strategy', async () => {

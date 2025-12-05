@@ -398,11 +398,12 @@ export class MarkdownIssueProvider extends IssueProvider {
         switch (this.settings.fileNaming) {
             case 'timestamp':
                 return `${Date.now()}-${this.slugify(title)}.md`;
-            case 'counter':
-                return `${id}-${this.slugify(title)}.md`;
             case 'slug':
-            default:
                 return `${this.slugify(title)}-${id}.md`;
+            case 'counter':
+            default:
+                // Default to counter format: ID first for better sorting
+                return `${id}-${this.slugify(title)}.md`;
         }
     }
     slugify(text) {

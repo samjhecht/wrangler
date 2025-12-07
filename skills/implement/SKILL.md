@@ -168,16 +168,31 @@ After scope is parsed and tasks are loaded, execute them in order.
    ...
    ```
 
-2. **Verify working directory**
+2. **Verify and capture working directory**
 
-   Check current working directory:
+   **CRITICAL:** Capture the ABSOLUTE path for subagent context:
    ```bash
-   pwd
-   git branch --show-current
+   WORK_DIR="$(pwd)"
+   WORK_BRANCH="$(git branch --show-current)"
+   GIT_ROOT="$(git rev-parse --show-toplevel)"
+
+   echo "Working directory: $WORK_DIR"
+   echo "Git root: $GIT_ROOT"
+   echo "Branch: $WORK_BRANCH"
+
+   # Check if this is a worktree
+   if [ "$GIT_ROOT" != "$(git rev-parse --git-common-dir | xargs dirname)" ]; then
+     echo "STATUS: Working in git worktree"
+     IS_WORKTREE=true
+   else
+     echo "STATUS: Working in main repository"
+     IS_WORKTREE=false
+   fi
    ```
 
-   You can work in main branch OR worktree - no preference.
-   If in worktree, subagents inherit that directory.
+   **Store these values** - you'll need them for every subagent prompt.
+
+   **If working in a worktree:** All subagent prompts MUST include worktree isolation protocol (see step 2b below).
 
 3. **Check dependencies**
 
@@ -205,6 +220,42 @@ Description: "Implement Task [N]: [title]"
 Prompt: |
   You are implementing Task [N] from [scope reference].
 
+  ## CRITICAL: Working Directory Context
+
+  **Working directory:** [ABSOLUTE_WORK_DIR from setup phase]
+  **Branch:** [WORK_BRANCH from setup phase]
+  **Git root:** [GIT_ROOT from setup phase]
+
+  ### MANDATORY: Verify Location First
+
+  Before ANY work, run this verification:
+
+  ```bash
+  cd [ABSOLUTE_WORK_DIR] && \
+    echo "=== LOCATION VERIFICATION ===" && \
+    echo "Directory: $(pwd)" && \
+    echo "Git root: $(git rev-parse --show-toplevel)" && \
+    echo "Branch: $(git branch --show-current)" && \
+    echo "Expected: [ABSOLUTE_WORK_DIR] on [WORK_BRANCH]" && \
+    test "$(pwd)" = "[ABSOLUTE_WORK_DIR]" && echo "VERIFIED" || echo "FAILED - STOP"
+  ```
+
+  **If verification fails, STOP immediately and report the mismatch.**
+
+  ### Command Pattern (REQUIRED)
+
+  ALL bash commands MUST use this pattern:
+  ```bash
+  cd [ABSOLUTE_WORK_DIR] && [your command]
+  ```
+
+  Examples:
+  - Tests: `cd [ABSOLUTE_WORK_DIR] && npm test`
+  - Git: `cd [ABSOLUTE_WORK_DIR] && git status`
+  - Build: `cd [ABSOLUTE_WORK_DIR] && npm run build`
+
+  **Never run git commands without the `cd [ABSOLUTE_WORK_DIR] &&` prefix.**
+
   ## Task Requirements
 
   [Full task description from task.description]
@@ -219,12 +270,14 @@ Prompt: |
 
   ## Your Job
 
-  1. **Follow TDD** (test-driven-development skill):
+  1. **Verify location** (FIRST - see above)
+
+  2. **Follow TDD** (test-driven-development skill):
      - RED: Write failing test first
      - GREEN: Implement minimal code to pass
      - REFACTOR: Improve code quality
 
-  2. **Create TDD Compliance Certification**
+  3. **Create TDD Compliance Certification**
      For each function you implement, document:
      - Function name and signature
      - Test file path
@@ -238,26 +291,25 @@ Prompt: |
      | funcName | test.ts:L | YES/NO        | YES/NO        | ...   |
      ```
 
-  3. **Verify implementation works**
-     - Run tests
+  4. **Verify implementation works**
+     - Run tests: `cd [ABSOLUTE_WORK_DIR] && npm test`
      - Check for errors/warnings
      - Ensure requirements met
 
-  4. **Commit your work**
+  5. **Commit your work**
      ```bash
-     git add [files]
-     git commit -m "[type]: [description]"
+     cd [ABSOLUTE_WORK_DIR] && git add [files] && git commit -m "[type]: [description]"
      ```
 
-  5. **Report back**
+  6. **Report back**
      Provide:
+     - **Location verification output** (proving correct directory)
      - Summary of what you implemented
      - Test results (pass/fail counts, output)
      - TDD Compliance Certification table
      - Files changed
+     - Commit hash: `cd [ABSOLUTE_WORK_DIR] && git rev-parse HEAD`
      - Any issues or blockers encountered
-
-  Work from: [current directory]
 
   IMPORTANT: If you encounter unclear requirements or missing information,
   STOP and report the blocker. Do not guess or make assumptions.
@@ -267,11 +319,17 @@ Prompt: |
 
 Check subagent's report for:
 
+- ✅ **Location verification output** (MUST show "VERIFIED")
 - ✅ Implementation summary provided
 - ✅ Test results provided (all passing)
 - ✅ TDD Compliance Certification included
 - ✅ Files changed list provided
 - ✅ Work committed to git
+- ✅ Commit hash provided
+
+**If location verification missing or shows "FAILED":**
+→ STOP - subagent may have worked in wrong directory
+→ Verify where commits actually landed before proceeding
 
 **If certification missing:**
 → STOP and request: "Please provide TDD Compliance Certification for functions implemented"

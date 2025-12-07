@@ -1,8 +1,13 @@
 ---
-name: /wrangler:setup-design-system
 description: Initialize a design system for your project using Figma integration
 ---
 
-I'll help you set up a design system for your project using Figma.
+## Invoke Skill
 
-I'm invoking the `design-system-setup` skill to guide you through the process.
+Use the Skill tool to load the design-system-setup skill:
+
+```
+Skill: design-system-setup
+```
+
+The skill contains the full workflow for initializing a design system with Figma integration.

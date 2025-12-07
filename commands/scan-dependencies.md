@@ -1,9 +1,13 @@
-Activate the `dependency-opportunity-scanner` skill to analyze the codebase for opportunities to replace custom implementations with well-maintained open source libraries. The workflow will:
+---
+description: Scan codebase for opportunities to replace custom code with well-maintained libraries
+---
 
-1. Scan codebase in parallel (patterns, dependencies, code quality)
-2. Research best library options for identified opportunities
-3. Present top opportunities with cost/benefit analysis for your selection
-4. Create isolated git worktree and implement the refactoring
-5. Submit PR to GitHub with comprehensive analysis
+## Invoke Skill
 
-This is a multi-phase workflow that ends with a PR ready for your review.
+Use the Skill tool to load the dependency-opportunity-scanner skill:
+
+```
+Skill: dependency-opportunity-scanner
+```
+
+The skill contains the full workflow for analyzing the codebase, researching library options, and creating a PR with the refactoring.

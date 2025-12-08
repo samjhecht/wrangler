@@ -1,5 +1,5 @@
 ---
-id: '000037'
+id: SPEC-000004
 title: Add 'idea' artifact type support to MCP server
 type: specification
 status: closed

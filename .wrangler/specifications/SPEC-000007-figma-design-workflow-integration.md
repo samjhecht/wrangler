@@ -1,5 +1,5 @@
 ---
-id: '000037'
+id: SPEC-000007
 title: Figma Design Workflow Integration for Wrangler
 type: specification
 status: open

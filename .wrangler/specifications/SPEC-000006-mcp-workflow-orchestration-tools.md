@@ -1,5 +1,5 @@
 ---
-id: '000037'
+id: SPEC-000006
 title: Design MCP workflow orchestration tools to reduce brittleness
 type: specification
 status: open

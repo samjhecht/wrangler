@@ -1,5 +1,5 @@
 ---
-id: '000037'
+id: SPEC-000005
 title: >-
   Create /validate-session-adherence command for skill/workflow compliance
   checking

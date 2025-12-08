@@ -149,11 +149,31 @@ go test ./...
 
 **If tests pass:** Report ready.
 
-### 5. Report Location
+### 5. Store Absolute Path
+
+**CRITICAL:** Capture and store the absolute path for subagent use:
+
+```bash
+# Store absolute path (resolves any symlinks)
+WORKTREE_ABSOLUTE="$(cd "$path" && pwd -P)"
+WORKTREE_BRANCH="$BRANCH_NAME"
+
+echo "WORKTREE_ABSOLUTE=$WORKTREE_ABSOLUTE"
+echo "WORKTREE_BRANCH=$WORKTREE_BRANCH"
+```
+
+**These values MUST be passed to all subagents** working in this worktree.
+
+### 6. Report Location
 
 ```
-Worktree ready at <full-path>
+Worktree ready at: $WORKTREE_ABSOLUTE
+Branch: $WORKTREE_BRANCH
 Tests passing (<N> tests, 0 failures)
+
+IMPORTANT: For all work in this worktree, use this command pattern:
+  cd $WORKTREE_ABSOLUTE && [command]
+
 Ready to implement <feature-name>
 ```
 
@@ -224,14 +244,45 @@ Ready to implement auth feature
 - Auto-detect and run project setup
 - Verify clean test baseline
 
+## Worktree Isolation (CRITICAL)
+
+**Problem:** Claude Code resets working directory between Bash calls. Subagents don't inherit your location context.
+
+**Solution:** See `worktree-isolation` skill for the full protocol. Key points:
+
+1. **Always chain commands:** `cd $WORKTREE && git status` (not separate calls)
+2. **Pass absolute path to subagents:** Include verification in every subagent prompt
+3. **Verify before git operations:** Check you're in the right place before committing
+
+**Required subagent prompt pattern:**
+```markdown
+## Working Directory (CRITICAL)
+
+Worktree: [WORKTREE_ABSOLUTE]
+Branch: [WORKTREE_BRANCH]
+
+### Verify First (MANDATORY)
+```bash
+cd [WORKTREE_ABSOLUTE] && \
+  echo "Directory: $(pwd)" && \
+  echo "Branch: $(git branch --show-current)" && \
+  test "$(pwd)" = "[WORKTREE_ABSOLUTE]" && echo "VERIFIED" || echo "FAILED"
+```
+
+### Command Pattern
+ALL commands: `cd [WORKTREE_ABSOLUTE] && [command]`
+```
+
 ## Integration
 
 **Called by:**
 
 - **brainstorming** (Phase 5) - Optional for isolation when design is approved and implementation follows
+- **implement** - When user wants isolated workspace for implementation
 - Any skill needing isolated workspace
 
 **Pairs with:**
 
+- **worktree-isolation** - MUST use when dispatching subagents to work in worktree
 - **finishing-a-development-branch** - Optional cleanup after work complete (handles both worktree and non-worktree cases)
-- **executing-plans** or **subagent-driven-development** - Work happens in worktree or main branch
+- **implement** - Work happens in worktree with isolation protocol

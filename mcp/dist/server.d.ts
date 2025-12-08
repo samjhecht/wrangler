@@ -10,6 +10,7 @@ export declare class WranglerMCPServer {
     private server;
     private config;
     private providerFactory;
+    private sessionStorage;
     private transport;
     private debug;
     constructor(config?: WranglerMCPConfig);

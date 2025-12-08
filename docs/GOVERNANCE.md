@@ -1,7 +1,7 @@
 # Governance Framework User Guide
 
-**Version**: 1.0.0
-**Last Updated**: 2024-11-18
+**Version**: 1.2.0
+**Last Updated**: 2025-12-07
 
 This guide explains the wrangler governance framework and how to use it to maintain perfect alignment between AI assistant and human partner on project direction, design principles, and tactical execution.
 
@@ -73,11 +73,11 @@ Claude Code will:
 
 ### First Steps After Setup
 
-1. **Read Your Constitution**: `.wrangler/specifications/_CONSTITUTION.md`
+1. **Read Your Constitution**: `.wrangler/CONSTITUTION.md`
    - Verify principles match your vision
    - Refine any ambiguities using `constitution` skill
 
-2. **Review Your Roadmap**: `.wrangler/specifications/_ROADMAP.md`
+2. **Review Your Roadmap**: `.wrangler/ROADMAP.md`
    - Confirm phases and timelines
    - Adjust priorities if needed
 
@@ -92,7 +92,7 @@ Claude Code will:
 
 ### Tier 1: Constitution (Supreme Law)
 
-**File**: `.wrangler/specifications/_CONSTITUTION.md`
+**File**: `.wrangler/CONSTITUTION.md`
 
 **Purpose**: Immutable design principles that govern ALL decisions
 
@@ -129,7 +129,7 @@ Claude Code will:
 
 ### Tier 2: Strategic Roadmap
 
-**File**: `.wrangler/specifications/_ROADMAP.md`
+**File**: `.wrangler/ROADMAP.md`
 
 **Purpose**: Multi-phase strategic plan showing project direction
 
@@ -167,7 +167,7 @@ Claude Code will:
 
 ### Tier 3: Tactical Execution
 
-**File**: `.wrangler/specifications/_ROADMAP__NEXT_STEPS.md`
+**File**: `.wrangler/ROADMAP_NEXT_STEPS.md`
 
 **Purpose**: Granular tracking of implementation status with % completion
 
@@ -241,9 +241,9 @@ mkdir -p .wrangler/issues
 mkdir -p .wrangler/templates
 
 # 2. Copy templates from wrangler
-cp /path/to/wrangler/skills/governance/constitution/templates/_CONSTITUTION.md .wrangler/specifications/
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP.md .wrangler/specifications/
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/specifications/
+cp /path/to/wrangler/skills/constitution/templates/_CONSTITUTION.md .wrangler/CONSTITUTION.md
+cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP.md .wrangler/ROADMAP.md
+cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/ROADMAP_NEXT_STEPS.md
 
 # 3. Fill in placeholders
 # Edit files to replace [PROJECT_NAME], add principles, etc.
@@ -296,7 +296,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 5. **Update Next Steps**
 
-   As features complete, mark in `_ROADMAP__NEXT_STEPS.md`:
+   As features complete, mark in `ROADMAP_NEXT_STEPS.md`:
    - ❌ → ⚠️ when starting
    - ⚠️ → ✅ when complete
 
@@ -553,7 +553,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 ### _CONSTITUTION.md Template
 
-**Location**: `skills/governance/constitution/templates/_CONSTITUTION.md`
+**Location**: `skills/constitution/templates/_CONSTITUTION.md`
 
 **Key Sections**:
 - Version tracking
@@ -570,7 +570,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 ### _ROADMAP.md Template
 
-**Location**: `skills/governance/roadmap/templates/_ROADMAP.md`
+**Location**: `skills/validating-roadmap/templates/_ROADMAP.md`
 
 **Key Sections**:
 - Overview and current state
@@ -586,7 +586,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 ### _ROADMAP__NEXT_STEPS.md Template
 
-**Location**: `skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md`
+**Location**: `skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md`
 
 **Key Sections**:
 - Executive summary (% complete)
@@ -600,7 +600,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 ### specification.md Template
 
-**Location**: `skills/governance/templates/specification.md`
+**Location**: `skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md`
 
 **Key Sections**:
 - **Constitutional Alignment** (mandatory)
@@ -617,7 +617,7 @@ cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md
 
 ### issue.md Template
 
-**Location**: `skills/governance/templates/issue.md`
+**Location**: `skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md`
 
 **Key Sections**:
 - YAML frontmatter with all fields
@@ -721,7 +721,7 @@ The `ideas/` directory captures early-stage concepts and proposals before they b
 
 ### Idea File Structure
 
-**Location**: `ideas/{descriptive-name}.md`
+**Location**: `.wrangler/ideas/{descriptive-name}.md`
 
 **Template**:
 ```markdown
@@ -875,26 +875,26 @@ Before approving an idea, validate it against the constitution:
 ```markdown
 ## Related Artifacts
 
-**Original Idea**: `ideas/self-healing-mcp-plugin.md`
+**Original Idea**: `.wrangler/ideas/self-healing-mcp-plugin.md`
 **Specification**: `.wrangler/specifications/000042-self-healing-mcp.md` (Created 2025-12-01)
 **Implementation Issues**: #000123, #000124, #000125
 ```
 
 ### Example Ideas
 
-**Current Ideas** (as of 2025-11-18):
+**Current Ideas** (as of 2025-12-07):
 
-1. **`ideas/self-healing-mcp-plugin.md`**
+1. **`.wrangler/ideas/self-healing-mcp-plugin.md`**
    - **Concept**: Bundle MCP source code in plugin, enable AI-driven bug fixing with PR submission
    - **Status**: Brainstorming
    - **Key Innovation**: Plugin can fix itself and contribute improvements back upstream
 
-2. **`ideas/adaptive-workflow-modes.md`**
+2. **`.wrangler/ideas/adaptive-workflow-modes.md`**
    - **Concept**: Use `.wrangler/settings.json` to configure workflow modes (DOUBLE_CHECK, FAST, BALANCED, EXPLORATION) with automatic quality gates
    - **Status**: Brainstorming
    - **Key Innovation**: Trade latency for quality via configuration, intelligent parallelization
 
-3. **`ideas/verification-workflow-layer.md`**
+3. **`.wrangler/ideas/verification-workflow-layer.md`**
    - **Concept**: Wrap every user request in transparent verification layer with parallel subagents (test runner, constitutional compliance, requirements fulfillment, code review)
    - **Status**: Brainstorming
    - **Key Innovation**: Quality firewall prevents premature completion claims, ensures "demanding user with high standards" would be satisfied
@@ -925,7 +925,7 @@ Before approving an idea, validate it against the constitution:
 **How to Archive**:
 1. Update status field
 2. Add "Archived" note with reason
-3. Move to `ideas/archive/` subdirectory (optional)
+3. Move to `.wrangler/ideas/archive/` subdirectory (optional)
 4. Preserve for historical reference
 
 **Example**:
@@ -1078,12 +1078,12 @@ Tell Claude Code: **"Initialize governance framework"**
 - Run `housekeeping` for comprehensive cleanup
 
 **For More Details**:
-- Read your project's `_CONSTITUTION.md`
-- Review skill files in `skills/governance/*/SKILL.md`
-- Check templates in `skills/governance/*/templates/`
+- Read your project's `.wrangler/CONSTITUTION.md`
+- Review governance-related skills: `constitution`, `check-constitutional-alignment`, `initialize-governance`, `verify-governance`
+- Check templates in skill-specific directories (e.g., `skills/constitution/templates/`)
 
 ---
 
-**Last Updated**: 2024-11-18
-**Version**: 1.0.0
+**Last Updated**: 2025-12-07
+**Version**: 1.2.0
 **License**: MIT

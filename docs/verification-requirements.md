@@ -689,10 +689,10 @@ See `docs/workflows.md` for how these verification requirements integrate into:
 
 ## References
 
-- **TDD Skill**: `skills/testing/test-driven-development/SKILL.md`
-- **Verification Skill**: `skills/quality/verification-before-completion/SKILL.md`
-- **Code Review Skill**: `skills/collaboration/code-review/SKILL.md`
-- **Testing Anti-Patterns**: `skills/testing/testing-anti-patterns/SKILL.md`
+- **TDD Skill**: `skills/test-driven-development/SKILL.md`
+- **Verification Skill**: `skills/verification-before-completion/SKILL.md`
+- **Code Review Skill**: `skills/code-review/SKILL.md`
+- **Testing Anti-Patterns**: `skills/testing-anti-patterns/SKILL.md`
 - **Workflows**: `docs/workflows.md`
 
 ---

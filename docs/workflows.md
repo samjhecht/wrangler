@@ -6,7 +6,7 @@ This document describes the major workflows that AI agents should follow when us
 
 ### 1. Test-Driven Development (TDD) Workflow
 
-**Skill**: `skills/testing/test-driven-development/SKILL.md`
+**Skill**: `skills/test-driven-development/SKILL.md`
 
 **When**: Always when implementing features, fixing bugs, or changing behavior
 
@@ -80,7 +80,7 @@ Before claiming work complete, provide certification:
 
 ### 2. Verification Before Completion Workflow
 
-**Skill**: `skills/quality/verification-before-completion/SKILL.md`
+**Skill**: `skills/verification-before-completion/SKILL.md`
 
 **When**: Before ANY completion claim, success claim, or satisfaction expression
 
@@ -158,8 +158,8 @@ Must verify:
 ### 3. Code Review Workflow
 
 **Skills**:
-- `skills/collaboration/requesting-code-review/SKILL.md` (requester)
-- `skills/collaboration/code-review/SKILL.md` (reviewer)
+- `skills/requesting-code-review/SKILL.md` (requester)
+- `skills/code-review/SKILL.md` (reviewer)
 
 **When**: After implementing ANY code changes (see exceptions above)
 
@@ -228,8 +228,8 @@ Must verify:
 ### 4. Subagent Dispatch Workflow
 
 **Skills**:
-- `skills/collaboration/dispatching-parallel-agents/SKILL.md`
-- `skills/project-management/writing-plans/SKILL.md` (uses subagents via /wrangler:implement)
+- `skills/dispatching-parallel-agents/SKILL.md`
+- `skills/writing-plans/SKILL.md` (uses subagents via /wrangler:implement)
 
 **When**: 3+ independent failures OR complex implementation with multiple tasks
 
@@ -299,7 +299,7 @@ After agents return:
 
 ### 5. Implementation Planning Workflow
 
-**Skill**: `skills/project-management/writing-plans/SKILL.md`
+**Skill**: `skills/writing-plans/SKILL.md`
 
 **When**: Design is complete, need detailed implementation tasks
 
@@ -363,7 +363,7 @@ Ready to implement? Use `/wrangler:implement`
 
 ### 6. Constitutional Alignment Workflow
 
-**Skill**: `skills/governance/check-constitutional-alignment/SKILL.md`
+**Skill**: `skills/check-constitutional-alignment/SKILL.md`
 
 **When**: Before creating specifications, during feature discussions, reviewing PRs, roadmap updates
 
@@ -549,13 +549,13 @@ Claims without evidence violate verification-before-completion.
 
 ## Cross-References
 
-- **TDD Details**: See `skills/testing/test-driven-development/SKILL.md`
-- **Verification Details**: See `skills/quality/verification-before-completion/SKILL.md`
-- **Code Review Details**: See `skills/collaboration/code-review/SKILL.md`
-- **Subagent Details**: See `skills/collaboration/dispatching-parallel-agents/SKILL.md`
-- **Planning Details**: See `skills/project-management/writing-plans/SKILL.md`
-- **Constitutional Checks**: See `skills/governance/check-constitutional-alignment/SKILL.md`
-- **Testing Anti-Patterns**: See `skills/testing/testing-anti-patterns/SKILL.md`
+- **TDD Details**: See `skills/test-driven-development/SKILL.md`
+- **Verification Details**: See `skills/verification-before-completion/SKILL.md`
+- **Code Review Details**: See `skills/code-review/SKILL.md`
+- **Subagent Details**: See `skills/dispatching-parallel-agents/SKILL.md`
+- **Planning Details**: See `skills/writing-plans/SKILL.md`
+- **Constitutional Checks**: See `skills/check-constitutional-alignment/SKILL.md`
+- **Testing Anti-Patterns**: See `skills/testing-anti-patterns/SKILL.md`
 - **Verification Requirements**: See `docs/verification-requirements.md`
 - **Skill Invocation Patterns**: See `docs/skill-invocation-patterns.md`
 

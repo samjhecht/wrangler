@@ -24,14 +24,14 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Systematic issue and specification tracking
    - Automated governance verification and maintenance
 
-2. **Skills Library** (39 skills)
+2. **Skills Library** (47 skills)
    - Proven techniques, patterns, and workflows
    - Covers testing, debugging, planning, code review, governance, design systems
    - Mandatory when applicable - no rationalizing away
    - Discoverable and composable
 
 3. **Built-in MCP Server**
-   - 11 tools for issue and specification management
+   - 16 tools (11 issue management + 5 session orchestration)
    - Markdown-based storage (git-tracked)
    - Automatic workspace initialization
    - Full-text search and metadata queries
@@ -72,18 +72,12 @@ wrangler/
 │   ├── config/                    # Runtime config (gitignored)
 │   └── logs/                      # Runtime logs (gitignored)
 │
-├── skills/                        # Skills library (main value proposition)
-│   ├── codebase-analysis/         # Locating, analyzing, understanding code
-│   ├── collaboration/             # Code review, team workflows, parallel work
-│   ├── debugging/                 # Systematic debugging, root cause analysis
-│   ├── design/                    # Frontend design, Figma workflows
-│   ├── governance/                # Constitution, roadmap, verification
-│   ├── implement/                 # Implementation orchestration
-│   ├── planning/                  # Brainstorming, roadmap validation, research
-│   ├── project-management/        # Creating/managing issues, specs, plans, ideas
-│   ├── quality/                   # Pre-completion verification, dependency scanning
-│   ├── testing/                   # TDD, anti-patterns, frontend testing
-│   └── wrangler/                  # Wrangler meta skills (housekeeping, migrations)
+├── skills/                        # Skills library (flat structure, 47 skills)
+│   ├── {skill-name}/              # Each skill in its own directory
+│   │   ├── SKILL.md               # Skill definition and instructions
+│   │   └── templates/             # Optional templates for the skill
+│   ├── ...                        # Skills cover: debugging, testing, governance,
+│   │                              # collaboration, design, implementation, etc.
 │
 ├── mcp/                           # Built-in MCP server
 │   ├── types/                     # TypeScript type definitions
@@ -94,7 +88,7 @@ wrangler/
 │   │   ├── base.ts                # Abstract provider interface
 │   │   ├── factory.ts             # Provider factory
 │   │   └── markdown.ts            # Markdown-based storage (540 lines)
-│   ├── tools/issues/              # 11 MCP tools for issue management
+│   ├── tools/issues/              # 16 MCP tools (11 issue + 5 session)
 │   │   ├── create.ts              # issues_create
 │   │   ├── list.ts                # issues_list
 │   │   ├── search.ts              # issues_search
@@ -895,11 +889,11 @@ const result = await createIssueTool({
 - **MCP Server Entry**: `mcp/index.ts`
 - **Server Class**: `mcp/server.ts`
 - **Provider**: `mcp/providers/markdown.ts`
-- **Tools**: `mcp/tools/issues/*.ts`
+- **Tools**: `mcp/tools/issues/*.ts`, `mcp/tools/sessions/*.ts`
 - **Tests**: `mcp/__tests__/**/*.test.ts`
 - **Config**: `.claude-plugin/plugin.json`
-- **Issues**: `issues/*.md`
-- **Specs**: `specifications/*.md`
+- **Issues**: `.wrangler/issues/*.md`
+- **Specs**: `.wrangler/specifications/*.md`
 
 ### Important Commands
 
@@ -957,7 +951,7 @@ npm run mcp:dev                # Debug mode
 - **[README.md](README.md)** - Quick start and overview
 - **[docs/MCP-USAGE.md](docs/MCP-USAGE.md)** - Comprehensive MCP usage guide
   - Getting started
-  - All 11 tools with examples
+  - All 16 tools with examples
   - Workflows and best practices
   - Troubleshooting
 - **[docs/GOVERNANCE.md](docs/GOVERNANCE.md)** - Governance framework guide
@@ -1029,9 +1023,13 @@ npm run mcp:dev                # Debug mode
 
 ## Version History
 
-### v1.1.0 (November 18, 2025) [In Development]
+### v1.2.0 (December 7, 2025)
 
-**Centralized .wrangler/ Directory & Versioning System**:
+**Centralized .wrangler/ Directory & Session Orchestration**:
+- ✅ Centralized `.wrangler/` directory structure for all governance files
+- ✅ Constitution at `.wrangler/CONSTITUTION.md` (top-level, not in subdirectory)
+- ✅ 5 new session orchestration MCP tools (16 total)
+- ✅ 47 skills (expanded from 39)
 - ✅ Versioning system with wranglerVersion in constitution frontmatter
 - ✅ Release notes tracking in `skills/.wrangler-releases/`
 - ✅ Startup version check skill (SUCCESS/WARN/OUTDATED signals)
@@ -1041,9 +1039,6 @@ npm run mcp:dev                # Debug mode
   - Versioning and update workflows
   - Slash commands reference
   - Governance framework guide
-- 🚧 `.wrangler/` directory consolidation (planned)
-- 🚧 Cache settings configuration (planned)
-- 🚧 Automated migration script (planned)
 
 ### v1.0.0 (October 29, 2024)
 
@@ -1068,5 +1063,5 @@ npm run mcp:dev                # Debug mode
 
 ---
 
-**Last Updated**: October 29, 2024
-**Document Version**: 1.0.0
+**Last Updated**: December 7, 2025
+**Document Version**: 1.2.0

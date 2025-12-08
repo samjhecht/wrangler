@@ -72,19 +72,19 @@
       "path": ".wrangler/CONSTITUTION.md",
       "description": "Immutable design principles - supreme law of the project",
       "required": false,
-      "template": "skills/governance/constitution/templates/_CONSTITUTION.md"
+      "template": "skills/constitution/templates/_CONSTITUTION.md"
     },
     "roadmap": {
       "path": ".wrangler/ROADMAP.md",
       "description": "Strategic multi-phase roadmap",
       "required": false,
-      "template": "skills/governance/roadmap/templates/_ROADMAP.md"
+      "template": "skills/validating-roadmap/templates/_ROADMAP.md"
     },
     "nextSteps": {
       "path": ".wrangler/ROADMAP_NEXT_STEPS.md",
       "description": "Tactical execution tracker with completion metrics",
       "required": false,
-      "template": "skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md"
+      "template": "skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md"
     }
   },
 
@@ -92,12 +92,12 @@
     "issues": {
       "path": ".wrangler/issues/README.md",
       "description": "Issue management guide and metrics",
-      "template": "skills/governance/templates/issues-README.md"
+      "template": "skills/initialize-governance/templates/issues-README.md"
     },
     "specifications": {
       "path": ".wrangler/specifications/README.md",
       "description": "Specification management guide and metrics",
-      "template": "skills/governance/templates/specifications-README.md"
+      "template": "skills/initialize-governance/templates/specifications-README.md"
     },
     "memos": {
       "path": ".wrangler/memos/README.md",
@@ -113,12 +113,12 @@
     "issue": {
       "path": ".wrangler/templates/issue.md",
       "description": "Template for creating new issues",
-      "source": "skills/governance/templates/issue.md"
+      "source": "skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md"
     },
     "specification": {
       "path": ".wrangler/templates/specification.md",
       "description": "Template for creating new specifications",
-      "source": "skills/governance/templates/specification.md"
+      "source": "skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md"
     }
   },
 

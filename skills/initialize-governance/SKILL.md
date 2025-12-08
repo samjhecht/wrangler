@@ -99,7 +99,7 @@ Ensure all required directories exist:
 # Create directories if they don't exist
 mkdir -p .wrangler
 mkdir -p .wrangler/docs
-mkdir -p plans
+mkdir -p .wrangler/plans
 
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
@@ -144,11 +144,11 @@ For each core value, help user formulate as concrete principle:
 
 **3. Write Constitution File**
 
-Use the template from `skills/governance/constitution/templates/_CONSTITUTION.md`:
+Use the template from `skills/constitution/templates/_CONSTITUTION.md`:
 
 ```bash
-# Copy template
-cp /path/to/wrangler/skills/governance/constitution/templates/_CONSTITUTION.md .wrangler/CONSTITUTION.md
+# Copy template (if not using the skill to generate it)
+cp /path/to/wrangler/skills/constitution/templates/_CONSTITUTION.md .wrangler/CONSTITUTION.md
 ```
 
 Then use Edit tool to fill in:
@@ -196,11 +196,11 @@ For subsequent phases (can be less detailed):
 
 **3. Write Roadmap File**
 
-Use template from `skills/governance/roadmap/templates/_ROADMAP.md`:
+Use template from `skills/validating-roadmap/templates/_ROADMAP.md`:
 
 ```bash
-# Copy template
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP.md .wrangler/ROADMAP.md
+# Copy template (if not using the skill to generate it)
+cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP.md .wrangler/ROADMAP.md
 ```
 
 Fill in with Edit tool:
@@ -211,11 +211,11 @@ Fill in with Edit tool:
 
 **4. Write Next Steps File**
 
-Use template from `skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md`:
+Use template from `skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md`:
 
 ```bash
-# Copy template
-cp /path/to/wrangler/skills/governance/roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/ROADMAP_NEXT_STEPS.md
+# Copy template (if not using the skill to generate it)
+cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/ROADMAP_NEXT_STEPS.md
 ```
 
 Initial file should reflect current state:
@@ -226,10 +226,7 @@ Initial file should reflect current state:
 
 **1. Create Issues README**
 
-```bash
-# Copy template
-cp /path/to/wrangler/skills/governance/templates/issues-README.md .wrangler/issues/README.md
-```
+Create a minimal README with status metrics. No separate template file exists - create inline with essential content.
 
 Use Edit tool to:
 - Update "Status" section with current counts (run `issues_list` to get counts)
@@ -238,10 +235,7 @@ Use Edit tool to:
 
 **2. Create Specifications README**
 
-```bash
-# Copy template
-cp /path/to/wrangler/skills/governance/templates/specifications-README.md .wrangler/specifications/README.md
-```
+Create a minimal README with status metrics. No separate template file exists - create inline with essential content.
 
 Use Edit tool to:
 - Update "Status" section with current counts
@@ -256,14 +250,14 @@ Use Edit tool to:
 mkdir -p .wrangler/templates
 
 # Copy issue template
-cp /path/to/wrangler/skills/governance/templates/issue.md .wrangler/templates/issue.md
+cp /path/to/wrangler/skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md .wrangler/templates/issue.md
 ```
 
 **4. Add Specification Template to .wrangler/templates/**
 
 ```bash
 # Copy spec template
-cp /path/to/wrangler/skills/governance/templates/specification.md .wrangler/templates/specification.md
+cp /path/to/wrangler/skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md .wrangler/templates/specification.md
 ```
 
 ### Phase 5: Integration and Verification
@@ -511,7 +505,11 @@ Initialization is complete when:
 
 ## Important Notes
 
-**Template Paths**: All template files are in `/path/to/wrangler/skills/governance/*/templates/`
+**Template Paths**: Templates are in skill-specific directories:
+- Constitution: `skills/constitution/templates/`
+- Roadmap: `skills/validating-roadmap/templates/`
+- Issues: `skills/create-new-issue/templates/`
+- Specifications: `skills/writing-specifications/templates/`
 
 **Use Copy, Not Move**: Always copy templates, never move them (templates stay in wrangler)
 

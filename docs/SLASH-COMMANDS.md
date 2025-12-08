@@ -132,7 +132,7 @@ Let's start with some clarifying questions:
 ...
 ```
 
-**Related Skill**: `skills/collaboration/brainstorming/SKILL.md`
+**Related Skill**: `skills/brainstorming/SKILL.md`
 
 ---
 
@@ -187,7 +187,7 @@ export class User {
 [... more tasks ...]
 ```
 
-**Related Skill**: `skills/collaboration/writing-plans/SKILL.md`
+**Related Skill**: `skills/writing-plans/SKILL.md`
 
 ---
 
@@ -240,7 +240,7 @@ Results:
 Ready for next batch? (Tasks 2.1 - 2.3)
 ```
 
-**Related Skill**: `skills/collaboration/executing-plans/SKILL.md`
+**Related Skill**: `skills/executing-plans/SKILL.md` (if exists)
 
 ---
 
@@ -293,7 +293,7 @@ v1.1.0: Directory structure refactored
 Shall I proceed with migration?
 ```
 
-**Related Skill**: `skills/wrangler/startup-checklist/SKILL.md`
+**Related Skill**: `skills/startup-checklist/SKILL.md` (if exists)
 
 **Related Documentation**: [Versioning System](VERSIONING.md)
 

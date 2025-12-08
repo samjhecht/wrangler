@@ -1,7 +1,7 @@
 # Wrangler Versioning System
 
-**Version**: 1.1.0
-**Last Updated**: 2025-11-18
+**Version**: 1.2.0
+**Last Updated**: 2025-12-07
 
 This document explains wrangler's versioning system, automatic version detection, and self-update workflow.
 
@@ -47,9 +47,9 @@ PATCH: Bug fixes (backward compatible)
 
 ### Current Version
 
-**Latest**: 1.1.0 (Centralized `.wrangler/` directory)
+**Latest**: 1.2.0 (Centralized `.wrangler/` directory)
 
-**Your Project's Version**: Stored in `.wrangler/governance/CONSTITUTION.md` frontmatter
+**Your Project's Version**: Stored in `.wrangler/CONSTITUTION.md` frontmatter
 
 ---
 
@@ -59,8 +59,8 @@ PATCH: Bug fixes (backward compatible)
 
 | Location | Purpose | Format |
 |----------|---------|--------|
-| `skills/.wrangler-releases/CURRENT_VERSION` | Latest wrangler version | Plain text: `1.1.0` |
-| `.wrangler/governance/CONSTITUTION.md` | Project's wrangler version | YAML frontmatter |
+| `skills/.wrangler-releases/CURRENT_VERSION` | Latest wrangler version | Plain text: `1.2.0` |
+| `.wrangler/CONSTITUTION.md` | Project's wrangler version | YAML frontmatter |
 | `skills/.wrangler-releases/{version}.md` | Release notes per version | Markdown with frontmatter |
 
 ### Constitution Frontmatter
@@ -69,8 +69,8 @@ Every project's constitution includes version metadata:
 
 ```yaml
 ---
-wranglerVersion: "1.1.0"
-lastUpdated: "2025-11-18"
+wranglerVersion: "1.2.0"
+lastUpdated: "2025-12-07"
 ---
 
 # Project Constitution
@@ -81,13 +81,15 @@ lastUpdated: "2025-11-18"
 - `wranglerVersion`: Wrangler feature set and directory structure the project uses
 - `lastUpdated`: Date of last wrangler-related update (governance changes, version upgrades, etc.)
 
+**Note**: The constitution file is at `.wrangler/CONSTITUTION.md` (not in a `governance/` subdirectory).
+
 ### CURRENT_VERSION File
 
 **Location**: `skills/.wrangler-releases/CURRENT_VERSION`
 
 **Contents**: Single line with latest version number
 ```
-1.1.0
+1.2.0
 ```
 
 **Updated**: On each wrangler release
@@ -113,18 +115,18 @@ skills/.wrangler-releases/
 
 ```markdown
 ---
-version: "1.1.0"
-releaseDate: "2025-11-18"
+version: "1.2.0"
+releaseDate: "2025-12-07"
 breakingChanges: true
 migrationRequired: true
 ---
 
-# Wrangler v1.1.0 - Centralized .wrangler/ Directory
+# Wrangler v1.2.0 - Centralized .wrangler/ Directory
 
 ## Breaking Changes
 
 - Governance files moved from project root to `.wrangler/` directory
-- Constitution moved from `specifications/_CONSTITUTION.md` to `.wrangler/governance/CONSTITUTION.md`
+- Constitution moved from `specifications/_CONSTITUTION.md` to `.wrangler/CONSTITUTION.md`
 - Issues moved from `issues/` to `.wrangler/issues/`
 
 ## Migration Requirements
@@ -181,7 +183,7 @@ On every session start, wrangler automatically:
 
 ### Startup Skill Workflow
 
-**Skill**: `skills/wrangler/startup-checklist/SKILL.md`
+**Skill**: `skills/startup-checklist/SKILL.md` (if exists, otherwise handled by session hooks)
 
 **Execution**:
 ```
@@ -189,10 +191,10 @@ SessionStart Hook Triggered
     ↓
 startup-checklist skill invoked
     ↓
-1. Read `.wrangler/governance/CONSTITUTION.md` → `wranglerVersion: "1.0.0"`
-2. Read `skills/.wrangler-releases/CURRENT_VERSION` → `1.1.0`
-3. Compare: 1.0.0 < 1.1.0 → OUTDATED
-4. Check releases between: 1.1.0.md
+1. Read `.wrangler/CONSTITUTION.md` → `wranglerVersion: "1.1.0"`
+2. Read `skills/.wrangler-releases/CURRENT_VERSION` → `1.2.0`
+3. Compare: 1.1.0 < 1.2.0 → OUTDATED
+4. Check releases between: 1.2.0.md
 5. Parse frontmatter: `breakingChanges: true`
 6. Report OUTDATED status with breaking changes detected
 ```
@@ -206,7 +208,7 @@ startup-checklist skill invoked
 ```
 ✅ Wrangler Version Check: SUCCESS
 
-Project is using wrangler v1.1.0 (latest).
+Project is using wrangler v1.2.0 (latest).
 All features up to date.
 ```
 
@@ -221,11 +223,11 @@ All features up to date.
 ```
 ⚠️ Wrangler Version Check: WARN
 
-Project version: 1.1.0
-Current version: 1.2.0
+Project version: 1.2.0
+Current version: 1.3.0
 Behind by: 1 release
 
-New features available in v1.2.0:
+New features available in v1.3.0:
 - Self-healing MCP plugin
 - Enhanced error diagnostics
 
@@ -246,11 +248,11 @@ To update: Run `/update-yourself`
 ❌ Wrangler Version Check: OUTDATED
 
 Project version: 1.0.0
-Current version: 1.1.0
-Behind by: 1 release
+Current version: 1.2.0
+Behind by: 2 releases
 
 Breaking changes detected in:
-- v1.1.0: Directory structure refactored (issues/ → .wrangler/issues/)
+- v1.2.0: Directory structure refactored (issues/ → .wrangler/issues/)
 
 Migration required before using new features.
 
@@ -300,16 +302,16 @@ User: /update-yourself
 ### Example Output
 
 ```markdown
-# Update Wrangler from v1.0.0 → v1.1.0
+# Update Wrangler from v1.0.0 → v1.2.0
 
-Your project is currently at v1.0.0. Latest is v1.1.0 (1 release behind).
+Your project is currently at v1.0.0. Latest is v1.2.0 (2 releases behind).
 
 Breaking changes detected in:
-- v1.1.0 (Directory structure refactor)
+- v1.2.0 (Directory structure refactor)
 
 ## Migration Plan
 
-### Step 1: Migrate to v1.1.0 (Directory Structure)
+### Step 1: Migrate to v1.2.0 (Directory Structure)
 
 **Task**: Move governance files to .wrangler/ directory
 
@@ -327,14 +329,14 @@ Breaking changes detected in:
 
 3. Move constitution:
    ```bash
-   mv specifications/_CONSTITUTION.md .wrangler/governance/CONSTITUTION.md
-   mv specifications/_ROADMAP.md .wrangler/governance/ROADMAP.md
+   mv specifications/_CONSTITUTION.md .wrangler/CONSTITUTION.md
+   mv specifications/_ROADMAP.md .wrangler/ROADMAP.md
    ```
 
 4. Update constitution frontmatter to include:
    ```yaml
-   wranglerVersion: "1.1.0"
-   lastUpdated: "2025-11-18"
+   wranglerVersion: "1.2.0"
+   lastUpdated: "2025-12-07"
    ```
 
 5. Verify migration:
@@ -344,7 +346,7 @@ Breaking changes detected in:
 ### Verification
 
 After migration complete:
-1. Confirm constitution shows `wranglerVersion: "1.1.0"`
+1. Confirm constitution shows `wranglerVersion: "1.2.0"`
 2. Run `/wrangler:verify-governance` - should pass all checks
 3. Run startup skill again - should report SUCCESS
 ```
@@ -370,13 +372,13 @@ mv specifications/_CONSTITUTION.md .wrangler/governance/CONSTITUTION.md
 ```markdown
 3. Move constitution:
    **What**: Relocate constitution from old location to new centralized directory
-   **Why**: v1.1.0 standardizes on `.wrangler/governance/` for all governance files
+   **Why**: v1.2.0 standardizes on `.wrangler/` for all governance files
    **Command**:
    ```bash
-   mv specifications/_CONSTITUTION.md .wrangler/governance/CONSTITUTION.md
+   mv specifications/_CONSTITUTION.md .wrangler/CONSTITUTION.md
    ```
-   **Verify**: Run `cat .wrangler/governance/CONSTITUTION.md | head -5` to confirm file exists
-   **Rollback**: `mv .wrangler/governance/CONSTITUTION.md specifications/_CONSTITUTION.md`
+   **Verify**: Run `cat .wrangler/CONSTITUTION.md | head -5` to confirm file exists
+   **Rollback**: `mv .wrangler/CONSTITUTION.md specifications/_CONSTITUTION.md`
 ```
 
 ---
@@ -518,7 +520,7 @@ grep "wranglerVersion" .wrangler/governance/CONSTITUTION.md
 **Solutions**:
 ```bash
 # Check constitution frontmatter
-head -20 .wrangler/governance/CONSTITUTION.md
+head -20 .wrangler/CONSTITUTION.md
 
 # Check latest version
 cat ~/.claude/plugins/wrangler/skills/.wrangler-releases/CURRENT_VERSION
@@ -557,7 +559,7 @@ ls -la ~/.claude/plugins/wrangler/skills/.wrangler-releases/
 **Solution**:
 ```bash
 # Manually update frontmatter
-# Edit .wrangler/governance/CONSTITUTION.md
+# Edit .wrangler/CONSTITUTION.md
 # Change wranglerVersion to current version
 ```
 
@@ -610,9 +612,9 @@ ls -la ~/.claude/plugins/wrangler/skills/.wrangler-releases/
 
 **Disable for specific project**:
 ```yaml
-# In .wrangler/governance/CONSTITUTION.md
+# In .wrangler/CONSTITUTION.md
 ---
-wranglerVersion: "1.1.0"
+wranglerVersion: "1.2.0"
 skipVersionCheck: true  # Custom field
 ---
 ```
@@ -625,11 +627,16 @@ skipVersionCheck: true  # Custom field
 
 - [Session Hooks](SESSION-HOOKS.md) - How startup skill is invoked
 - [Governance Framework](GOVERNANCE.md) - How constitution stores version
-- [Specification #000001](../specifications/000001-centralized-wrangler-directory.md) - v1.1.0 migration details
+- [Specification #000001](../.wrangler/specifications/000001-centralized-wrangler-directory.md) - v1.2.0 migration details
 
 ---
 
 ## Changelog
+
+### v1.2.0 (2025-12-07)
+- Updated all paths to reflect `.wrangler/` directory structure
+- Constitution now at `.wrangler/CONSTITUTION.md` (not in governance/ subdirectory)
+- Session tools documentation added
 
 ### v1.1.0 (2025-11-18)
 - Initial versioning system implementation
@@ -640,6 +647,6 @@ skipVersionCheck: true  # Custom field
 
 ---
 
-**Last Updated**: 2025-11-18
+**Last Updated**: 2025-12-07
 **Maintainer**: Wrangler Team
 **Status**: Current

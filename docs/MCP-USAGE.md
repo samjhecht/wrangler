@@ -1,5 +1,8 @@
 # Wrangler MCP Server - Usage Guide
 
+**Version**: 1.2.0
+**Last Updated**: 2025-12-07
+
 Complete guide to using the Wrangler MCP server for local issue and specification management.
 
 ## Table of Contents
@@ -8,6 +11,8 @@ Complete guide to using the Wrangler MCP server for local issue and specificatio
 - [Automatic Workspace Initialization](#automatic-workspace-initialization)
 - [Directory Structure](#directory-structure)
 - [Available Tools](#available-tools)
+  - [Issue Management Tools](#issue-management-tools-11-tools)
+  - [Session Management Tools](#session-management-tools-5-tools)
 - [Issue Lifecycle](#issue-lifecycle)
 - [Search and Filtering](#search-and-filtering)
 - [Best Practices](#best-practices)
@@ -22,22 +27,31 @@ The Wrangler MCP (Model Context Protocol) server provides local, file-based issu
 - Easy to search and edit manually
 - Fully local (no external services required)
 
-The MCP server exposes 11 tools that Claude can use to manage your project's issues and specifications programmatically.
+The MCP server exposes 16 tools that Claude can use to manage your project's issues, specifications, and orchestrated sessions programmatically.
 
 ## Automatic Workspace Initialization
 
-When you first use any issue management tool, Wrangler automatically creates:
+When you first use any issue management tool, Wrangler automatically creates the `.wrangler/` workspace directory:
 
 ```
-issues/               # Project issues
-specifications/       # Technical specifications
+.wrangler/
+├── issues/           # Project issues
+├── specifications/   # Technical specifications
+├── ideas/            # Ideas and proposals
+├── memos/            # Reference material, RCA archives
+├── plans/            # Implementation plans
+├── docs/             # Auto-generated governance docs
+├── templates/        # Issue and spec templates
+├── cache/            # Runtime cache (gitignored)
+├── config/           # Runtime config (gitignored)
+└── logs/             # Runtime logs (gitignored)
 ```
 
-These directories are created at your project root. No configuration needed - just start creating issues.
+These directories are created inside `.wrangler/` at your project root. No configuration needed - just start creating issues.
 
 ## Directory Structure
 
-### Issues Directory (`issues/`)
+### Issues Directory (`.wrangler/issues/`)
 
 Stores project issues as Markdown files with frontmatter:
 
@@ -65,7 +79,7 @@ Implement JWT-based authentication system with:
 - Refresh token support
 ```
 
-### Specifications Directory (`specifications/`)
+### Specifications Directory (`.wrangler/specifications/`)
 
 Stores technical specifications with the same structure but `type: "specification"`:
 
@@ -92,7 +106,9 @@ JWT-based authentication with refresh tokens...
 
 ## Available Tools
 
-The Wrangler MCP server provides 11 tools for complete issue lifecycle management:
+The Wrangler MCP server provides 16 tools organized into two categories:
+
+### Issue Management Tools (11 tools)
 
 ### 1. issues_create
 
@@ -391,6 +407,105 @@ Returns:
 }
 ```
 
+### Session Management Tools (5 tools)
+
+These tools support orchestrated specification implementation workflows using the `/wrangler:implement` command.
+
+### 12. session_create
+
+Create a new orchestration session for implementing a specification.
+
+```javascript
+session_create({
+  specId: "000001",
+  config: {
+    maxConcurrentAgents: 3,
+    isolationMode: "worktree"
+  }
+})
+```
+
+**Parameters:**
+- `specId` (required): The specification ID to implement
+- `config`: Optional session configuration
+  - `maxConcurrentAgents`: Maximum parallel agents (default: 3)
+  - `isolationMode`: "worktree" (git worktrees) or "branch" (branches only)
+
+**Returns:** Session ID and initial state
+
+### 13. session_get
+
+Retrieve current session state including task progress.
+
+```javascript
+session_get({
+  sessionId: "sess-abc123"
+})
+```
+
+**Returns:**
+```javascript
+{
+  sessionId: "sess-abc123",
+  specId: "000001",
+  status: "in_progress",
+  tasks: {
+    total: 5,
+    completed: 2,
+    inProgress: 1,
+    pending: 2
+  },
+  agents: [
+    { id: "agent-1", task: "000002", status: "running" }
+  ]
+}
+```
+
+### 14. session_update
+
+Update session state (task completion, agent status, etc.).
+
+```javascript
+session_update({
+  sessionId: "sess-abc123",
+  taskId: "000002",
+  status: "completed",
+  result: {
+    filesChanged: ["src/auth.ts"],
+    testsPassed: true
+  }
+})
+```
+
+### 15. session_list
+
+List all sessions with optional filtering.
+
+```javascript
+// List active sessions
+session_list({
+  status: ["active", "paused"]
+})
+
+// List sessions for a spec
+session_list({
+  specId: "000001"
+})
+```
+
+### 16. session_cleanup
+
+Clean up completed or abandoned sessions.
+
+```javascript
+session_cleanup({
+  sessionId: "sess-abc123",
+  removeWorktrees: true
+})
+```
+
+**Note:** Session tools are primarily used internally by the `/wrangler:implement` workflow. Direct usage is for advanced orchestration scenarios.
+
 ## Issue Lifecycle
 
 Typical workflow for managing issues:
@@ -404,7 +519,7 @@ const issue = issues_create({
   priority: "high",
   labels: ["feature", "api"]
 })
-// Creates: issues/000001-implement-user-registration.md
+// Creates: .wrangler/issues/000001-implement-user-registration.md
 ```
 
 ### 2. Start Work
@@ -630,7 +745,7 @@ Issues are stored as Markdown files, so:
 - Sync across team via git
 
 ```bash
-git add issues/ specifications/
+git add .wrangler/issues/ .wrangler/specifications/
 git commit -m "Add authentication issues"
 ```
 
@@ -676,7 +791,7 @@ issues_delete({
 
 **Problem:** Error about accessing files outside workspace
 
-**Solution:** Don't use absolute paths or `..` in IDs. The MCP server restricts access to `issues/` and `specifications/` directories for security.
+**Solution:** Don't use absolute paths or `..` in IDs. The MCP server restricts access to `.wrangler/issues/` and `.wrangler/specifications/` directories for security.
 
 ### Labels Not Working
 
@@ -707,7 +822,7 @@ issues_update({
 })
 ```
 
-This physically moves the file from `issues/` to `specifications/`.
+This physically moves the file from `.wrangler/issues/` to `.wrangler/specifications/`.
 
 ### Pagination Issues
 

@@ -586,9 +586,9 @@ The `/wrangler:validate-session-adherence` command uses this document to:
 - **Workflows**: `docs/workflows.md`
 - **Verification Requirements**: `docs/verification-requirements.md`
 - **Skills Directory**: `skills/`
-- **TDD Skill**: `skills/testing/test-driven-development/SKILL.md`
-- **Verification Skill**: `skills/quality/verification-before-completion/SKILL.md`
-- **Code Review Skill**: `skills/collaboration/code-review/SKILL.md`
+- **TDD Skill**: `skills/test-driven-development/SKILL.md`
+- **Verification Skill**: `skills/verification-before-completion/SKILL.md`
+- **Code Review Skill**: `skills/code-review/SKILL.md`
 
 ---
 

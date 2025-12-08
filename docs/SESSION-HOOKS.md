@@ -1,7 +1,7 @@
 # Session Hooks System
 
-**Version**: 1.0.0
-**Last Updated**: 2025-11-18
+**Version**: 1.2.0
+**Last Updated**: 2025-12-07
 
 This document explains wrangler's session hooks system and how it manages plugin state across Claude Code sessions.
 
@@ -27,10 +27,10 @@ Wrangler uses Claude Code's **session hooks system** to automatically initialize
 
 Session hooks are shell scripts or commands that execute when specific Claude Code events occur:
 - **SessionStart**: Fires when starting Claude Code, resuming from compact mode, or clearing conversation history
-- **UserPromptSubmit**: Fires after each user message (not used by wrangler)
+- **UserPromptSubmit**: Fires after each user message
 - **AssistantResponse**: Fires after each assistant response (not used by wrangler)
 
-Wrangler only uses **SessionStart** hooks.
+Wrangler uses **SessionStart** and **UserPromptSubmit** hooks.
 
 ### Why Session Hooks?
 
@@ -59,7 +59,8 @@ SessionStart hook triggered
     ↓
 hooks/session-start.sh executes
     ↓
-├─ Initialize workspace directories (issues/, specifications/)
+├─ Read workspace-schema.json for directory structure
+├─ Initialize .wrangler/ directory structure
 ├─ Check for legacy configuration warnings
 ├─ Read using-wrangler skill content
 └─ Inject context via JSON response
@@ -83,28 +84,37 @@ initialize_workspace() {
         return 0
     fi
 
-    # Check if directories already exist
-    if [ -d "${GIT_ROOT}/issues" ] && [ -d "${GIT_ROOT}/specifications" ]; then
+    # Check if already initialized
+    if [ -d "${GIT_ROOT}/.wrangler/issues" ]; then
         # Already initialized - skip
         return 0
     fi
 
-    # Create directory structure
-    mkdir -p "${GIT_ROOT}/issues"
-    mkdir -p "${GIT_ROOT}/specifications"
+    # Read directories from workspace-schema.json
+    # Create git-tracked directories
+    for dir in issues specifications ideas memos plans docs templates; do
+        mkdir -p "${GIT_ROOT}/.wrangler/${dir}"
+        touch "${GIT_ROOT}/.wrangler/${dir}/.gitkeep"
+    done
 
-    # Add .gitkeep files
-    touch "${GIT_ROOT}/issues/.gitkeep"
-    touch "${GIT_ROOT}/specifications/.gitkeep"
+    # Create runtime directories (not git-tracked)
+    for dir in cache config logs; do
+        mkdir -p "${GIT_ROOT}/.wrangler/${dir}"
+    done
 
-    echo "✓ Initialized issues and specifications directories at ${GIT_ROOT}" >&2
+    # Create completed subdirectory for issues
+    mkdir -p "${GIT_ROOT}/.wrangler/issues/completed"
+
+    echo "✓ Initialized .wrangler/ directory structure at ${GIT_ROOT}" >&2
 }
 ```
 
 **Behavior**:
 - Detects git repository root
-- Creates `issues/` and `specifications/` directories if missing
+- Reads directory structure from `workspace-schema.json`
+- Creates `.wrangler/` directory with all subdirectories
 - Adds `.gitkeep` files to track empty directories in git
+- Creates `.wrangler/.gitignore` for runtime directories
 - Idempotent (safe to run multiple times)
 - Gracefully skips if not in git repository
 
@@ -155,14 +165,30 @@ EOF
 
 ### What Gets Initialized
 
-On first session start in a git repository, wrangler creates:
+On first session start in a git repository, wrangler creates the centralized `.wrangler/` directory:
 
 ```
-project-root/              # Git repository root
-├── issues/
-│   └── .gitkeep
-└── specifications/
-    └── .gitkeep
+project-root/
+└── .wrangler/                    # Centralized wrangler workspace
+    ├── issues/                   # Issue tracking (git-tracked)
+    │   ├── completed/            # Archived completed issues
+    │   └── .gitkeep
+    ├── specifications/           # Feature specs (git-tracked)
+    │   └── .gitkeep
+    ├── ideas/                    # Ideas and proposals (git-tracked)
+    │   └── .gitkeep
+    ├── memos/                    # Reference material (git-tracked)
+    │   └── .gitkeep
+    ├── plans/                    # Implementation plans (git-tracked)
+    │   └── .gitkeep
+    ├── docs/                     # Auto-generated docs (git-tracked)
+    │   └── .gitkeep
+    ├── templates/                # Issue/spec templates (git-tracked)
+    │   └── .gitkeep
+    ├── cache/                    # Runtime cache (gitignored)
+    ├── config/                   # Runtime config (gitignored)
+    ├── logs/                     # Runtime logs (gitignored)
+    └── .gitignore                # Ignores cache/, config/, logs/
 ```
 
 ### Initialization Logic
@@ -173,9 +199,14 @@ project-root/              # Git repository root
 3. If in git repo → Proceed with initialization
 
 **Creation**:
-1. Check if `issues/` and `specifications/` already exist
-2. If both exist → Skip (already initialized)
-3. If missing → Create directories + `.gitkeep` files
+1. Check if `.wrangler/issues/` already exists
+2. If exists → Skip (already initialized)
+3. If missing → Create full directory structure
+
+**Schema-Driven**:
+- Reads `workspace-schema.json` from plugin directory
+- Creates directories defined in schema
+- Falls back to hardcoded defaults if schema not found
 
 **Idempotency**:
 - Safe to run multiple times
@@ -185,28 +216,27 @@ project-root/              # Git repository root
 ### Why `.gitkeep` Files?
 
 Git doesn't track empty directories. The `.gitkeep` file ensures:
-- Empty `issues/` directory appears in git
-- Empty `specifications/` directory appears in git
+- Empty directories appear in git
 - Users can commit initial project structure
 - Directories survive `git clone` even when empty
 
 **Note**: `.gitkeep` is a convention, not a git feature. Any file would work, but `.gitkeep` clearly communicates intent.
 
-### Future: `.wrangler/` Migration
+### Directory Purposes
 
-**Current State** (v1.0.0): Directories at project root
-- `project-root/issues/`
-- `project-root/specifications/`
-
-**Planned State** (v1.1.0): Centralized `.wrangler/` directory
-- `.wrangler/issues/`
-- `.wrangler/specifications/`
-- `.wrangler/memos/`
-- `.wrangler/governance/`
-- `.wrangler/cache/` (gitignored)
-- `.wrangler/config/` (gitignored)
-
-See [Specification #000001](../specifications/000001-centralized-wrangler-directory.md) for migration plan.
+| Directory | Purpose | Git Tracked |
+|-----------|---------|-------------|
+| `issues/` | Issue tracking files | Yes |
+| `issues/completed/` | Archived closed issues | Yes |
+| `specifications/` | Feature specifications | Yes |
+| `ideas/` | Ideas and proposals | Yes |
+| `memos/` | Reference material, RCAs | Yes |
+| `plans/` | Implementation plans | Yes |
+| `docs/` | Auto-generated governance docs | Yes |
+| `templates/` | Issue/spec templates | Yes |
+| `cache/` | Runtime cache | No |
+| `config/` | Runtime configuration | No |
+| `logs/` | Runtime logs | No |
 
 ---
 
@@ -248,7 +278,7 @@ Context injection ensures Claude Code **always** knows:
 
 **Secondary Content**: Warnings and reminders
 - Legacy configuration alerts
-- Version update notifications (future)
+- Version update notifications
 - Important announcements
 
 ### Context Visibility
@@ -286,13 +316,17 @@ Wrangler manages state across multiple layers:
 
 **Lifetime**: Permanent (git-tracked)
 
-**Storage**: Files in project repository
+**Storage**: Files in `.wrangler/` directory
 
 **Contents**:
-- `issues/*.md` - Issue tracking
-- `specifications/*.md` - Feature specifications
-- `memos/*.md` - Reference material (future)
-- `.wrangler/governance/` - Constitution, roadmap (future)
+- `.wrangler/issues/*.md` - Issue tracking
+- `.wrangler/specifications/*.md` - Feature specifications
+- `.wrangler/memos/*.md` - Reference material
+- `.wrangler/ideas/*.md` - Ideas and proposals
+- `.wrangler/plans/*.md` - Implementation plans
+- `.wrangler/CONSTITUTION.md` - Project constitution
+- `.wrangler/ROADMAP.md` - Strategic roadmap
+- `.wrangler/ROADMAP_NEXT_STEPS.md` - Tactical tracker
 
 **Versioned**: Yes (git commit history)
 
@@ -304,7 +338,7 @@ Wrangler manages state across multiple layers:
 
 **Contents**:
 - Skills (`skills/`)
-- Templates (`templates/`)
+- Templates (`skills/*/templates/`)
 - Hooks (`hooks/`)
 - Release notes (`skills/.wrangler-releases/`)
 
@@ -314,13 +348,13 @@ Wrangler manages state across multiple layers:
 
 **Lifetime**: Until manually cleared
 
-**Storage**: `.wrangler/cache/` (future, gitignored)
+**Storage**: `.wrangler/cache/` (gitignored)
 
 **Contents**:
 - MCP issue index
 - Search optimization data
 - Performance metrics
-- Temporary fix workspaces
+- Temporary workspaces
 
 **Versioned**: No (gitignored)
 
@@ -355,6 +389,17 @@ Wrangler manages state across multiple layers:
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/user-prompt-submit.sh"
           }
         ]
       }
@@ -395,6 +440,7 @@ Available in hook execution context:
 | `SCRIPT_DIR` | Hook script directory | `session-start.sh` |
 | `PLUGIN_ROOT` | Plugin root (computed) | `session-start.sh` |
 | `GIT_ROOT` | Git repository root | `session-start.sh` |
+| `SCHEMA_PATH` | Path to workspace-schema.json | `session-start.sh` |
 
 ---
 
@@ -427,7 +473,7 @@ cat ~/.claude/plugins/wrangler/hooks/hooks.json | jq .
 
 ### Workspace Not Initialized
 
-**Symptom**: No `issues/` or `specifications/` directories created
+**Symptom**: No `.wrangler/` directory created
 
 **Causes**:
 1. **Not in git repository**: Hook skips initialization outside git repos
@@ -446,7 +492,7 @@ ls -ld $(git rev-parse --show-toplevel)
 ~/.claude/plugins/wrangler/hooks/session-start.sh
 
 # Manually initialize if needed
-mkdir -p $(git rev-parse --show-toplevel)/{issues,specifications}
+mkdir -p $(git rev-parse --show-toplevel)/.wrangler/{issues,specifications,ideas,memos,plans,docs,templates,cache,config,logs}
 ```
 
 ### Context Not Injected
@@ -498,8 +544,8 @@ rm -rf ~/.config/wrangler/skills
 # Verify initialization location
 git rev-parse --show-toplevel
 
-# Check if directories exist
-ls -la $(git rev-parse --show-toplevel)/{issues,specifications}
+# Check if .wrangler directory exists
+ls -la $(git rev-parse --show-toplevel)/.wrangler/
 
 # Restart Claude Code to clear cached state
 # (Exit and restart application)
@@ -556,6 +602,7 @@ cat /tmp/hook-debug.log
 
 **Hook execution time**:
 - Typical: <100ms
+- Reading workspace schema: ~5ms
 - Reading skill file: ~20ms
 - JSON escaping: ~10ms
 - Directory creation: ~5ms (if needed)
@@ -573,11 +620,18 @@ cat /tmp/hook-debug.log
 
 - [MCP Server Usage](MCP-USAGE.md) - How MCP interacts with workspace directories
 - [Governance Framework](GOVERNANCE.md) - How governance files use workspace structure
-- [Specification #000001](../specifications/000001-centralized-wrangler-directory.md) - Future `.wrangler/` migration
+- [Versioning](VERSIONING.md) - Version tracking and updates
 
 ---
 
 ## Changelog
+
+### v1.2.0 (2025-12-07)
+- Updated to reflect centralized `.wrangler/` directory structure
+- Added workspace-schema.json driven initialization
+- Documented all subdirectories (ideas, memos, plans, etc.)
+- Updated troubleshooting for new directory structure
+- Added UserPromptSubmit hook to configuration
 
 ### v1.0.0 (2025-11-18)
 - Initial documentation of session hooks system
@@ -587,6 +641,6 @@ cat /tmp/hook-debug.log
 
 ---
 
-**Last Updated**: 2025-11-18
+**Last Updated**: 2025-12-07
 **Maintainer**: Wrangler Team
 **Status**: Current

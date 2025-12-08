@@ -109,7 +109,7 @@ if [ -d "$legacy_skills_dir" ]; then
 fi
 
 # Read using-wrangler content
-using_wrangler_content=$(cat "${PLUGIN_ROOT}/skills/wrangler/using-wrangler/SKILL.md" 2>&1 || echo "Error reading using-wrangler skill")
+using_wrangler_content=$(cat "${PLUGIN_ROOT}/skills/using-wrangler/SKILL.md" 2>&1 || echo "Error reading using-wrangler skill")
 
 # Escape outputs for JSON
 using_wrangler_escaped=$(echo "$using_wrangler_content" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')

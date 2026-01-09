@@ -17,11 +17,6 @@
         "WRANGLER_ISSUES_DIRECTORY": ".wrangler/issues",
         "WRANGLER_SPECIFICATIONS_DIRECTORY": ".wrangler/specifications"
       }
-    },
-    "figma": {
-      "command": "node",
-      "args": ["/Users/sam/medb/code/figma-mcp-write-server/dist/index.js"],
-      "env": {}
     }
   }
 }

@@ -1,0 +1,21 @@
+#!/bin/bash
+# Pre-commit hook: Rebuild MCP bundle if source files changed
+#
+# Install with: ln -sf ../../scripts/pre-commit .git/hooks/pre-commit
+
+set -e
+
+# Check if any MCP source files are staged
+MCP_CHANGED=$(git diff --cached --name-only | grep -E '^mcp/.*\.ts$' | grep -v '\.test\.ts$' | grep -v '__tests__' || true)
+
+if [ -n "$MCP_CHANGED" ]; then
+    echo "MCP source files changed, rebuilding bundle..."
+
+    # Rebuild the bundle
+    npm run bundle:mcp --silent
+
+    # Stage the updated bundle
+    git add mcp/dist/bundle.cjs
+
+    echo "Bundle rebuilt and staged."
+fi

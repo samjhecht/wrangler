@@ -13,7 +13,6 @@ describe('Config Types', () => {
         name: 'wrangler-mcp',
         version: '1.0.0',
         workspaceRoot: '/Users/sam/code/project',
-        debug: true,
         issues: {
           provider: 'markdown',
           settings: {
@@ -27,7 +26,6 @@ describe('Config Types', () => {
       expect(config.name).toBe('wrangler-mcp');
       expect(config.version).toBe('1.0.0');
       expect(config.workspaceRoot).toBe('/Users/sam/code/project');
-      expect(config.debug).toBe(true);
     });
 
     it('should accept minimal configuration', () => {
@@ -36,7 +34,6 @@ describe('Config Types', () => {
       expect(config.name).toBeUndefined();
       expect(config.version).toBeUndefined();
       expect(config.workspaceRoot).toBeUndefined();
-      expect(config.debug).toBeUndefined();
       expect(config.issues).toBeUndefined();
     });
   });

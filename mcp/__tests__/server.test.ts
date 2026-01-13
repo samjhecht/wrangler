@@ -3,16 +3,10 @@
  */
 
 import { WranglerMCPServer } from '../server';
-import { globalMetrics } from '../observability/metrics';
 import { MCPErrorCode } from '../types/errors';
 
 describe('WranglerMCPServer', () => {
   let server: WranglerMCPServer;
-
-  beforeEach(() => {
-    // Reset metrics before each test
-    globalMetrics.reset();
-  });
 
   afterEach(async () => {
     if (server) {
@@ -33,26 +27,9 @@ describe('WranglerMCPServer', () => {
         name: 'custom-wrangler',
         version: '2.0.0',
         workspaceRoot: '/custom/path',
-        debug: true,
       });
 
       expect(server).toBeDefined();
-    });
-
-    it('should respect debug mode from env var', () => {
-      const originalDebug = process.env.WRANGLER_MCP_DEBUG;
-      process.env.WRANGLER_MCP_DEBUG = 'true';
-
-      server = new WranglerMCPServer();
-
-      expect(server).toBeDefined();
-
-      // Restore
-      if (originalDebug !== undefined) {
-        process.env.WRANGLER_MCP_DEBUG = originalDebug;
-      } else {
-        delete process.env.WRANGLER_MCP_DEBUG;
-      }
     });
 
     it('should initialize with default workspace root', () => {
@@ -67,10 +44,10 @@ describe('WranglerMCPServer', () => {
       server = new WranglerMCPServer();
     });
 
-    it('should return all 16 tools (11 issue + 5 session)', () => {
+    it('should return all 11 issue tools', () => {
       const tools = server.getAvailableTools();
 
-      expect(tools).toHaveLength(16);
+      expect(tools).toHaveLength(11);
     });
 
     it('should include all required issue management tools', () => {
@@ -88,17 +65,6 @@ describe('WranglerMCPServer', () => {
       expect(toolNames).toContain('issues_projects');
       expect(toolNames).toContain('issues_all_complete');
       expect(toolNames).toContain('issues_mark_complete');
-    });
-
-    it('should include all session management tools', () => {
-      const tools = server.getAvailableTools();
-      const toolNames = tools.map(t => t.name);
-
-      expect(toolNames).toContain('session_start');
-      expect(toolNames).toContain('session_phase');
-      expect(toolNames).toContain('session_checkpoint');
-      expect(toolNames).toContain('session_complete');
-      expect(toolNames).toContain('session_get');
     });
 
     it('should not include abort tool', () => {
@@ -126,41 +92,6 @@ describe('WranglerMCPServer', () => {
       const createTool = tools.find(t => t.name === 'issues_create');
 
       expect(createTool?.description).toContain('.wrangler/');
-    });
-  });
-
-  describe('getMetrics', () => {
-    beforeEach(() => {
-      server = new WranglerMCPServer();
-    });
-
-    it('should return metrics in JSON format', () => {
-      const metrics = server.getMetrics();
-
-      expect(metrics).toHaveProperty('summary');
-      expect(metrics).toHaveProperty('tools');
-      expect(metrics).toHaveProperty('lastUpdated');
-    });
-
-    it('should return empty metrics initially', () => {
-      const metrics = server.getMetrics();
-
-      expect(metrics.summary.totalInvocations).toBe(0);
-      expect(metrics.tools).toEqual([]);
-    });
-  });
-
-  describe('getPrometheusMetrics', () => {
-    beforeEach(() => {
-      server = new WranglerMCPServer();
-    });
-
-    it('should return metrics in Prometheus format', () => {
-      const prometheus = server.getPrometheusMetrics();
-
-      expect(typeof prometheus).toBe('string');
-      expect(prometheus).toContain('# HELP mcp_tool_invocations_total');
-      expect(prometheus).toContain('# TYPE mcp_tool_invocations_total counter');
     });
   });
 
@@ -199,35 +130,13 @@ describe('WranglerMCPServer', () => {
 
   describe('tool execution and error handling', () => {
     beforeEach(() => {
-      server = new WranglerMCPServer({
-        debug: false,
-      });
+      server = new WranglerMCPServer();
     });
 
     it('should handle unknown tool error', async () => {
       // This test verifies the switch statement has a default case
       const tools = server.getAvailableTools();
       expect(tools.length).toBeGreaterThan(0);
-    });
-
-    it('should track successful tool invocations in metrics', () => {
-      // Metrics should be collected for each tool call
-      const initialMetrics = server.getMetrics();
-      expect(initialMetrics.summary.totalInvocations).toBe(0);
-    });
-  });
-
-  describe('debug mode', () => {
-    it('should handle debug mode enabled', () => {
-      server = new WranglerMCPServer({ debug: true });
-
-      expect(server).toBeDefined();
-    });
-
-    it('should handle debug mode disabled', () => {
-      server = new WranglerMCPServer({ debug: false });
-
-      expect(server).toBeDefined();
     });
   });
 

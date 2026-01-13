@@ -31,7 +31,7 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Discoverable and composable
 
 3. **Built-in MCP Server**
-   - 16 tools (11 issue management + 5 session orchestration)
+   - 11 issue management tools
    - Markdown-based storage (git-tracked)
    - Automatic workspace initialization
    - Full-text search and metadata queries
@@ -88,7 +88,7 @@ wrangler/
 │   │   ├── base.ts                # Abstract provider interface
 │   │   ├── factory.ts             # Provider factory
 │   │   └── markdown.ts            # Markdown-based storage (540 lines)
-│   ├── tools/issues/              # 16 MCP tools (11 issue + 5 session)
+│   ├── tools/issues/              # 11 issue management tools
 │   │   ├── create.ts              # issues_create
 │   │   ├── list.ts                # issues_list
 │   │   ├── search.ts              # issues_search
@@ -889,7 +889,7 @@ const result = await createIssueTool({
 - **MCP Server Entry**: `mcp/index.ts`
 - **Server Class**: `mcp/server.ts`
 - **Provider**: `mcp/providers/markdown.ts`
-- **Tools**: `mcp/tools/issues/*.ts`, `mcp/tools/sessions/*.ts`
+- **Tools**: `mcp/tools/issues/*.ts`
 - **Tests**: `mcp/__tests__/**/*.test.ts`
 - **Config**: `.claude-plugin/plugin.json`
 - **Issues**: `.wrangler/issues/*.md`
@@ -951,7 +951,7 @@ npm run mcp:dev                # Debug mode
 - **[README.md](README.md)** - Quick start and overview
 - **[docs/MCP-USAGE.md](docs/MCP-USAGE.md)** - Comprehensive MCP usage guide
   - Getting started
-  - All 16 tools with examples
+  - All 11 tools with examples
   - Workflows and best practices
   - Troubleshooting
 - **[docs/GOVERNANCE.md](docs/GOVERNANCE.md)** - Governance framework guide
@@ -1025,10 +1025,10 @@ npm run mcp:dev                # Debug mode
 
 ### v1.2.0 (December 7, 2025)
 
-**Centralized .wrangler/ Directory & Session Orchestration**:
+**Centralized .wrangler/ Directory**:
 - ✅ Centralized `.wrangler/` directory structure for all governance files
 - ✅ Constitution at `.wrangler/CONSTITUTION.md` (top-level, not in subdirectory)
-- ✅ 5 new session orchestration MCP tools (16 total)
+- ✅ 11 issue management MCP tools
 - ✅ 47 skills (expanded from 39)
 - ✅ Versioning system with wranglerVersion in constitution frontmatter
 - ✅ Release notes tracking in `skills/.wrangler-releases/`

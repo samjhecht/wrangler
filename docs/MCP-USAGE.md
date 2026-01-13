@@ -11,8 +11,6 @@ Complete guide to using the Wrangler MCP server for local issue and specificatio
 - [Automatic Workspace Initialization](#automatic-workspace-initialization)
 - [Directory Structure](#directory-structure)
 - [Available Tools](#available-tools)
-  - [Issue Management Tools](#issue-management-tools-11-tools)
-  - [Session Management Tools](#session-management-tools-5-tools)
 - [Issue Lifecycle](#issue-lifecycle)
 - [Search and Filtering](#search-and-filtering)
 - [Best Practices](#best-practices)
@@ -27,7 +25,7 @@ The Wrangler MCP (Model Context Protocol) server provides local, file-based issu
 - Easy to search and edit manually
 - Fully local (no external services required)
 
-The MCP server exposes 16 tools that Claude can use to manage your project's issues, specifications, and orchestrated sessions programmatically.
+The MCP server exposes 11 tools that Claude can use to manage your project's issues and specifications programmatically.
 
 ## Automatic Workspace Initialization
 
@@ -106,9 +104,7 @@ JWT-based authentication with refresh tokens...
 
 ## Available Tools
 
-The Wrangler MCP server provides 16 tools organized into two categories:
-
-### Issue Management Tools (11 tools)
+The Wrangler MCP server provides 11 issue management tools:
 
 ### 1. issues_create
 
@@ -406,105 +402,6 @@ Returns:
   }
 }
 ```
-
-### Session Management Tools (5 tools)
-
-These tools support orchestrated specification implementation workflows using the `/wrangler:implement` command.
-
-### 12. session_create
-
-Create a new orchestration session for implementing a specification.
-
-```javascript
-session_create({
-  specId: "000001",
-  config: {
-    maxConcurrentAgents: 3,
-    isolationMode: "worktree"
-  }
-})
-```
-
-**Parameters:**
-- `specId` (required): The specification ID to implement
-- `config`: Optional session configuration
-  - `maxConcurrentAgents`: Maximum parallel agents (default: 3)
-  - `isolationMode`: "worktree" (git worktrees) or "branch" (branches only)
-
-**Returns:** Session ID and initial state
-
-### 13. session_get
-
-Retrieve current session state including task progress.
-
-```javascript
-session_get({
-  sessionId: "sess-abc123"
-})
-```
-
-**Returns:**
-```javascript
-{
-  sessionId: "sess-abc123",
-  specId: "000001",
-  status: "in_progress",
-  tasks: {
-    total: 5,
-    completed: 2,
-    inProgress: 1,
-    pending: 2
-  },
-  agents: [
-    { id: "agent-1", task: "000002", status: "running" }
-  ]
-}
-```
-
-### 14. session_update
-
-Update session state (task completion, agent status, etc.).
-
-```javascript
-session_update({
-  sessionId: "sess-abc123",
-  taskId: "000002",
-  status: "completed",
-  result: {
-    filesChanged: ["src/auth.ts"],
-    testsPassed: true
-  }
-})
-```
-
-### 15. session_list
-
-List all sessions with optional filtering.
-
-```javascript
-// List active sessions
-session_list({
-  status: ["active", "paused"]
-})
-
-// List sessions for a spec
-session_list({
-  specId: "000001"
-})
-```
-
-### 16. session_cleanup
-
-Clean up completed or abandoned sessions.
-
-```javascript
-session_cleanup({
-  sessionId: "sess-abc123",
-  removeWorktrees: true
-})
-```
-
-**Note:** Session tools are primarily used internally by the `/wrangler:implement` workflow. Direct usage is for advanced orchestration scenarios.
 
 ## Issue Lifecycle
 

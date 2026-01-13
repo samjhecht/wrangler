@@ -10,9 +10,7 @@ export declare class WranglerMCPServer {
     private server;
     private config;
     private providerFactory;
-    private sessionStorage;
     private transport;
-    private debug;
     constructor(config?: WranglerMCPConfig);
     private setupTools;
     /**
@@ -28,14 +26,6 @@ export declare class WranglerMCPServer {
             } | undefined;
         };
     }[];
-    /**
-     * Get current metrics for all tools
-     */
-    getMetrics(): any;
-    /**
-     * Get metrics in Prometheus format
-     */
-    getPrometheusMetrics(): string;
     /**
      * Start the MCP server
      */

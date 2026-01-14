@@ -25,8 +25,6 @@ wranglerContext:
 
 **Scope:** [What's included and explicitly excluded]
 
-**Status:** [Draft | Review | Approved | Implemented]
-
 ## Goals and Non-Goals
 
 ### Goals
@@ -101,13 +99,16 @@ Example:
 **Responsibility:** [What this component does]
 
 **Interfaces:**
+
 - Input: [What data/requests it receives]
 - Output: [What data/responses it produces]
 
 **Dependencies:**
+
 - [Component/service it depends on]
 
 **Key behaviors:**
+
 - [Behavior 1]
 - [Behavior 2]
 
@@ -120,13 +121,16 @@ Example:
 #### Entity 1: [Name]
 
 **Attributes:**
+
 - `attribute1`: [Type] - [Description]
 - `attribute2`: [Type] - [Description]
 
 **Relationships:**
+
 - [Relationship to other entities]
 
 **Constraints:**
+
 - [Validation rules, uniqueness constraints]
 
 #### Entity 2: [Name]
@@ -142,6 +146,7 @@ Example:
 **Endpoint:** `/path/to/endpoint`
 
 **Request:**
+
 ```json
 {
   "field1": "type",
@@ -150,6 +155,7 @@ Example:
 ```
 
 **Response:**
+
 ```json
 {
   "result": "type",
@@ -158,6 +164,7 @@ Example:
 ```
 
 **Error Handling:**
+
 - `400 Bad Request`: [When this occurs]
 - `404 Not Found`: [When this occurs]
 - `500 Server Error`: [When this occurs]
@@ -194,6 +201,7 @@ project/
 Purpose: [What it does]
 
 Approach:
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
@@ -203,10 +211,12 @@ Complexity: [Time/space complexity]
 ### Configuration
 
 **Environment Variables:**
+
 - `ENV_VAR_1`: [Purpose, default value]
 - `ENV_VAR_2`: [Purpose, default value]
 
 **Config Files:**
+
 ```yaml
 # config.yaml
 setting1: value1
@@ -228,8 +238,8 @@ setting2: value2
 
 ### Security Threats & Mitigations
 
-| Threat | Impact | Mitigation |
-|--------|--------|------------|
+| Threat     | Impact            | Mitigation           |
+| ---------- | ----------------- | -------------------- |
 | [Threat 1] | [High/Medium/Low] | [How it's prevented] |
 | [Threat 2] | [High/Medium/Low] | [How it's prevented] |
 
@@ -258,12 +268,14 @@ setting2: value2
 ### Logging
 
 **Log Levels:**
+
 - ERROR: [When used]
 - WARN: [When used]
 - INFO: [When used]
 - DEBUG: [When used]
 
 **Structured Logging:**
+
 ```json
 {
   "level": "info",
@@ -277,6 +289,7 @@ setting2: value2
 ### Metrics
 
 **Key Metrics:**
+
 - [Metric 1]: [What it measures, target value]
 - [Metric 2]: [What it measures, target value]
 
@@ -320,21 +333,25 @@ setting2: value2
 **To:** [New state]
 
 **Steps:**
+
 1. [Migration step 1]
 2. [Migration step 2]
 3. [Migration step 3]
 
 **Data Migration:**
+
 - [How existing data is migrated]
 - [Backward compatibility considerations]
 
 ### Dependencies
 
 **Required before deployment:**
+
 - [ ] [Dependency 1]
 - [ ] [Dependency 2]
 
 **Downstream impacts:**
+
 - [Service/component affected 1]
 - [Service/component affected 2]
 
@@ -361,13 +378,14 @@ setting2: value2
 
 ### Resolved Decisions
 
-| Decision | Options Considered | Chosen | Rationale | Date |
-|----------|-------------------|--------|-----------|------|
-| [Decision 1] | [Option A, B, C] | [Option B] | [Why] | [Date] |
+| Decision     | Options Considered | Chosen     | Rationale | Date   |
+| ------------ | ------------------ | ---------- | --------- | ------ |
+| [Decision 1] | [Option A, B, C]   | [Option B] | [Why]     | [Date] |
 
 ### Open Questions
 
 - [ ] **Question 1:** [What needs to be decided?]
+
   - **Impact:** [What's blocked by this decision]
   - **Options:** [Potential approaches]
   - **Owner:** [Who's responsible for deciding]
@@ -379,8 +397,8 @@ setting2: value2
 
 ## Risks & Mitigations
 
-| Risk | Probability | Impact | Mitigation | Owner |
-|------|-------------|--------|------------|-------|
+| Risk     | Probability  | Impact       | Mitigation              | Owner |
+| -------- | ------------ | ------------ | ----------------------- | ----- |
 | [Risk 1] | High/Med/Low | High/Med/Low | [How to prevent/handle] | [Who] |
 | [Risk 2] | High/Med/Low | High/Med/Low | [How to prevent/handle] | [Who] |
 
@@ -402,12 +420,12 @@ setting2: value2
 
 ## Timeline & Milestones
 
-| Milestone | Target Date | Status | Dependencies |
-|-----------|-------------|--------|--------------|
-| Design Complete | [Date] | [Status] | - |
-| Implementation Start | [Date] | [Status] | Design Complete |
-| Testing Complete | [Date] | [Status] | Implementation |
-| Launch | [Date] | [Status] | Testing |
+| Milestone            | Target Date | Status   | Dependencies    |
+| -------------------- | ----------- | -------- | --------------- |
+| Design Complete      | [Date]      | [Status] | -               |
+| Implementation Start | [Date]      | [Status] | Design Complete |
+| Testing Complete     | [Date]      | [Status] | Implementation  |
+| Launch               | [Date]      | [Status] | Testing         |
 
 ## References
 

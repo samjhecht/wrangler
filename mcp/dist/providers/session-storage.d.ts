@@ -1,28 +1,23 @@
 /**
  * Session storage provider for orchestration workflows
- *
- * Handles persistence of session state, checkpoints, and audit logs
- * in the .wrangler/sessions/ directory.
  */
-import { Session, SessionCheckpoint, AuditEntry, SessionStatus } from '../types/session.js';
+import { Session, SessionCheckpoint, AuditEntry } from '../types/session.js';
 export interface SessionStorageConfig {
-    /** Base path for the workspace */
     basePath: string;
 }
+/**
+ * Provides file-based storage for orchestration sessions
+ */
 export declare class SessionStorageProvider {
     private basePath;
     private sessionsDir;
     constructor(config: SessionStorageConfig);
     /**
-     * Get the sessions directory path
-     */
-    getSessionsDir(): string;
-    /**
-     * Get the directory path for a specific session
+     * Get the directory path for a session
      */
     getSessionDir(sessionId: string): string;
     /**
-     * Create a new session directory and initialize files
+     * Create a new session
      */
     createSession(session: Session): Promise<void>;
     /**
@@ -30,17 +25,9 @@ export declare class SessionStorageProvider {
      */
     getSession(sessionId: string): Promise<Session | null>;
     /**
-     * Update an existing session
+     * Update a session
      */
-    updateSession(session: Session): Promise<void>;
-    /**
-     * Append an audit entry to the session's audit log
-     */
-    appendAuditEntry(sessionId: string, entry: AuditEntry): Promise<void>;
-    /**
-     * Get recent audit entries for a session
-     */
-    getAuditEntries(sessionId: string, limit?: number): Promise<AuditEntry[]>;
+    updateSession(sessionId: string, updates: Partial<Session>): Promise<Session | null>;
     /**
      * Save a checkpoint for session recovery
      */
@@ -50,36 +37,26 @@ export declare class SessionStorageProvider {
      */
     getCheckpoint(sessionId: string): Promise<SessionCheckpoint | null>;
     /**
-     * Write test output to session directory
+     * Append an audit entry to the session's audit log
      */
-    writeTestOutput(sessionId: string, output: string): Promise<void>;
+    appendAuditEntry(sessionId: string, entry: AuditEntry): Promise<void>;
     /**
-     * Write git status to session directory
+     * Get all audit entries for a session
      */
-    writeGitStatus(sessionId: string, status: string): Promise<void>;
-    /**
-     * List all sessions, optionally filtered by status
-     */
-    listSessions(statusFilter?: SessionStatus[]): Promise<Session[]>;
+    getAuditEntries(sessionId: string): Promise<AuditEntry[]>;
     /**
      * Find the most recent incomplete session
      */
     findIncompleteSession(): Promise<Session | null>;
     /**
-     * Check if a session exists
+     * List all sessions
      */
-    sessionExists(sessionId: string): Promise<boolean>;
+    listSessions(filters?: {
+        status?: string[];
+    }): Promise<Session[]>;
     /**
-     * Delete a session (for cleanup)
+     * Generate a unique checkpoint ID
      */
-    deleteSession(sessionId: string): Promise<void>;
-    /**
-     * Validate session ID format to prevent path traversal
-     */
-    private assertValidSessionId;
-    /**
-     * Assert that a path is within the workspace
-     */
-    private assertWithinWorkspace;
+    generateCheckpointId(): string;
 }
 //# sourceMappingURL=session-storage.d.ts.map

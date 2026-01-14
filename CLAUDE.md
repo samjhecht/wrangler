@@ -31,7 +31,7 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Discoverable and composable
 
 3. **Built-in MCP Server**
-   - 11 issue management tools
+   - 16 tools (11 issue management + 5 session orchestration)
    - Markdown-based storage (git-tracked)
    - Automatic workspace initialization
    - Full-text search and metadata queries
@@ -889,7 +889,7 @@ const result = await createIssueTool({
 - **MCP Server Entry**: `mcp/index.ts`
 - **Server Class**: `mcp/server.ts`
 - **Provider**: `mcp/providers/markdown.ts`
-- **Tools**: `mcp/tools/issues/*.ts`
+- **Tools**: `mcp/tools/issues/*.ts`, `mcp/tools/session/*.ts`
 - **Tests**: `mcp/__tests__/**/*.test.ts`
 - **Config**: `.claude-plugin/plugin.json`
 - **Issues**: `.wrangler/issues/*.md`
@@ -951,7 +951,7 @@ npm run mcp:dev                # Debug mode
 - **[README.md](README.md)** - Quick start and overview
 - **[docs/MCP-USAGE.md](docs/MCP-USAGE.md)** - Comprehensive MCP usage guide
   - Getting started
-  - All 11 tools with examples
+  - All 16 tools with examples
   - Workflows and best practices
   - Troubleshooting
 - **[docs/GOVERNANCE.md](docs/GOVERNANCE.md)** - Governance framework guide

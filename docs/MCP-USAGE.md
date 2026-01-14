@@ -25,7 +25,7 @@ The Wrangler MCP (Model Context Protocol) server provides local, file-based issu
 - Easy to search and edit manually
 - Fully local (no external services required)
 
-The MCP server exposes 11 tools that Claude can use to manage your project's issues and specifications programmatically.
+The MCP server exposes 16 tools that Claude can use to manage your project's issues, specifications, and orchestrated sessions programmatically.
 
 ## Automatic Workspace Initialization
 
@@ -104,7 +104,9 @@ JWT-based authentication with refresh tokens...
 
 ## Available Tools
 
-The Wrangler MCP server provides 11 issue management tools:
+The Wrangler MCP server provides 16 tools organized into two categories:
+
+### Issue Management Tools (11 tools)
 
 ### 1. issues_create
 
@@ -402,6 +404,108 @@ Returns:
   }
 }
 ```
+
+### Session Management Tools (5 tools)
+
+These tools support orchestrated specification implementation workflows using the `implement-spec` skill.
+
+### 12. session_start
+
+Initialize a new orchestration session for spec implementation.
+
+```javascript
+session_start({
+  specFile: ".wrangler/specifications/spec-auth-system.md"
+})
+```
+
+**Parameters:**
+- `specFile` (required): Path to the specification file to implement
+- `workingDirectory`: Override working directory (default: current directory)
+
+**Returns:** Session ID, worktree path, branch name, and audit path
+
+### 13. session_phase
+
+Record a phase transition in the orchestration workflow.
+
+```javascript
+session_phase({
+  sessionId: "2025-01-13-abc123-f8d2",
+  phase: "execute",
+  status: "started",
+  metadata: { tasks_count: 5 }
+})
+```
+
+**Parameters:**
+- `sessionId` (required): Session ID from session_start
+- `phase` (required): Phase name (plan, execute, verify, publish)
+- `status` (required): "started", "complete", or "failed"
+- `metadata`: Optional phase-specific data
+
+### 14. session_checkpoint
+
+Save resumable state for session recovery.
+
+```javascript
+session_checkpoint({
+  sessionId: "2025-01-13-abc123-f8d2",
+  tasksCompleted: ["ISS-000001", "ISS-000002"],
+  tasksPending: ["ISS-000003"],
+  lastAction: "Completed task ISS-000002",
+  resumeInstructions: "Continue with ISS-000003"
+})
+```
+
+**Parameters:**
+- `sessionId` (required): Session ID
+- `tasksCompleted` (required): Array of completed task IDs
+- `tasksPending` (required): Array of pending task IDs
+- `lastAction` (required): Description of what was just done
+- `resumeInstructions` (required): How to continue if interrupted
+- `variables`: Optional state to preserve
+
+### 15. session_complete
+
+Finalize a session after workflow completion.
+
+```javascript
+session_complete({
+  sessionId: "2025-01-13-abc123-f8d2",
+  status: "completed",
+  prUrl: "https://github.com/org/repo/pull/123",
+  prNumber: 123
+})
+```
+
+**Parameters:**
+- `sessionId` (required): Session ID
+- `status` (required): "completed" or "failed"
+- `prUrl`: PR URL if created
+- `prNumber`: PR number if created
+- `summary`: Optional completion summary
+
+### 16. session_get
+
+Retrieve session state for recovery or status check.
+
+```javascript
+// Get specific session
+session_get({
+  sessionId: "2025-01-13-abc123-f8d2"
+})
+
+// Find most recent incomplete session
+session_get({})
+```
+
+**Parameters:**
+- `sessionId`: Session ID (omit to find most recent incomplete)
+
+**Returns:** Session state including tasks completed/pending, checkpoint info if available
+
+**Note:** Session tools are primarily used by the `implement-spec` skill for end-to-end spec-to-PR workflows.
 
 ## Issue Lifecycle
 

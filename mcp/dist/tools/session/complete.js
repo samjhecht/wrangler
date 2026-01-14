@@ -8,64 +8,38 @@ import { createSuccessResponse, createErrorResponse, MCPErrorCode } from '../../
 export const sessionCompleteSchema = SessionCompleteParamsSchema;
 export async function sessionCompleteTool(params, storageProvider) {
     try {
-        // Load session
         const session = await storageProvider.getSession(params.sessionId);
         if (!session) {
-            return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`, { details: { sessionId: params.sessionId } });
+            return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`);
         }
         const now = new Date().toISOString();
-        // Calculate duration
         const startTime = new Date(session.startedAt).getTime();
         const endTime = new Date(now).getTime();
         const durationMs = endTime - startTime;
-        // Update session status
-        session.status = params.status;
-        session.currentPhase = 'complete';
-        session.completedAt = now;
-        session.updatedAt = now;
-        if (params.prUrl) {
-            session.prUrl = params.prUrl;
-        }
-        if (params.prNumber) {
-            session.prNumber = params.prNumber;
-        }
-        // Add 'complete' to phases if not already there
-        if (!session.phasesCompleted.includes('complete')) {
-            session.phasesCompleted.push('complete');
-        }
-        // Create complete audit entry
-        const auditEntry = {
+        // Update session to completed/failed
+        await storageProvider.updateSession(params.sessionId, {
+            status: params.status,
+            completedAt: now,
+            currentPhase: 'complete',
+            prUrl: params.prUrl,
+            prNumber: params.prNumber,
+        });
+        // Write completion audit entry
+        await storageProvider.appendAuditEntry(params.sessionId, {
             phase: 'complete',
             timestamp: now,
             status: 'complete',
-            session_id: session.id,
+            session_id: params.sessionId,
             duration_ms: durationMs,
             tasks_completed: session.tasksCompleted.length,
-            ...(params.prUrl && { pr_url: params.prUrl }),
-        };
-        // Save session and audit entry
-        await storageProvider.updateSession(session);
-        await storageProvider.appendAuditEntry(params.sessionId, auditEntry);
-        // Format duration for human readability
+            pr_url: params.prUrl,
+        });
         const durationSec = Math.round(durationMs / 1000);
         const durationMin = Math.round(durationSec / 60);
-        const durationStr = durationMin > 0 ? `${durationMin}m ${durationSec % 60}s` : `${durationSec}s`;
-        let summaryText = `Session ${params.sessionId} ${params.status}`;
-        summaryText += `\nDuration: ${durationStr}`;
-        summaryText += `\nTasks completed: ${session.tasksCompleted.length}`;
-        if (params.prUrl) {
-            summaryText += `\nPR: ${params.prUrl}`;
-        }
-        if (params.summary) {
-            summaryText += `\n\n${params.summary}`;
-        }
-        return createSuccessResponse(summaryText, {
-            sessionId: session.id,
+        return createSuccessResponse(`Session ${params.status}: ${params.sessionId}\nDuration: ${durationMin} minutes\nTasks completed: ${session.tasksCompleted.length}${params.prUrl ? `\nPR: ${params.prUrl}` : ''}`, {
+            sessionId: params.sessionId,
             status: params.status,
-            startedAt: session.startedAt,
-            completedAt: now,
             durationMs,
-            phasesCompleted: session.phasesCompleted,
             tasksCompleted: session.tasksCompleted.length,
             prUrl: params.prUrl,
             prNumber: params.prNumber,

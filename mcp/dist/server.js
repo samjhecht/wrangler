@@ -22,10 +22,13 @@ import { ProviderFactory } from './providers/factory.js';
 import { createErrorResponse, MCPErrorCode, getRemediation } from './types/errors.js';
 import { issuesAllCompleteSchema, issuesAllCompleteTool } from './tools/issues/all-complete.js';
 import { markCompleteSchema, markCompleteIssueTool } from './tools/issues/mark-complete.js';
+import { sessionStartSchema, sessionStartTool, sessionPhaseSchema, sessionPhaseTool, sessionCheckpointSchema, sessionCheckpointTool, sessionCompleteSchema, sessionCompleteTool, sessionGetSchema, sessionGetTool, } from './tools/session/index.js';
+import { SessionStorageProvider } from './providers/session-storage.js';
 export class WranglerMCPServer {
     server;
     config;
     providerFactory;
+    sessionStorage;
     transport;
     constructor(config = {}) {
         this.config = {
@@ -56,6 +59,10 @@ export class WranglerMCPServer {
             },
         };
         this.providerFactory = new ProviderFactory(providerConfig);
+        // Initialize session storage provider
+        this.sessionStorage = new SessionStorageProvider({
+            basePath: this.config.workspaceRoot || process.cwd(),
+        });
         this.setupTools();
     }
     setupTools() {
@@ -97,6 +104,22 @@ export class WranglerMCPServer {
                         break;
                     case 'issues_mark_complete':
                         result = await markCompleteIssueTool(markCompleteSchema.parse(args), this.providerFactory);
+                        break;
+                    // Session management tools
+                    case 'session_start':
+                        result = await sessionStartTool(sessionStartSchema.parse(args), this.sessionStorage);
+                        break;
+                    case 'session_phase':
+                        result = await sessionPhaseTool(sessionPhaseSchema.parse(args), this.sessionStorage);
+                        break;
+                    case 'session_checkpoint':
+                        result = await sessionCheckpointTool(sessionCheckpointSchema.parse(args), this.sessionStorage);
+                        break;
+                    case 'session_complete':
+                        result = await sessionCompleteTool(sessionCompleteSchema.parse(args), this.sessionStorage);
+                        break;
+                    case 'session_get':
+                        result = await sessionGetTool(sessionGetSchema.parse(args), this.sessionStorage);
                         break;
                     default:
                         throw new Error(`Unknown tool: ${name}`);
@@ -205,6 +228,32 @@ export class WranglerMCPServer {
                 name: 'issues_mark_complete',
                 description: 'Mark a Wrangler issue as closed and (optionally) append a completion note once the work is finished.',
                 inputSchema: zodToJsonSchema(markCompleteSchema),
+            },
+            // Session management tools
+            {
+                name: 'session_start',
+                description: 'Initialize a new orchestration session for spec implementation. Creates session directory, worktree, and branch.',
+                inputSchema: zodToJsonSchema(sessionStartSchema),
+            },
+            {
+                name: 'session_phase',
+                description: 'Record a phase transition in the orchestration workflow (plan, execute, verify, publish).',
+                inputSchema: zodToJsonSchema(sessionPhaseSchema),
+            },
+            {
+                name: 'session_checkpoint',
+                description: 'Save resumable state for session recovery. Call after each task completes to enable resume on interruption.',
+                inputSchema: zodToJsonSchema(sessionCheckpointSchema),
+            },
+            {
+                name: 'session_complete',
+                description: 'Finalize a session after workflow completion. Records final status, PR info, and duration.',
+                inputSchema: zodToJsonSchema(sessionCompleteSchema),
+            },
+            {
+                name: 'session_get',
+                description: 'Retrieve session state for recovery or status check. Omit sessionId to find most recent incomplete session.',
+                inputSchema: zodToJsonSchema(sessionGetSchema),
             },
         ];
     }

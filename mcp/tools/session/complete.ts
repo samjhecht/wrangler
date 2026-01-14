@@ -1,0 +1,77 @@
+/**
+ * session_complete tool implementation
+ *
+ * Finalizes a session after workflow completion.
+ */
+
+import { z } from 'zod';
+import { SessionCompleteParamsSchema } from '../../types/session.js';
+import { SessionStorageProvider } from '../../providers/session-storage.js';
+import { createSuccessResponse, createErrorResponse, MCPErrorCode } from '../../types/errors.js';
+
+export const sessionCompleteSchema = SessionCompleteParamsSchema;
+
+export type SessionCompleteParams = z.infer<typeof sessionCompleteSchema>;
+
+export async function sessionCompleteTool(
+  params: SessionCompleteParams,
+  storageProvider: SessionStorageProvider
+) {
+  try {
+    const session = await storageProvider.getSession(params.sessionId);
+
+    if (!session) {
+      return createErrorResponse(
+        MCPErrorCode.RESOURCE_NOT_FOUND,
+        `Session not found: ${params.sessionId}`
+      );
+    }
+
+    const now = new Date().toISOString();
+    const startTime = new Date(session.startedAt).getTime();
+    const endTime = new Date(now).getTime();
+    const durationMs = endTime - startTime;
+
+    // Update session to completed/failed
+    await storageProvider.updateSession(params.sessionId, {
+      status: params.status,
+      completedAt: now,
+      currentPhase: 'complete',
+      prUrl: params.prUrl,
+      prNumber: params.prNumber,
+    });
+
+    // Write completion audit entry
+    await storageProvider.appendAuditEntry(params.sessionId, {
+      phase: 'complete',
+      timestamp: now,
+      status: 'complete',
+      session_id: params.sessionId,
+      duration_ms: durationMs,
+      tasks_completed: session.tasksCompleted.length,
+      pr_url: params.prUrl,
+    });
+
+    const durationSec = Math.round(durationMs / 1000);
+    const durationMin = Math.round(durationSec / 60);
+
+    return createSuccessResponse(
+      `Session ${params.status}: ${params.sessionId}\nDuration: ${durationMin} minutes\nTasks completed: ${session.tasksCompleted.length}${params.prUrl ? `\nPR: ${params.prUrl}` : ''}`,
+      {
+        sessionId: params.sessionId,
+        status: params.status,
+        durationMs,
+        tasksCompleted: session.tasksCompleted.length,
+        prUrl: params.prUrl,
+        prNumber: params.prNumber,
+      }
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return createErrorResponse(
+      MCPErrorCode.TOOL_EXECUTION_ERROR,
+      `Failed to complete session: ${message}`,
+      { details: { sessionId: params.sessionId } }
+    );
+  }
+}

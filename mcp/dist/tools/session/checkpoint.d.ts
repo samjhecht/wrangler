@@ -29,10 +29,10 @@ export declare const sessionCheckpointSchema: z.ZodObject<{
 }>;
 export type SessionCheckpointParams = z.infer<typeof sessionCheckpointSchema>;
 export declare function sessionCheckpointTool(params: SessionCheckpointParams, storageProvider: SessionStorageProvider): Promise<import("../../types/errors.js").MCPErrorResponse | import("../../types/errors.js").MCPSuccessResponse<{
+    sessionId: string;
     checkpointId: string;
-    savedAt: string;
-    canResume: boolean;
     tasksCompleted: number;
     tasksPending: number;
+    timestamp: string;
 }>>;
 //# sourceMappingURL=checkpoint.d.ts.map

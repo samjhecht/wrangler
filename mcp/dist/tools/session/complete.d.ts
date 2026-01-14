@@ -28,10 +28,7 @@ export type SessionCompleteParams = z.infer<typeof sessionCompleteSchema>;
 export declare function sessionCompleteTool(params: SessionCompleteParams, storageProvider: SessionStorageProvider): Promise<import("../../types/errors.js").MCPErrorResponse | import("../../types/errors.js").MCPSuccessResponse<{
     sessionId: string;
     status: "completed" | "failed";
-    startedAt: string;
-    completedAt: string;
     durationMs: number;
-    phasesCompleted: string[];
     tasksCompleted: number;
     prUrl: string | undefined;
     prNumber: number | undefined;

@@ -13,44 +13,43 @@ export async function sessionGetTool(params, storageProvider) {
             // Get specific session
             session = await storageProvider.getSession(params.sessionId);
             if (!session) {
-                return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`, { details: { sessionId: params.sessionId } });
+                return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`);
             }
         }
         else {
             // Find most recent incomplete session
             session = await storageProvider.findIncompleteSession();
             if (!session) {
-                return createSuccessResponse('No incomplete sessions found', {
-                    session: null,
-                    checkpoint: null,
-                    recentEvents: [],
-                    canResume: false,
-                });
+                return createSuccessResponse('No incomplete sessions found', { found: false });
             }
         }
         // Get checkpoint if available
         const checkpoint = await storageProvider.getCheckpoint(session.id);
-        // Get recent audit events
-        const recentEvents = await storageProvider.getAuditEntries(session.id, 20);
-        // Determine if session can be resumed
-        const canResume = session.status === 'running' || session.status === 'paused';
-        // Build response text
-        let text = `Session: ${session.id}`;
-        text += `\nStatus: ${session.status}`;
-        text += `\nCurrent Phase: ${session.currentPhase}`;
-        text += `\nSpec: ${session.specFile}`;
-        text += `\nTasks: ${session.tasksCompleted.length} completed, ${session.tasksPending.length} pending`;
-        if (canResume && checkpoint) {
-            text += `\n\nResume Instructions:`;
-            text += `\n${checkpoint.resumeInstructions}`;
-            text += `\n\nLast Action: ${checkpoint.lastAction}`;
-        }
-        return createSuccessResponse(text, {
-            session,
-            checkpoint,
-            recentEvents,
-            canResume,
-            resumeInstructions: checkpoint?.resumeInstructions,
+        return createSuccessResponse(`Session: ${session.id}\nStatus: ${session.status}\nPhase: ${session.currentPhase}\nTasks completed: ${session.tasksCompleted.length}\nTasks pending: ${session.tasksPending.length}`, {
+            found: true,
+            session: {
+                id: session.id,
+                specFile: session.specFile,
+                status: session.status,
+                currentPhase: session.currentPhase,
+                worktreePath: session.worktreePath,
+                branchName: session.branchName,
+                tasksCompleted: session.tasksCompleted,
+                tasksPending: session.tasksPending,
+                phasesCompleted: session.phasesCompleted,
+                startedAt: session.startedAt,
+                updatedAt: session.updatedAt,
+                completedAt: session.completedAt,
+                prUrl: session.prUrl,
+                prNumber: session.prNumber,
+            },
+            checkpoint: checkpoint ? {
+                checkpointId: checkpoint.checkpointId,
+                createdAt: checkpoint.createdAt,
+                lastAction: checkpoint.lastAction,
+                resumeInstructions: checkpoint.resumeInstructions,
+                variables: checkpoint.variables,
+            } : null,
         });
     }
     catch (error) {

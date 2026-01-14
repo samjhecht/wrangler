@@ -23,10 +23,9 @@ export declare const sessionPhaseSchema: z.ZodObject<{
 }>;
 export type SessionPhaseParams = z.infer<typeof sessionPhaseSchema>;
 export declare function sessionPhaseTool(params: SessionPhaseParams, storageProvider: SessionStorageProvider): Promise<import("../../types/errors.js").MCPErrorResponse | import("../../types/errors.js").MCPSuccessResponse<{
+    sessionId: string;
     phase: string;
     status: "failed" | "complete" | "started";
     timestamp: string;
-    eventLogged: boolean;
-    phasesCompleted: string[];
 }>>;
 //# sourceMappingURL=phase.d.ts.map

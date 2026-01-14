@@ -3,28 +3,17 @@
  *
  * Saves resumable state for session recovery.
  */
-import * as crypto from 'crypto';
 import { SessionCheckpointParamsSchema } from '../../types/session.js';
 import { createSuccessResponse, createErrorResponse, MCPErrorCode } from '../../types/errors.js';
 export const sessionCheckpointSchema = SessionCheckpointParamsSchema;
-/**
- * Generate a checkpoint ID (simplified ULID-like format)
- */
-function generateCheckpointId() {
-    const timestamp = Date.now().toString(36);
-    const random = crypto.randomBytes(4).toString('hex');
-    return `${timestamp}-${random}`;
-}
 export async function sessionCheckpointTool(params, storageProvider) {
     try {
-        // Verify session exists
         const session = await storageProvider.getSession(params.sessionId);
         if (!session) {
-            return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`, { details: { sessionId: params.sessionId } });
+            return createErrorResponse(MCPErrorCode.RESOURCE_NOT_FOUND, `Session not found: ${params.sessionId}`);
         }
         const now = new Date().toISOString();
-        const checkpointId = generateCheckpointId();
-        // Create checkpoint
+        const checkpointId = storageProvider.generateCheckpointId();
         const checkpoint = {
             sessionId: params.sessionId,
             checkpointId,
@@ -36,19 +25,13 @@ export async function sessionCheckpointTool(params, storageProvider) {
             lastAction: params.lastAction,
             resumeInstructions: params.resumeInstructions,
         };
-        // Update session with task tracking
-        session.tasksCompleted = params.tasksCompleted;
-        session.tasksPending = params.tasksPending;
-        session.updatedAt = now;
-        // Save checkpoint and update session
         await storageProvider.saveCheckpoint(checkpoint);
-        await storageProvider.updateSession(session);
-        return createSuccessResponse(`Checkpoint saved: ${checkpointId}`, {
+        return createSuccessResponse(`Checkpoint saved: ${checkpointId}\nTasks completed: ${params.tasksCompleted.length}\nTasks pending: ${params.tasksPending.length}`, {
+            sessionId: params.sessionId,
             checkpointId,
-            savedAt: now,
-            canResume: true,
             tasksCompleted: params.tasksCompleted.length,
             tasksPending: params.tasksPending.length,
+            timestamp: now,
         });
     }
     catch (error) {

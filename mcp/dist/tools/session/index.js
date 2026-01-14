@@ -1,7 +1,5 @@
 /**
- * Session tools index
- *
- * Exports all session management MCP tools.
+ * Session management tools
  */
 export { sessionStartSchema, sessionStartTool } from './start.js';
 export { sessionPhaseSchema, sessionPhaseTool } from './phase.js';

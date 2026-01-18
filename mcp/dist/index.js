@@ -6,8 +6,6 @@
  * or other MCP clients.
  */
 import { WranglerMCPServer } from './server.js';
-import { realpathSync } from 'fs';
-import { fileURLToPath } from 'url';
 /**
  * Parse configuration from environment variables
  */
@@ -16,6 +14,7 @@ function parseConfig() {
         name: process.env.WRANGLER_MCP_NAME || 'wrangler-tools',
         version: process.env.WRANGLER_MCP_VERSION || '1.0.0',
         workspaceRoot: process.env.WRANGLER_WORKSPACE_ROOT || process.cwd(),
+        debug: process.env.WRANGLER_MCP_DEBUG === 'true',
     };
     // Parse issue provider configuration
     const issueProvider = process.env.WRANGLER_ISSUE_PROVIDER || 'markdown';
@@ -38,11 +37,20 @@ function parseConfig() {
 async function main() {
     try {
         const config = parseConfig();
+        if (config.debug) {
+            console.error('[Wrangler MCP] Starting server with config:', JSON.stringify(config, null, 2));
+        }
         const server = new WranglerMCPServer(config);
         // Setup graceful shutdown handlers
-        const shutdown = async () => {
+        const shutdown = async (signal) => {
+            if (config.debug) {
+                console.error(`[Wrangler MCP] Received ${signal}, shutting down gracefully...`);
+            }
             try {
                 await server.stop();
+                if (config.debug) {
+                    console.error('[Wrangler MCP] Server stopped successfully');
+                }
                 process.exit(0);
             }
             catch (error) {
@@ -51,8 +59,8 @@ async function main() {
             }
         };
         // Register shutdown handlers
-        process.on('SIGINT', () => shutdown());
-        process.on('SIGTERM', () => shutdown());
+        process.on('SIGINT', () => shutdown('SIGINT'));
+        process.on('SIGTERM', () => shutdown('SIGTERM'));
         // Handle uncaught errors
         process.on('uncaughtException', (error) => {
             console.error('[Wrangler MCP] Uncaught exception:', error);
@@ -64,6 +72,9 @@ async function main() {
         });
         // Start the server
         await server.start();
+        if (config.debug) {
+            console.error('[Wrangler MCP] Server started successfully, waiting for connections...');
+        }
     }
     catch (error) {
         console.error('[Wrangler MCP] Failed to start server:', error);
@@ -71,22 +82,11 @@ async function main() {
     }
 }
 // Run the server
-// Use realpathSync to handle symlinks (e.g., ~/.claude -> ~/.samos/dotfiles/claude)
-const currentFile = fileURLToPath(import.meta.url);
-const invokedFile = process.argv[1];
-// Normalize both paths to handle symlinks
-let isMain = false;
-try {
-    isMain = realpathSync(currentFile) === realpathSync(invokedFile);
-}
-catch {
-    // Fallback if realpath fails - try direct comparison
-    isMain = currentFile === invokedFile || import.meta.url === `file://${invokedFile}`;
-}
-if (isMain) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }
 export { WranglerMCPServer } from './server.js';
 export * from './types/config.js';
 export * from './types/errors.js';
+export * from './observability/metrics.js';
 //# sourceMappingURL=index.js.map

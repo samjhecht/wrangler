@@ -477,8 +477,7 @@ wrangler/
 │
 ├── templates/                 # Templates
 │   ├── constitution.md
-│   ├── specification.md
-│   └── wrangler-config/
+│   └── specification.md
 │
 ├── ideas/                     # Future proposals
 │   ├── self-healing-mcp-plugin.md

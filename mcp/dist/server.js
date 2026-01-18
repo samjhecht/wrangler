@@ -20,16 +20,15 @@ import { issueMetadataSchema, issueMetadataTool } from './tools/issues/metadata.
 import { issueProjectsSchema, issueProjectsTool } from './tools/issues/projects.js';
 import { ProviderFactory } from './providers/factory.js';
 import { createErrorResponse, MCPErrorCode, getRemediation } from './types/errors.js';
+import { globalMetrics } from './observability/metrics.js';
 import { issuesAllCompleteSchema, issuesAllCompleteTool } from './tools/issues/all-complete.js';
 import { markCompleteSchema, markCompleteIssueTool } from './tools/issues/mark-complete.js';
-import { sessionStartSchema, sessionStartTool, sessionPhaseSchema, sessionPhaseTool, sessionCheckpointSchema, sessionCheckpointTool, sessionCompleteSchema, sessionCompleteTool, sessionGetSchema, sessionGetTool, } from './tools/session/index.js';
-import { SessionStorageProvider } from './providers/session-storage.js';
 export class WranglerMCPServer {
     server;
     config;
     providerFactory;
-    sessionStorage;
     transport;
+    debug;
     constructor(config = {}) {
         this.config = {
             name: 'wrangler-tools',
@@ -37,6 +36,11 @@ export class WranglerMCPServer {
             workspaceRoot: process.cwd(),
             ...config
         };
+        this.debug = process.env.WRANGLER_MCP_DEBUG === 'true' || config.debug === true;
+        if (this.debug) {
+            console.error(`[MCP Debug] Initializing Wrangler MCP Server`);
+            console.error(`[MCP Debug] Config:`, JSON.stringify(this.config, null, 2));
+        }
         this.server = new Server({
             name: this.config.name || 'wrangler-tools',
             version: this.config.version || '1.0.0',
@@ -47,6 +51,9 @@ export class WranglerMCPServer {
         });
         // Initialize stdio transport
         this.transport = new StdioServerTransport();
+        if (this.debug) {
+            console.error(`[MCP Debug] Stdio transport initialized`);
+        }
         // Initialize provider factory with proper configuration
         const providerConfig = {
             ...this.config,
@@ -59,16 +66,20 @@ export class WranglerMCPServer {
             },
         };
         this.providerFactory = new ProviderFactory(providerConfig);
-        // Initialize session storage provider
-        this.sessionStorage = new SessionStorageProvider({
-            basePath: this.config.workspaceRoot || process.cwd(),
-        });
         this.setupTools();
     }
     setupTools() {
+        if (this.debug) {
+            console.error(`[MCP Debug] Setting up tools...`);
+        }
         // Issue Management Tools
         this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const { name, arguments: args } = request.params;
+            if (this.debug) {
+                console.error(`[MCP Debug] Tool call: ${name}`, JSON.stringify(args, null, 2));
+            }
+            // Start metrics tracking
+            const invocationId = globalMetrics.startInvocation(name, this.config.name || 'wrangler-tools');
             try {
                 let result;
                 switch (name) {
@@ -105,29 +116,21 @@ export class WranglerMCPServer {
                     case 'issues_mark_complete':
                         result = await markCompleteIssueTool(markCompleteSchema.parse(args), this.providerFactory);
                         break;
-                    // Session management tools
-                    case 'session_start':
-                        result = await sessionStartTool(sessionStartSchema.parse(args), this.sessionStorage);
-                        break;
-                    case 'session_phase':
-                        result = await sessionPhaseTool(sessionPhaseSchema.parse(args), this.sessionStorage);
-                        break;
-                    case 'session_checkpoint':
-                        result = await sessionCheckpointTool(sessionCheckpointSchema.parse(args), this.sessionStorage);
-                        break;
-                    case 'session_complete':
-                        result = await sessionCompleteTool(sessionCompleteSchema.parse(args), this.sessionStorage);
-                        break;
-                    case 'session_get':
-                        result = await sessionGetTool(sessionGetSchema.parse(args), this.sessionStorage);
-                        break;
                     default:
                         throw new Error(`Unknown tool: ${name}`);
                 }
+                if (this.debug) {
+                    console.error(`[MCP Debug] Tool ${name} result:`, JSON.stringify(result, null, 2));
+                }
+                // Complete metrics tracking - success
+                globalMetrics.completeInvocation(invocationId, !result.isError);
                 return result;
             }
             catch (error) {
                 const message = error instanceof Error ? error.message : 'Unknown error';
+                if (this.debug) {
+                    console.error(`[MCP Debug] Tool ${name} error:`, error);
+                }
                 // Determine error code based on error type
                 let errorCode = MCPErrorCode.TOOL_EXECUTION_ERROR;
                 if (error instanceof z.ZodError) {
@@ -148,9 +151,12 @@ export class WranglerMCPServer {
                 const errorResponse = createErrorResponse(errorCode, `Error executing tool ${name}: ${message}`, {
                     context: { tool: name },
                     remediation: getRemediation(errorCode),
+                    includeStack: this.debug,
                     error: error instanceof Error ? error : undefined,
                     details: error instanceof z.ZodError ? error.errors : undefined,
                 });
+                // Complete metrics tracking - error
+                globalMetrics.completeInvocation(invocationId, false, errorCode, message);
                 // Return as CallToolResult (MCP SDK compatible)
                 return {
                     content: errorResponse.content,
@@ -161,13 +167,25 @@ export class WranglerMCPServer {
         });
         // Add tools/list handler
         this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+            if (this.debug) {
+                console.error(`[MCP Debug] Tools/list request received`);
+            }
             const tools = this.getAvailableTools().map(tool => ({
                 name: tool.name,
                 description: tool.description,
                 inputSchema: tool.inputSchema
             }));
-            return { tools };
+            const result = {
+                tools
+            };
+            if (this.debug) {
+                console.error(`[MCP Debug] Tools/list response:`, JSON.stringify(result, null, 2));
+            }
+            return result;
         });
+        if (this.debug) {
+            console.error(`[MCP Debug] Tools setup complete`);
+        }
     }
     /**
      * Get the list of available tools
@@ -229,47 +247,57 @@ export class WranglerMCPServer {
                 description: 'Mark a Wrangler issue as closed and (optionally) append a completion note once the work is finished.',
                 inputSchema: zodToJsonSchema(markCompleteSchema),
             },
-            // Session management tools
-            {
-                name: 'session_start',
-                description: 'Initialize a new orchestration session for spec implementation. Creates session directory, worktree, and branch.',
-                inputSchema: zodToJsonSchema(sessionStartSchema),
-            },
-            {
-                name: 'session_phase',
-                description: 'Record a phase transition in the orchestration workflow (plan, execute, verify, publish).',
-                inputSchema: zodToJsonSchema(sessionPhaseSchema),
-            },
-            {
-                name: 'session_checkpoint',
-                description: 'Save resumable state for session recovery. Call after each task completes to enable resume on interruption.',
-                inputSchema: zodToJsonSchema(sessionCheckpointSchema),
-            },
-            {
-                name: 'session_complete',
-                description: 'Finalize a session after workflow completion. Records final status, PR info, and duration.',
-                inputSchema: zodToJsonSchema(sessionCompleteSchema),
-            },
-            {
-                name: 'session_get',
-                description: 'Retrieve session state for recovery or status check. Omit sessionId to find most recent incomplete session.',
-                inputSchema: zodToJsonSchema(sessionGetSchema),
-            },
         ];
+    }
+    /**
+     * Get current metrics for all tools
+     */
+    getMetrics() {
+        return globalMetrics.exportJSON();
+    }
+    /**
+     * Get metrics in Prometheus format
+     */
+    getPrometheusMetrics() {
+        return globalMetrics.exportPrometheus();
     }
     /**
      * Start the MCP server
      */
     async start() {
+        if (this.debug) {
+            console.error(`[MCP Debug] Starting MCP server with stdio transport...`);
+        }
+        // Add error handlers
+        this.transport.onerror = (error) => {
+            console.error(`[MCP Debug] Transport error:`, error);
+        };
+        this.transport.onclose = () => {
+            if (this.debug) {
+                console.error(`[MCP Debug] Transport closed`);
+            }
+        };
+        this.server.onerror = (error) => {
+            console.error(`[MCP Debug] Server error:`, error);
+        };
         // Connect server to stdio transport (this automatically starts the transport)
         await this.server.connect(this.transport);
+        if (this.debug) {
+            console.error(`[MCP Debug] Server connected and transport started, ready for requests`);
+        }
     }
     /**
      * Stop the MCP server
      */
     async stop() {
+        if (this.debug) {
+            console.error(`[MCP Debug] Stopping MCP server...`);
+        }
         await this.transport.close();
         await this.server.close();
+        if (this.debug) {
+            console.error(`[MCP Debug] MCP server stopped`);
+        }
     }
     /**
      * Get server instance for testing

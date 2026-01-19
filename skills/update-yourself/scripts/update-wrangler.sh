@@ -52,7 +52,16 @@ update-wrangler() {
     echo "Cache directory not found (may already be cleared)."
   fi
 
-  # 3. Reset installed_plugins.json entry
+  # 3. Rebuild MCP bundle (CRITICAL - Claude Code doesn't run postinstall)
+  echo "Rebuilding MCP bundle..."
+  if [ -d "$marketplace_dir" ]; then
+    (cd "$marketplace_dir" && npm install)
+    echo "MCP bundle rebuilt."
+  else
+    echo "Warning: Cannot rebuild MCP bundle - marketplace directory not found."
+  fi
+
+  # 4. Reset installed_plugins.json entry
   echo "Resetting installed_plugins.json entry..."
   if command -v jq &> /dev/null; then
     jq --arg key "wrangler@$marketplace" '.plugins[$key] = []' "$installed_json" > /tmp/installed_plugins.json && \

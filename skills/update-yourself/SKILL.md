@@ -58,10 +58,15 @@ cd ~/.claude/plugins/marketplaces/{marketplace} && git fetch origin && git reset
 # 2. Clear the installed cache
 rm -rf ~/.claude/plugins/cache/{marketplace}/wrangler/
 
-# 3. Reset installed_plugins.json entry (forces reinstall)
+# 3. Rebuild MCP bundle (CRITICAL - Claude Code doesn't run postinstall)
+cd ~/.claude/plugins/marketplaces/{marketplace} && npm install && cd -
+
+# 4. Reset installed_plugins.json entry (forces reinstall)
 ```
 
-For step 3, edit `~/.claude/plugins/installed_plugins.json` and set the wrangler entry to an empty array:
+Step 3 rebuilds the MCP bundle. This is critical because Claude Code copies plugin files but doesn't run `npm install` or postinstall scripts. The MCP server requires `mcp/dist/bundle.cjs` which is built by the postinstall script.
+
+For step 4, edit `~/.claude/plugins/installed_plugins.json` and set the wrangler entry to an empty array:
 
 ```json
 "wrangler@{marketplace}": []
@@ -109,8 +114,9 @@ If the user prefers not to use the script, provide these manual steps:
 1. **Find your marketplace name** in `~/.claude/plugins/installed_plugins.json`
 2. **Pull latest code**: `cd ~/.claude/plugins/marketplaces/{marketplace} && git pull`
 3. **Delete cache**: `rm -rf ~/.claude/plugins/cache/{marketplace}/wrangler/`
-4. **Edit** `~/.claude/plugins/installed_plugins.json` - set wrangler entry to `[]`
-5. **Restart Claude Code**
+4. **Rebuild MCP bundle**: `cd ~/.claude/plugins/marketplaces/{marketplace} && npm install`
+5. **Edit** `~/.claude/plugins/installed_plugins.json` - set wrangler entry to `[]`
+6. **Restart Claude Code**
 
 ## Verification
 

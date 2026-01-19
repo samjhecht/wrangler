@@ -7,6 +7,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Verify MCP bundle exists, rebuild if missing
+# This handles cases where plugin was updated but npm install wasn't run
+MCP_BUNDLE="${PLUGIN_ROOT}/mcp/dist/bundle.cjs"
+if [ ! -f "$MCP_BUNDLE" ]; then
+    echo "MCP bundle missing, rebuilding..." >&2
+    (cd "$PLUGIN_ROOT" && npm install 2>/dev/null) || true
+fi
+
 # Path to the canonical workspace schema
 SCHEMA_PATH="${PLUGIN_ROOT}/.wrangler/workspace-schema.json"
 

@@ -6,7 +6,7 @@ Skills library and MCP server for AI coding assistants.
 
 ### Skills Library
 
-46 skills across testing, debugging, collaboration, governance, and code analysis.
+48 skills across testing, debugging, collaboration, governance, git hooks, and code analysis.
 
 ### MCP Server
 
@@ -14,7 +14,7 @@ Issue and specification tracking using markdown files with YAML frontmatter. Sto
 
 ### Slash Commands
 
-7 commands that activate skills:
+9 commands that activate skills:
 - `/wrangler:brainstorm` - Design refinement
 - `/wrangler:write-plan` - Implementation planning
 - `/wrangler:implement` - Autonomous execution
@@ -22,6 +22,17 @@ Issue and specification tracking using markdown files with YAML frontmatter. Sto
 - `/wrangler:scan-dependencies` - Dependency analysis
 - `/wrangler:update-yourself` - Version migration
 - `/wrangler:analyze-session-gaps` - Workflow analysis
+- `/wrangler:setup-git-hooks` - Git hooks configuration
+- `/wrangler:update-git-hooks` - Update hooks configuration
+
+### Git Hooks Enforcement
+
+Automated testing and code quality enforcement through Git hooks:
+- **Pre-commit**: Runs formatter, linter, unit tests before each commit
+- **Pre-push**: Runs full test suite before pushing to protected branches
+- **Commit-msg**: Validates commit message format (optional)
+
+Run `/wrangler:setup-git-hooks` to configure. See [docs/git-hooks.md](docs/git-hooks.md) for details.
 
 ### Session Hooks
 
@@ -58,6 +69,8 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 ### Git Workflows
 - **using-git-worktrees** - Isolated workspace creation with smart directory selection
 - **finishing-a-development-branch** - Structured options for merge, PR, or cleanup
+- **setup-git-hooks** - Git hooks configuration for test enforcement
+- **update-git-hooks** - Update existing hooks configuration
 
 ### Issue Management
 - **create-new-issue** - Creates issues via MCP `issues_create` tool
@@ -164,6 +177,7 @@ wrangler/
 - [Session Hooks](docs/SESSION-HOOKS.md) - Hook system and state management
 - [Versioning](docs/VERSIONING.md) - Version tracking and migration
 - [Slash Commands](docs/SLASH-COMMANDS.md) - Command reference
+- [Git Hooks](docs/git-hooks.md) - Git hooks enforcement framework
 - [Workflow Patterns](docs/WORKFLOW-PATTERNS.md) - Multi-agent workflows
 - [Workflow Ideas](docs/WORKFLOW-IDEAS.md) - Potential workflows
 

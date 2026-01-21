@@ -548,3 +548,76 @@ The evidence requirements in RED and GREEN phases integrate with verification-be
 - **Both together** → Required for TDD Compliance Certification
 
 See verification-before-completion skill for complete certification requirements.
+
+---
+
+## Git Hooks Integration
+
+If the project has git hooks enabled (via wrangler's setup-git-hooks skill), they interact with TDD:
+
+### TDD with Git Hooks
+
+| Phase | Git Hook Behavior | What To Do |
+|-------|-------------------|------------|
+| **RED** | Pre-commit will fail (tests fail) | Use bypass: `WRANGLER_SKIP_HOOKS=1 git commit` |
+| **GREEN** | Pre-commit should pass | Normal commit works |
+| **REFACTOR** | Pre-commit should pass | Normal commit works |
+
+### RED Phase and Hooks
+
+The pre-commit hook runs unit tests before each commit. During the RED phase, your test is intentionally failing, which will block the commit.
+
+**Expected workflow:**
+
+```bash
+# Write failing test (RED phase)
+# ...write test code...
+
+# Try to commit - BLOCKED by hook (expected!)
+git commit -m "WIP: failing test for feature X"
+# [pre-commit] ERROR: Unit tests failed
+
+# Use bypass for RED phase commit
+WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: failing test for feature X"
+# Commit succeeds
+
+# Implement minimal code (GREEN phase)
+# ...write implementation...
+
+# Now tests pass, normal commit works
+git commit -m "feat: implement feature X"
+# [pre-commit] OK: All checks passed
+```
+
+### Why This Design?
+
+The bypass mechanism is intentionally available to humans but NOT to AI agents:
+
+1. **Humans can set environment variables** in their shell
+2. **AI agents cannot persist environment variables** between commands
+3. This ensures **agents always face test enforcement** while **humans have TDD flexibility**
+
+### Commit Message Conventions
+
+When using bypass for RED phase:
+
+```bash
+# Good: Clear WIP indicator
+WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: failing test for retry logic"
+
+# Good: Reference issue
+WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: red phase for ISS-000123"
+
+# Bad: Unclear why bypassed
+WRANGLER_SKIP_HOOKS=1 git commit -m "add test"
+```
+
+### What About Push?
+
+Pre-push hooks run full test suite on protected branches. By the time you push:
+
+1. RED phase should be complete (test committed)
+2. GREEN phase should be complete (implementation committed)
+3. All tests should pass
+
+**Never push failing tests to protected branches.** If you need to share WIP work, push to a feature branch (usually not protected).

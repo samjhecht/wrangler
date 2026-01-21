@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://wrangler.dev/schemas/hooks-config.json",
+  "title": "Wrangler Git Hooks Configuration",
+  "description": "Configuration schema for wrangler git hooks enforcement framework",
+  "type": "object",
+  "required": ["version", "testCommand"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for IDE support"
+    },
+    "version": {
+      "type": "string",
+      "description": "Configuration schema version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when configuration was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when configuration was last updated"
+    },
+    "testCommand": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Command to run full test suite (used in pre-push)",
+      "examples": ["npm test", "pytest", "go test ./..."]
+    },
+    "unitTestCommand": {
+      "type": "string",
+      "description": "Command to run unit tests only (used in pre-commit, faster than full suite)",
+      "examples": ["npm run test:unit", "pytest tests/unit", "go test -short ./..."]
+    },
+    "formatCommand": {
+      "type": "string",
+      "description": "Command to format code (used in pre-commit, auto-fixes and re-stages)",
+      "examples": ["npm run format", "black .", "go fmt ./..."]
+    },
+    "lintCommand": {
+      "type": "string",
+      "description": "Command to lint code (used in pre-commit)",
+      "examples": ["npm run lint", "flake8", "golangci-lint run"]
+    },
+    "protectedBranches": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": ["main", "master", "develop", "release/*", "hotfix/*"],
+      "description": "Branch patterns that require full test suite before push",
+      "examples": [["main", "master", "develop"]]
+    },
+    "skipDocsOnlyChanges": {
+      "type": "boolean",
+      "default": true,
+      "description": "Skip tests when only documentation files are changed"
+    },
+    "docsPatterns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": ["*.md", "*.txt", "*.rst", "docs/*", "README*", "LICENSE*", "CHANGELOG*"],
+      "description": "File patterns considered as documentation (for docs-only detection)"
+    },
+    "enableCommitMsgValidation": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable commit message format validation (Conventional Commits)"
+    },
+    "commitMsgPattern": {
+      "type": "string",
+      "default": "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\([a-z0-9-]+\\))?: .+",
+      "description": "Regex pattern for valid commit message format"
+    },
+    "commitMsgMinLength": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 10,
+      "description": "Minimum length for commit message subject line"
+    },
+    "commitMsgMaxLength": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 72,
+      "description": "Maximum length for commit message subject line"
+    },
+    "bypassEnvVar": {
+      "type": "string",
+      "default": "WRANGLER_SKIP_HOOKS",
+      "description": "Environment variable name to bypass hooks (value must be '1' or 'true')"
+    },
+    "projectType": {
+      "type": "string",
+      "enum": ["javascript", "typescript", "python", "go", "rust", "java", "other"],
+      "description": "Project language/framework type (used for smart defaults)"
+    },
+    "pattern": {
+      "type": "string",
+      "enum": ["A", "B"],
+      "default": "A",
+      "description": "Installation pattern: A = hooks in .git/hooks, B = version-controlled in .wrangler/git-hooks"
+    }
+  },
+  "additionalProperties": false
+}

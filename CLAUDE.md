@@ -24,11 +24,17 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Systematic issue and specification tracking
    - Automated governance verification and maintenance
 
-2. **Skills Library** (47 skills)
+2. **Skills Library** (49 skills)
    - Proven techniques, patterns, and workflows
-   - Covers testing, debugging, planning, code review, governance, design systems
+   - Covers testing, debugging, planning, code review, governance, git hooks, design systems
    - Mandatory when applicable - no rationalizing away
    - Discoverable and composable
+
+6. **Git Hooks Enforcement Framework**
+   - Pre-commit, pre-push, commit-msg hooks
+   - Automated testing and code quality enforcement
+   - Bypass mechanism for TDD RED phase (humans only)
+   - Two installation patterns (direct or version-controlled)
 
 3. **Built-in MCP Server**
    - 16 tools (11 issue management + 5 session orchestration)
@@ -429,6 +435,99 @@ When working with issues, you have access to these 11 tools:
 - Single, simple tasks
 - Trivial changes
 - Informational queries
+
+---
+
+## Git Hooks Enforcement Framework
+
+### What It Does
+
+The Git Hooks Enforcement Framework provides automated testing and code quality enforcement through Git hooks. It ensures code is tested, formatted, and linted before commits and pushes.
+
+### Key Components
+
+**3 Hooks:**
+- `pre-commit` - Runs formatter, linter, unit tests before each commit
+- `pre-push` - Runs full test suite before pushing to protected branches
+- `commit-msg` - Validates commit message format (optional)
+
+**2 Skills:**
+- `setup-git-hooks` - Interactive hook configuration and installation
+- `update-git-hooks` - Update existing hook configuration
+
+**2 Slash Commands:**
+- `/wrangler:setup-git-hooks` - Set up git hooks
+- `/wrangler:update-git-hooks` - Update hook configuration
+
+### Installation Patterns
+
+**Pattern A (Default): Direct Installation**
+- Hooks installed directly to `.git/hooks/`
+- Configuration in `.wrangler/hooks-config.json`
+- Best for individual developers
+
+**Pattern B: Version-Controlled**
+- Hooks stored in `.wrangler/git-hooks/`
+- Symlinked via `scripts/install-hooks.sh`
+- Best for teams wanting identical hooks
+
+### Quick Start
+
+```bash
+# Run setup command
+/wrangler:setup-git-hooks
+
+# Follow interactive prompts
+
+# Normal commit (hooks run automatically)
+git commit -m "feat: add feature"
+```
+
+### Bypass Mechanism
+
+For TDD RED phase or emergency fixes:
+
+```bash
+# Bypass for single command
+WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: failing test"
+```
+
+**Important**: This bypass is only available to humans. AI agents cannot set environment variables, ensuring they always face test enforcement.
+
+### TDD Integration
+
+| TDD Phase | Hook Behavior | What To Do |
+|-----------|---------------|------------|
+| RED | Pre-commit fails (expected) | Use bypass |
+| GREEN | Pre-commit passes | Normal commit |
+| REFACTOR | Pre-commit passes | Normal commit |
+
+### Configuration
+
+Configuration stored in `.wrangler/hooks-config.json`:
+
+```json
+{
+  "testCommand": "npm test",
+  "unitTestCommand": "npm run test:unit",
+  "formatCommand": "npm run format",
+  "lintCommand": "npm run lint",
+  "protectedBranches": ["main", "master", "develop"],
+  "skipDocsOnlyChanges": true
+}
+```
+
+### File Locations
+
+- `.wrangler/hooks-config.json` - Hook configuration
+- `.wrangler/TESTING.md` - Test documentation
+- `.git/hooks/pre-commit` - Pre-commit hook
+- `.git/hooks/pre-push` - Pre-push hook
+- `.git/hooks/commit-msg` - Commit-msg hook (optional)
+
+### Documentation
+
+See [docs/git-hooks.md](docs/git-hooks.md) for comprehensive documentation.
 
 ---
 
@@ -973,6 +1072,11 @@ npm run mcp:dev                # Debug mode
   - All available commands with examples
   - Creating custom commands
   - Command best practices
+  - Troubleshooting guide
+- **[docs/git-hooks.md](docs/git-hooks.md)** - Git hooks enforcement framework
+  - Pre-commit, pre-push, commit-msg hooks
+  - Configuration and installation patterns
+  - Bypass mechanism and TDD integration
   - Troubleshooting guide
 - **[docs/workflows.md](docs/workflows.md)** - Major workflows guide
   - TDD workflow (RED-GREEN-REFACTOR)

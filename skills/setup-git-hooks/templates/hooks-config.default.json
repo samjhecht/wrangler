@@ -1,0 +1,17 @@
+{
+  "$schema": "./hooks-config.schema.json",
+  "version": "1.0.0",
+  "testCommand": "{{TEST_COMMAND}}",
+  "unitTestCommand": "{{UNIT_TEST_COMMAND}}",
+  "formatCommand": "{{FORMAT_COMMAND}}",
+  "lintCommand": "{{LINT_COMMAND}}",
+  "protectedBranches": ["main", "master", "develop", "release/*", "hotfix/*"],
+  "skipDocsOnlyChanges": true,
+  "docsPatterns": ["*.md", "*.txt", "*.rst", "docs/*", "README*", "LICENSE*", "CHANGELOG*"],
+  "enableCommitMsgValidation": false,
+  "commitMsgPattern": "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\([a-z0-9-]+\\))?: .+",
+  "commitMsgMinLength": 10,
+  "commitMsgMaxLength": 72,
+  "bypassEnvVar": "WRANGLER_SKIP_HOOKS",
+  "pattern": "A"
+}

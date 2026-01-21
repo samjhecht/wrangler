@@ -104,6 +104,46 @@ mkdir -p .wrangler/plans
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
+**4. Create Process Documentation Templates**
+
+Create standard process documentation files:
+
+```bash
+# Create from templates
+cp skills/initialize-governance/templates/TESTING.md .wrangler/TESTING.md
+cp skills/initialize-governance/templates/SECURITY_CHECKLIST.md .wrangler/templates/SECURITY_CHECKLIST.md
+cp skills/initialize-governance/templates/DEFINITION_OF_DONE.md .wrangler/templates/DEFINITION_OF_DONE.md
+```
+
+**TESTING.md** will be populated later by setup-git-hooks with actual test commands.
+
+Initial state should have placeholder status:
+- Replace `{{STATUS_PLACEHOLDER}}` with: `**Status:** Not configured yet`
+- Leave `{{TEST_COMMAND}}` and other placeholders as-is
+- These will be filled in by setup-git-hooks
+
+**SECURITY_CHECKLIST.md** provides security review checklist for sensitive code changes.
+
+**DEFINITION_OF_DONE.md** establishes completion criteria for all work items.
+
+**5. Set Up Git Hooks (Automatic)**
+
+After governance files are created, automatically set up git hooks:
+
+```bash
+# Invoke setup-git-hooks skill
+Skill: setup-git-hooks
+```
+
+This will:
+- Populate `.wrangler/TESTING.md` (created in previous step)
+- Detect project type and configure appropriate hooks
+- Create `.wrangler/hooks-config.json` with configuration
+- Install hooks to `.git/hooks/` directory
+- Handle empty projects gracefully (creates placeholders)
+
+Users can reconfigure later with `/wrangler:update-git-hooks` command.
+
 ### Phase 2: Constitution Creation
 
 **If user has existing principles**: Use the `constitution` skill (invoke with Skill tool) to help them refine and formalize.
@@ -260,6 +300,7 @@ cp /path/to/wrangler/skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md .w
 cp /path/to/wrangler/skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md .wrangler/templates/specification.md
 ```
 
+
 ### Phase 5: Integration and Verification
 
 **1. Update Project CLAUDE.md**
@@ -407,6 +448,14 @@ Your project now has a complete governance system ensuring we stay aligned on:
 - `specifications/README.md` - Specification guide
 - `templates/issue.md` - Issue template
 - `templates/specification.md` - Spec template
+- `templates/SECURITY_CHECKLIST.md` - Security review checklist
+- `templates/DEFINITION_OF_DONE.md` - Completion criteria standards
+- `TESTING.md` - Test documentation (created here, populated by setup-git-hooks)
+
+**Git Hooks** (always enabled):
+- `.wrangler/hooks-config.json` - Hook configuration
+- `.git/hooks/pre-commit` - Pre-commit hook
+- `.git/hooks/pre-push` - Pre-push hook
 
 ### Next Steps
 
@@ -502,6 +551,8 @@ Initialization is complete when:
 - [ ] Welcome issue created
 - [ ] User has reviewed all documents
 - [ ] CLAUDE.md updated (if exists)
+- [ ] TESTING.md created from template (placeholder status, to be populated by setup-git-hooks)
+- [ ] Git hooks set up (automatically invoked during initialization)
 
 ## Important Notes
 
@@ -510,6 +561,7 @@ Initialization is complete when:
 - Roadmap: `skills/validating-roadmap/templates/`
 - Issues: `skills/create-new-issue/templates/`
 - Specifications: `skills/writing-specifications/templates/`
+- Process docs: `skills/initialize-governance/templates/` (TESTING.md, SECURITY_CHECKLIST.md, DEFINITION_OF_DONE.md)
 
 **Use Copy, Not Move**: Always copy templates, never move them (templates stay in wrangler)
 
@@ -527,6 +579,8 @@ Initialization is complete when:
 - **check-constitutional-alignment** - For verifying features align with principles
 - **verify-governance** - For checking governance file integrity
 - **refresh-metrics** - For updating status counts in READMEs and NEXT_STEPS
+- **setup-git-hooks** - For setting up git hooks enforcement
+- **update-git-hooks** - For modifying existing git hooks configuration
 
 ## Remember
 

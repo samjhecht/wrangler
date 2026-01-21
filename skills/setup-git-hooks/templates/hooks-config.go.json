@@ -1,0 +1,15 @@
+{
+  "$schema": "./hooks-config.schema.json",
+  "version": "1.0.0",
+  "projectType": "go",
+  "testCommand": "go test ./...",
+  "unitTestCommand": "go test -short ./...",
+  "formatCommand": "go fmt ./...",
+  "lintCommand": "golangci-lint run",
+  "protectedBranches": ["main", "master", "develop", "release/*", "hotfix/*"],
+  "skipDocsOnlyChanges": true,
+  "docsPatterns": ["*.md", "*.txt", "docs/*", "README*", "LICENSE*", "CHANGELOG*"],
+  "enableCommitMsgValidation": false,
+  "bypassEnvVar": "WRANGLER_SKIP_HOOKS",
+  "pattern": "A"
+}

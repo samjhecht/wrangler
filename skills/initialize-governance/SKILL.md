@@ -104,21 +104,27 @@ mkdir -p .wrangler/plans
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
-**4. Create TESTING.md (Test Documentation)**
+**4. Create Process Documentation Templates**
 
-Create central test documentation file:
+Create standard process documentation files:
 
 ```bash
-# Create from template
+# Create from templates
 cp skills/initialize-governance/templates/TESTING.md .wrangler/TESTING.md
+cp skills/initialize-governance/templates/SECURITY_CHECKLIST.md .wrangler/templates/SECURITY_CHECKLIST.md
+cp skills/initialize-governance/templates/DEFINITION_OF_DONE.md .wrangler/templates/DEFINITION_OF_DONE.md
 ```
 
-This file will be populated later by setup-git-hooks with actual test commands.
+**TESTING.md** will be populated later by setup-git-hooks with actual test commands.
 
 Initial state should have placeholder status:
 - Replace `{{STATUS_PLACEHOLDER}}` with: `**Status:** Not configured yet`
 - Leave `{{TEST_COMMAND}}` and other placeholders as-is
 - These will be filled in by setup-git-hooks
+
+**SECURITY_CHECKLIST.md** provides security review checklist for sensitive code changes.
+
+**DEFINITION_OF_DONE.md** establishes completion criteria for all work items.
 
 **5. Set Up Git Hooks (Automatic)**
 
@@ -442,6 +448,8 @@ Your project now has a complete governance system ensuring we stay aligned on:
 - `specifications/README.md` - Specification guide
 - `templates/issue.md` - Issue template
 - `templates/specification.md` - Spec template
+- `templates/SECURITY_CHECKLIST.md` - Security review checklist
+- `templates/DEFINITION_OF_DONE.md` - Completion criteria standards
 - `TESTING.md` - Test documentation (created here, populated by setup-git-hooks)
 
 **Git Hooks** (always enabled):
@@ -553,7 +561,7 @@ Initialization is complete when:
 - Roadmap: `skills/validating-roadmap/templates/`
 - Issues: `skills/create-new-issue/templates/`
 - Specifications: `skills/writing-specifications/templates/`
-- Testing: `skills/initialize-governance/templates/`
+- Process docs: `skills/initialize-governance/templates/` (TESTING.md, SECURITY_CHECKLIST.md, DEFINITION_OF_DONE.md)
 
 **Use Copy, Not Move**: Always copy templates, never move them (templates stay in wrangler)
 

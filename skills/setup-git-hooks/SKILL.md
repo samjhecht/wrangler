@@ -420,10 +420,18 @@ mkdir -p .wrangler/templates
 mkdir -p .github
 ```
 
-Use Write tool to copy templates:
-- `.wrangler/templates/SECURITY_CHECKLIST.md`
-- `.wrangler/templates/DEFINITION_OF_DONE.md`
-- `.github/pull_request_template.md` (only if `.github/` exists or user wants it)
+**Note:** If governance was initialized via `initialize-governance` skill, these templates already exist:
+- `.wrangler/templates/SECURITY_CHECKLIST.md` (created by initialize-governance)
+- `.wrangler/templates/DEFINITION_OF_DONE.md` (created by initialize-governance)
+
+Check if they exist before creating:
+```bash
+[ -f .wrangler/templates/SECURITY_CHECKLIST.md ] && echo "Security checklist exists" || cp skills/initialize-governance/templates/SECURITY_CHECKLIST.md .wrangler/templates/
+[ -f .wrangler/templates/DEFINITION_OF_DONE.md ] && echo "DoD exists" || cp skills/initialize-governance/templates/DEFINITION_OF_DONE.md .wrangler/templates/
+```
+
+Always create PR template (git hooks specific):
+- `.github/pull_request_template.md` (copy from setup-git-hooks templates)
 
 **Step 10: Populate TESTING.md**
 
@@ -496,8 +504,8 @@ Display completion message to user:
 - `.git/hooks/pre-commit` - Pre-commit hook
 - `.git/hooks/pre-push` - Pre-push hook
 [- `.git/hooks/commit-msg` - Commit message hook]
-[- `.wrangler/templates/SECURITY_CHECKLIST.md`]
-[- `.wrangler/templates/DEFINITION_OF_DONE.md`]
+[- `.wrangler/templates/SECURITY_CHECKLIST.md` (if not already created by initialize-governance)]
+[- `.wrangler/templates/DEFINITION_OF_DONE.md` (if not already created by initialize-governance)]
 [- `.github/pull_request_template.md`]
 
 ### Important Notes

@@ -697,4 +697,60 @@ npm test -- tests/integration
 
 ---
 
+---
+
+## Git Hooks Integration
+
+If the project has git hooks enabled (via wrangler's setup-git-hooks skill), tests run automatically:
+
+### Automatic Test Execution
+
+| Hook | What Runs | When |
+|------|-----------|------|
+| pre-commit | Unit tests only | Every commit |
+| pre-push | Full test suite | Push to protected branches |
+
+### When to Use This Skill vs. Hooks
+
+**Let hooks handle it:**
+- Normal development workflow
+- Commits and pushes
+- Routine changes
+
+**Use this skill manually:**
+- Debugging test failures from hooks
+- Running tests with specific options (coverage, verbose)
+- Setting up test infrastructure
+- Investigating flaky tests
+- Running subset of tests during development
+
+### Bypass for Debugging
+
+If hooks are blocking and you need to debug:
+
+```bash
+# Bypass to commit work-in-progress
+WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: debugging test failure"
+
+# Then run tests manually with verbose output
+npm test -- --verbose
+
+# Or run specific failing test
+npm test -- path/to/failing.test.ts
+```
+
+**Note**: The bypass is for debugging only. Fix the root cause before pushing.
+
+### Checking Hook Configuration
+
+```bash
+# View hooks configuration
+cat .wrangler/hooks-config.json
+
+# Check which test command hooks use
+grep testCommand .wrangler/hooks-config.json
+```
+
+---
+
 *Run-the-Tests Skill v1.0*

@@ -624,3 +624,86 @@ From 24 failure memories:
 Run the command. Read the output. THEN claim the result.
 
 This is non-negotiable.
+
+---
+
+## Git Hooks Integration
+
+If the project has git hooks enabled (via wrangler's setup-git-hooks skill), they provide automated verification:
+
+### Hooks as First-Line Verification
+
+Git hooks enforce verification automatically:
+
+| Hook | What It Verifies | When |
+|------|------------------|------|
+| pre-commit | Format, lint, unit tests | Every commit |
+| pre-push | Full test suite | Push to protected branches |
+| commit-msg | Message format | Every commit (if enabled) |
+
+### Hooks + Manual Verification
+
+Hooks provide automated verification, but this skill adds human verification:
+
+**Hooks verify:**
+- Tests pass (automated)
+- Linter clean (automated)
+- Format correct (automated)
+
+**This skill verifies:**
+- Requirements met (manual checklist)
+- TDD compliance (certification)
+- Code review obtained (gate)
+- Evidence documented (proof)
+
+**Both are required.** Hooks passing is necessary but not sufficient.
+
+### Verification Checklist with Hooks
+
+When claiming work complete:
+
+- [ ] **Pre-commit passed** for all commits
+- [ ] **Pre-push passed** (if pushing to protected branch)
+- [ ] **No bypass used** (or bypass is documented with justification)
+- [ ] **TDD Compliance Certification** provided
+- [ ] **Code Review Gate** passed
+- [ ] **Requirements checklist** verified
+
+### Hooks Passing in Completion Evidence
+
+Include hook status in your completion evidence:
+
+```markdown
+## Verification Evidence
+
+### Git Hooks Status
+- Pre-commit: PASSED (all commits)
+- Pre-push: PASSED (push to main)
+- Bypass used: NO (or: YES for TDD RED phase commits)
+
+### Test Results
+[Full test output as usual]
+
+### TDD Compliance Certification
+[As usual]
+
+### Code Review Gate
+[As usual]
+```
+
+### What If Hooks Were Bypassed?
+
+If you used `WRANGLER_SKIP_HOOKS=1`:
+
+1. **Document why** in your completion evidence
+2. **Valid reasons**: TDD RED phase, emergency fix
+3. **Invalid reasons**: "tests were slow", "I was confident"
+4. **Run tests manually** before claiming completion
+
+```markdown
+### Bypass Documentation
+- Bypass used: YES
+- Commits bypassed: 2
+- Reason: TDD RED phase (writing failing tests)
+- Manual verification: Ran full test suite, all pass
+```

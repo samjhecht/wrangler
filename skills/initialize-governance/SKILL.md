@@ -104,7 +104,23 @@ mkdir -p .wrangler/plans
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
-**4. Set Up Git Hooks (Automatic)**
+**4. Create TESTING.md (Test Documentation)**
+
+Create central test documentation file:
+
+```bash
+# Create from template
+cp skills/initialize-governance/templates/TESTING.md .wrangler/TESTING.md
+```
+
+This file will be populated later by setup-git-hooks with actual test commands.
+
+Initial state should have placeholder status:
+- Replace `{{STATUS_PLACEHOLDER}}` with: `**Status:** Not configured yet`
+- Leave `{{TEST_COMMAND}}` and other placeholders as-is
+- These will be filled in by setup-git-hooks
+
+**5. Set Up Git Hooks (Automatic)**
 
 After governance files are created, automatically set up git hooks:
 
@@ -114,7 +130,7 @@ Skill: setup-git-hooks
 ```
 
 This will:
-- Create `.wrangler/TESTING.md` (central test documentation)
+- Populate `.wrangler/TESTING.md` (created in previous step)
 - Detect project type and configure appropriate hooks
 - Create `.wrangler/hooks-config.json` with configuration
 - Install hooks to `.git/hooks/` directory
@@ -278,32 +294,6 @@ cp /path/to/wrangler/skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md .w
 cp /path/to/wrangler/skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md .wrangler/templates/specification.md
 ```
 
-**5. Create TESTING.md (Test Documentation)**
-
-Create comprehensive test documentation for the project:
-
-```bash
-# Check if TESTING.md already exists
-[ -f .wrangler/TESTING.md ] && echo "TESTING.md exists" || echo "Creating TESTING.md"
-```
-
-If TESTING.md doesn't exist, create it from template:
-
-1. Read the template from `skills/setup-git-hooks/templates/TESTING.md`
-2. Parameterize with detected test commands (from git hooks config if set up, otherwise detect from project)
-3. Write to `.wrangler/TESTING.md`
-
-Key placeholders to fill:
-- `{{TEST_COMMAND}}` - Full test suite command
-- `{{UNIT_TEST_COMMAND}}` - Unit tests only
-- `{{LINT_COMMAND}}` - Linting command
-- `{{FORMAT_COMMAND}}` - Formatting command
-- `{{COVERAGE_MINIMUM}}` - Minimum coverage (suggest 80%)
-- `{{COVERAGE_TARGET}}` - Target coverage (suggest 90%)
-- `{{PROTECTED_BRANCHES}}` - Protected branch list
-
-If git hooks were set up earlier, use values from `.wrangler/hooks-config.json`.
-Otherwise, detect from project files or ask user.
 
 ### Phase 5: Integration and Verification
 
@@ -452,7 +442,7 @@ Your project now has a complete governance system ensuring we stay aligned on:
 - `specifications/README.md` - Specification guide
 - `templates/issue.md` - Issue template
 - `templates/specification.md` - Spec template
-- `TESTING.md` - Test documentation and requirements
+- `TESTING.md` - Test documentation (created here, populated by setup-git-hooks)
 
 **Git Hooks** (always enabled):
 - `.wrangler/hooks-config.json` - Hook configuration
@@ -553,8 +543,8 @@ Initialization is complete when:
 - [ ] Welcome issue created
 - [ ] User has reviewed all documents
 - [ ] CLAUDE.md updated (if exists)
-- [ ] TESTING.md created with project-specific configuration
-- [ ] Git hooks set up (if user opted in)
+- [ ] TESTING.md created from template (placeholder status, to be populated by setup-git-hooks)
+- [ ] Git hooks set up (automatically invoked during initialization)
 
 ## Important Notes
 
@@ -563,6 +553,7 @@ Initialization is complete when:
 - Roadmap: `skills/validating-roadmap/templates/`
 - Issues: `skills/create-new-issue/templates/`
 - Specifications: `skills/writing-specifications/templates/`
+- Testing: `skills/initialize-governance/templates/`
 
 **Use Copy, Not Move**: Always copy templates, never move them (templates stay in wrangler)
 

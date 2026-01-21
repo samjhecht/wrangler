@@ -87,24 +87,15 @@ If the skill detects an empty project or no test framework:
 
 **Graceful handling:**
 
-1. **Create TESTING.md anyway** with placeholder content:
+1. **Populate TESTING.md** with placeholder content:
+
+   TESTING.md should already exist from governance initialization. Update status section:
+
    ```markdown
-   # Testing Guide
-
    **Status:** No tests configured yet
-
-   This project doesn't have tests set up yet. Once you add tests, run:
-
-   ```bash
-   /wrangler:update-git-hooks
    ```
 
-   ## Next Steps
-
-   1. Add test framework (npm/pytest/go test/cargo test)
-   2. Create test files
-   3. Run `/wrangler:update-git-hooks` to configure hooks
-   ```
+   If TESTING.md doesn't exist, create it from initialize-governance template first.
 
 2. **Create stub hooks-config.json:**
    ```json
@@ -434,9 +425,18 @@ Use Write tool to copy templates:
 - `.wrangler/templates/DEFINITION_OF_DONE.md`
 - `.github/pull_request_template.md` (only if `.github/` exists or user wants it)
 
-**Step 10: Create/Update TESTING.md**
+**Step 10: Populate TESTING.md**
 
-If `.wrangler/TESTING.md` doesn't exist, create it from template with user's configuration.
+TESTING.md is created by initialize-governance skill. This step populates it with git hooks configuration.
+
+If `.wrangler/TESTING.md` doesn't exist (governance not initialized), create it from initialize-governance template with user's configuration:
+
+```bash
+# Copy template from initialize-governance
+cp skills/initialize-governance/templates/TESTING.md .wrangler/TESTING.md
+```
+
+Then populate all placeholders with detected/configured values.
 
 ### Phase 7: Verification and Summary
 

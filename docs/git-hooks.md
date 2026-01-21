@@ -411,7 +411,7 @@ cat .wrangler/hooks-config.json | grep protectedBranches
 | File | Purpose |
 |------|---------|
 | `.wrangler/hooks-config.json` | Hook configuration |
-| `.wrangler/TESTING.md` | Test documentation |
+| `.wrangler/TESTING.md` | Test documentation (created by initialize-governance) |
 | `.git/hooks/pre-commit` | Pre-commit hook |
 | `.git/hooks/pre-push` | Pre-push hook |
 | `.git/hooks/commit-msg` | Commit message hook |

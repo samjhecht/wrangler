@@ -104,44 +104,23 @@ mkdir -p .wrangler/plans
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
-**4. Ask About Git Hooks Setup (Optional)**
+**4. Set Up Git Hooks (Automatic)**
 
-Ask user if they want to set up git hooks for automated testing and code quality enforcement:
+After governance files are created, automatically set up git hooks:
 
-```typescript
-AskUserQuestion({
-  questions: [
-    {
-      question: "Would you like to set up Git hooks for automated testing and code quality?",
-      header: "Git Hooks Setup",
-      options: [
-        {
-          label: "Yes (Recommended)",
-          description: "Auto-format code, run linter, run tests before commits/pushes"
-        },
-        {
-          label: "No, manual setup",
-          description: "I'll configure hooks manually later"
-        },
-        {
-          label: "Skip for now",
-          description: "Don't set up hooks - can add later with /wrangler:setup-git-hooks"
-        }
-      ],
-      multiSelect: false
-    }
-  ]
-})
+```bash
+# Invoke setup-git-hooks skill
+Skill: setup-git-hooks
 ```
 
-**If user selects "Yes (Recommended)"**:
-- Invoke the `setup-git-hooks` skill using the Skill tool
-- This will run the interactive hook setup workflow
-- Wait for completion before continuing with governance setup
+This will:
+- Create `.wrangler/TESTING.md` (central test documentation)
+- Detect project type and configure appropriate hooks
+- Create `.wrangler/hooks-config.json` with configuration
+- Install hooks to `.git/hooks/` directory
+- Handle empty projects gracefully (creates placeholders)
 
-**If user selects "No" or "Skip"**:
-- Continue with remaining governance setup
-- Note in summary that hooks can be added later
+Users can reconfigure later with `/wrangler:update-git-hooks` command.
 
 ### Phase 2: Constitution Creation
 
@@ -475,7 +454,7 @@ Your project now has a complete governance system ensuring we stay aligned on:
 - `templates/specification.md` - Spec template
 - `TESTING.md` - Test documentation and requirements
 
-**Git Hooks** (if enabled):
+**Git Hooks** (always enabled):
 - `.wrangler/hooks-config.json` - Hook configuration
 - `.git/hooks/pre-commit` - Pre-commit hook
 - `.git/hooks/pre-push` - Pre-push hook

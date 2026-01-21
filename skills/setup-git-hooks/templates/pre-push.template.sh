@@ -52,6 +52,19 @@ if [ -n "$BYPASS_ENV_VAR" ]; then
 fi
 
 # =============================================================================
+# Check if setup is complete (handles empty projects)
+# =============================================================================
+if [ -f ".wrangler/hooks-config.json" ]; then
+    SETUP_COMPLETE=$(grep -o '"setupComplete"[[:space:]]*:[[:space:]]*true' .wrangler/hooks-config.json || echo "false")
+
+    if [ "$SETUP_COMPLETE" = "false" ]; then
+        log_info "Git hooks inactive (no tests configured yet)"
+        log_info "Run /wrangler:update-git-hooks after adding tests"
+        exit 0
+    fi
+fi
+
+# =============================================================================
 # Check if test command is configured
 # =============================================================================
 if [ -z "$TEST_COMMAND" ] || [ "$TEST_COMMAND" = "{{TEST_COMMAND}}" ]; then

@@ -1,5 +1,7 @@
 # Test Documentation
 
+{{STATUS_PLACEHOLDER}}
+
 > This document provides comprehensive test documentation for the project, including infrastructure setup, test organization, running tests, and git hooks enforcement.
 
 ## Test Infrastructure Setup

@@ -33,6 +33,29 @@ Hooks must already be set up. If not, use `setup-git-hooks` skill instead.
 [ -f .wrangler/hooks-config.json ] && echo "Config exists" || echo "Run setup-git-hooks first"
 ```
 
+## Activation Detection
+
+When user runs `/wrangler:update-git-hooks`, check if this is first activation:
+
+1. Read `.wrangler/hooks-config.json`
+2. Check `setupComplete` field:
+   - If `false` -> First activation (was inactive)
+   - If `true` or missing -> Reconfiguration (already active)
+
+**First activation flow:**
+1. Detect test framework (now that code exists)
+2. Ask for test commands
+3. Update hooks-config.json with `setupComplete: true`
+4. Regenerate hooks with actual test commands
+5. Update TESTING.md with active status
+6. Message: "Git hooks activated! Tests will now run on commits."
+
+**Reconfiguration flow:**
+1. Show current configuration
+2. Ask what to change
+3. Update config and regenerate hooks
+4. Message: "Git hooks updated with new configuration."
+
 ## Update Workflow
 
 ### Phase 1: Read Current Configuration

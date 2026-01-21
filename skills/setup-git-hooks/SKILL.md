@@ -76,6 +76,77 @@ If existing hook manager found, ask user how to proceed:
 
 ### Phase 2: Project Detection
 
+### Special Case: Empty Project or No Tests Detected
+
+If the skill detects an empty project or no test framework:
+
+**Detection criteria:**
+- No package.json, pyproject.toml, go.mod, Cargo.toml, etc.
+- No test files found (*.test.*, *_test.*, tests/ directory)
+- No test scripts in package.json
+
+**Graceful handling:**
+
+1. **Create TESTING.md anyway** with placeholder content:
+   ```markdown
+   # Testing Guide
+
+   **Status:** No tests configured yet
+
+   This project doesn't have tests set up yet. Once you add tests, run:
+
+   ```bash
+   /wrangler:update-git-hooks
+   ```
+
+   ## Next Steps
+
+   1. Add test framework (npm/pytest/go test/cargo test)
+   2. Create test files
+   3. Run `/wrangler:update-git-hooks` to configure hooks
+   ```
+
+2. **Create stub hooks-config.json:**
+   ```json
+   {
+     "version": "1.0.0",
+     "createdAt": "2026-01-21T...",
+     "testCommand": "",
+     "note": "No tests detected. Run /wrangler:update-git-hooks after adding tests.",
+     "protectedBranches": ["main", "master", "feature/*", "fix/*"],
+     "skipDocsOnlyChanges": true,
+     "docsPatterns": ["*.md", "docs/**/*", ".wrangler/memos/**/*"],
+     "bypassEnvVar": "WRANGLER_SKIP_HOOKS",
+     "setupComplete": false
+   }
+   ```
+
+3. **Install bypass-only hooks:**
+   - Hooks check `setupComplete` flag in config
+   - If false, log message and exit 0 (allow all commits/pushes)
+   - If true, run normal test enforcement
+
+4. **Inform user:**
+   ```
+   Git hooks installed (inactive - no tests detected)
+
+   Hooks are installed but will not enforce testing until you:
+   1. Add tests to your project
+   2. Run: /wrangler:update-git-hooks
+
+   Created:
+   - .wrangler/TESTING.md (placeholder)
+   - .wrangler/hooks-config.json (stub configuration)
+   - .git/hooks/pre-commit (bypass mode)
+   - .git/hooks/pre-push (bypass mode)
+   ```
+
+**Why this works:**
+- No broken setup (hooks exist but don't fail)
+- Clear messaging about what to do next
+- Easy to activate later
+- TESTING.md always exists (no orphaned references)
+
 **Step 3: Detect Project Type**
 
 Use Bash to identify project language/framework:

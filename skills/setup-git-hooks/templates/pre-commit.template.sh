@@ -109,6 +109,11 @@ if [ "$SKIP_DOCS_ONLY" = "true" ] && is_docs_only_change; then
 fi
 
 # =============================================================================
+# Capture originally staged files (before any modifications)
+# =============================================================================
+originally_staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+
+# =============================================================================
 # Step 1: Run formatter (auto-fix and re-stage)
 # =============================================================================
 if [ -n "$FORMAT_COMMAND" ] && [ "$FORMAT_COMMAND" != "{{FORMAT_COMMAND}}" ]; then
@@ -118,10 +123,9 @@ if [ -n "$FORMAT_COMMAND" ] && [ "$FORMAT_COMMAND" != "{{FORMAT_COMMAND}}" ]; th
     if eval "$FORMAT_COMMAND"; then
         log_success "Formatting complete"
 
-        # Re-stage any files that were reformatted
-        staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
-        if [ -n "$staged_files" ]; then
-            for file in $staged_files; do
+        # Re-stage only the originally staged files (not all modified files)
+        if [ -n "$originally_staged_files" ]; then
+            for file in $originally_staged_files; do
                 if [ -f "$file" ]; then
                     git add "$file"
                 fi

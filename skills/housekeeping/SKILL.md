@@ -121,15 +121,15 @@ Launch **five parallel subagents** using the Task tool:
 
 #### **Agent B: Completed Issues Organization**
 
-**Task:** Move completed/closed issues to `.wrangler/issues/completed/` directory for archival
+**Task:** Move completed/closed issues to `.wrangler/issues/archived/` directory for archival
 
 **Approach:**
 
 1. List all closed issues (`issues_list` with `status: ["closed", "cancelled"]`)
-2. Check if `.wrangler/issues/completed/` directory exists, create if not
+2. Check if `.wrangler/issues/archived/` directory exists, create if not
 3. For each closed issue:
    - Check if still in `.wrangler/issues/` root directory
-   - If yes, move to `.wrangler/issues/completed/`
+   - If yes, move to `.wrangler/issues/archived/`
    - Preserve filename (don't rename)
 4. Track metrics:
    - Completed issues found: [count]
@@ -384,7 +384,7 @@ Housekeeping workflow completed successfully.
 
 ### Files Organized
 
-- Moved [X] issues to `issues/completed/`
+- Moved [X] issues to `issues/archived/`
 
 ### Worktrees Cleaned Up
 
@@ -586,7 +586,7 @@ Housekeeping is successful when:
 ✅ Roadmap Next Steps accurately reflects current state and priorities
 ✅ Constitutional compliance verified and gaps identified
 ✅ All completed issues are marked as closed
-✅ All closed issues are archived in `.wrangler/issues/completed/`
+✅ All closed issues are archived in `.wrangler/issues/archived/`
 ✅ Issue descriptions match implementation reality
 ✅ Documentation drift is identified and catalogued (including governance compliance)
 ✅ Dangling worktrees (merged PRs) are cleaned up safely

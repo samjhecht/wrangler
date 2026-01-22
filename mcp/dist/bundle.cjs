@@ -25241,16 +25241,22 @@ function getDefaultSchema() {
         description: "Issue tracking files",
         gitTracked: true,
         subdirectories: {
-          completed: {
-            path: ".wrangler/issues/completed",
-            description: "Archived completed issues"
+          archived: {
+            path: ".wrangler/issues/archived",
+            description: "Archived closed/cancelled issues"
           }
         }
       },
       specifications: {
         path: ".wrangler/specifications",
         description: "Feature specifications",
-        gitTracked: true
+        gitTracked: true,
+        subdirectories: {
+          archived: {
+            path: ".wrangler/specifications/archived",
+            description: "Archived closed/cancelled specifications"
+          }
+        }
       },
       ideas: {
         path: ".wrangler/ideas",
@@ -25279,8 +25285,8 @@ function getDefaultSchema() {
       },
       config: {
         path: ".wrangler/config",
-        description: "Runtime configuration",
-        gitTracked: false
+        description: "Configuration files",
+        gitTracked: true
       },
       logs: {
         path: ".wrangler/logs",
@@ -25315,7 +25321,7 @@ function getDefaultSchema() {
         description: "Specifications README"
       }
     },
-    gitignorePatterns: ["cache/", "config/", "logs/"],
+    gitignorePatterns: ["cache/", "logs/", "sessions/"],
     artifactTypes: {
       issue: {
         directory: "issues",
@@ -25437,21 +25443,30 @@ var MarkdownIssueProvider = class extends IssueProvider {
     const targetType = request.type ?? existingIssue.type ?? "issue";
     const targetDir = this.getCollectionDir(targetType);
     this.assertWithinWorkspace(targetDir, "access issue directory");
-    const destinationPath = path2.join(targetDir, path2.basename(location.absolutePath));
-    this.assertWithinWorkspace(destinationPath, "write issue file");
-    if (targetType !== location.type) {
-      await fs2.ensureDir(targetDir);
+    const newStatus = request.status || existingIssue.status;
+    const willBeArchived = this.isArchivedStatus(newStatus);
+    const targetBaseDir = willBeArchived ? path2.join(targetDir, "archived") : targetDir;
+    const currentDir = path2.dirname(location.absolutePath);
+    const isCurrentlyInArchived = path2.basename(currentDir) === "archived";
+    const needsMove = targetType !== location.type || willBeArchived && !isCurrentlyInArchived || !willBeArchived && isCurrentlyInArchived;
+    let destinationPath;
+    if (needsMove) {
+      destinationPath = path2.join(targetBaseDir, path2.basename(location.absolutePath));
+      this.assertWithinWorkspace(destinationPath, "write issue file");
+      await fs2.ensureDir(path2.dirname(destinationPath));
       await fs2.move(location.absolutePath, destinationPath, { overwrite: true });
       location.absolutePath = destinationPath;
-      location.directory = targetDir;
+      location.directory = path2.dirname(destinationPath);
       location.type = targetType;
+    } else {
+      destinationPath = location.absolutePath;
     }
     const updatedIssue = {
       ...existingIssue,
       title: request.title || existingIssue.title,
       description: request.description || existingIssue.description,
       type: targetType,
-      status: request.status || existingIssue.status,
+      status: newStatus,
       priority: request.priority || existingIssue.priority,
       labels: request.labels || existingIssue.labels,
       assignee: request.assignee !== void 0 ? request.assignee : existingIssue.assignee,
@@ -25474,7 +25489,7 @@ var MarkdownIssueProvider = class extends IssueProvider {
     if (updatedIssue.project) frontmatter.project = updatedIssue.project;
     if (updatedIssue.wranglerContext) frontmatter.wranglerContext = updatedIssue.wranglerContext;
     const fileContent = matter.stringify(updatedIssue.description, frontmatter);
-    await fs2.writeFile(location.absolutePath, fileContent, "utf-8");
+    await fs2.writeFile(destinationPath, fileContent, "utf-8");
     return updatedIssue;
   }
   async deleteIssue(id) {
@@ -25751,6 +25766,16 @@ var MarkdownIssueProvider = class extends IssueProvider {
       }
     }
     return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+  }
+  /**
+   * Determines if a status represents an archived state.
+   * Archived statuses are 'closed' and 'cancelled'.
+   *
+   * @param status - The issue status to check
+   * @returns true if status is closed or cancelled
+   */
+  isArchivedStatus(status) {
+    return status === "closed" || status === "cancelled";
   }
   async findIssueLocation(id) {
     for (const { type, directory } of this.getCollections()) {

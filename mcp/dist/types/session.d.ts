@@ -180,7 +180,7 @@ export declare const SessionSchema: z.ZodObject<{
     prUrl: z.ZodOptional<z.ZodString>;
     prNumber: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    status: "completed" | "running" | "paused" | "failed";
+    status: "running" | "paused" | "completed" | "failed";
     id: string;
     updatedAt: string;
     specFile: string;
@@ -195,7 +195,7 @@ export declare const SessionSchema: z.ZodObject<{
     prUrl?: string | undefined;
     prNumber?: number | undefined;
 }, {
-    status: "completed" | "running" | "paused" | "failed";
+    status: "running" | "paused" | "completed" | "failed";
     id: string;
     updatedAt: string;
     specFile: string;

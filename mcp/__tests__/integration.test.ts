@@ -144,8 +144,12 @@ describe('MCP Server End-to-End Integration Tests', () => {
       expect(completeResult.isError).toBe(false);
       expect(completeResult.metadata?.status).toBe('closed');
 
-      // Verify completion note added
-      const completedContent = await fs.readFile(issueFile, 'utf-8');
+      // Verify completion note added (file should now be in archived subdirectory)
+      const archivedIssueFile = path.join(testDir, '.wrangler/issues/archived', 'ISS-000001-implement-user-authentication.md');
+      expect(await fs.pathExists(issueFile)).toBe(false); // Original location should be empty
+      expect(await fs.pathExists(archivedIssueFile)).toBe(true); // Should be in archived/
+
+      const completedContent = await fs.readFile(archivedIssueFile, 'utf-8');
       const completedParsed = matter(completedContent);
       expect(completedParsed.data.status).toBe('closed');
       expect(completedParsed.content).toContain('Completion Notes');

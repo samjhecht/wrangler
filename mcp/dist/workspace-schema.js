@@ -76,16 +76,22 @@ export function getDefaultSchema() {
                 description: 'Issue tracking files',
                 gitTracked: true,
                 subdirectories: {
-                    completed: {
-                        path: '.wrangler/issues/completed',
-                        description: 'Archived completed issues'
+                    archived: {
+                        path: '.wrangler/issues/archived',
+                        description: 'Archived closed/cancelled issues'
                     }
                 }
             },
             specifications: {
                 path: '.wrangler/specifications',
                 description: 'Feature specifications',
-                gitTracked: true
+                gitTracked: true,
+                subdirectories: {
+                    archived: {
+                        path: '.wrangler/specifications/archived',
+                        description: 'Archived closed/cancelled specifications'
+                    }
+                }
             },
             ideas: {
                 path: '.wrangler/ideas',
@@ -114,8 +120,8 @@ export function getDefaultSchema() {
             },
             config: {
                 path: '.wrangler/config',
-                description: 'Runtime configuration',
-                gitTracked: false
+                description: 'Configuration files',
+                gitTracked: true
             },
             logs: {
                 path: '.wrangler/logs',
@@ -150,7 +156,7 @@ export function getDefaultSchema() {
                 description: 'Specifications README'
             }
         },
-        gitignorePatterns: ['cache/', 'config/', 'logs/'],
+        gitignorePatterns: ['cache/', 'logs/', 'sessions/'],
         artifactTypes: {
             issue: {
                 directory: 'issues',

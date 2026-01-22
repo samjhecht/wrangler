@@ -31,6 +31,14 @@ export declare class MarkdownIssueProvider extends IssueProvider {
     private generateFileName;
     private slugify;
     private getNextCounter;
+    /**
+     * Determines if a status represents an archived state.
+     * Archived statuses are 'closed' and 'cancelled'.
+     *
+     * @param status - The issue status to check
+     * @returns true if status is closed or cancelled
+     */
+    private isArchivedStatus;
     private findIssueLocation;
     private assertWithinWorkspace;
 }

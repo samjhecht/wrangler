@@ -14,16 +14,22 @@
       "description": "Issue tracking files (git-tracked)",
       "gitTracked": true,
       "subdirectories": {
-        "completed": {
-          "path": ".wrangler/issues/completed",
-          "description": "Archived completed/closed issues"
+        "archived": {
+          "path": ".wrangler/issues/archived",
+          "description": "Archived closed/cancelled issues"
         }
       }
     },
     "specifications": {
       "path": ".wrangler/specifications",
       "description": "Feature specifications (git-tracked)",
-      "gitTracked": true
+      "gitTracked": true,
+      "subdirectories": {
+        "archived": {
+          "path": ".wrangler/specifications/archived",
+          "description": "Archived closed/cancelled specifications"
+        }
+      }
     },
     "ideas": {
       "path": ".wrangler/ideas",
@@ -52,8 +58,8 @@
     },
     "config": {
       "path": ".wrangler/config",
-      "description": "Runtime configuration (gitignored)",
-      "gitTracked": false
+      "description": "Configuration files (git-tracked)",
+      "gitTracked": true
     },
     "logs": {
       "path": ".wrangler/logs",
@@ -106,8 +112,8 @@
 
   "gitignorePatterns": [
     "cache/",
-    "config/",
-    "logs/"
+    "logs/",
+    "sessions/"
   ],
 
   "artifactTypes": {

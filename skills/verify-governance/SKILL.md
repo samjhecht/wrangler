@@ -1,6 +1,6 @@
 ---
 name: verify-governance
-description: Verify integrity and completeness of governance framework - checks all required files exist, are properly formatted, have current metrics, and align with each other
+description: Verify integrity and completeness of governance framework using workspace-schema.json as single source of truth - checks directories, files, and .gitignore against schema
 ---
 
 # Verify Governance Framework
@@ -10,611 +10,523 @@ description: Verify integrity and completeness of governance framework - checks 
 **MANDATORY**: When using this skill, announce it at the start with:
 
 ```
-🔧 Using Skill: verify-governance | [brief purpose based on context]
+Using Skill: verify-governance | [brief purpose based on context]
 ```
 
 **Example:**
 ```
-🔧 Using Skill: verify-governance | [Provide context-specific example of what you're doing]
+Using Skill: verify-governance | Checking .wrangler/ structure compliance
 ```
 
 This creates an audit trail showing which skills were applied during the session.
 
-
-
-You are verifying the integrity and completeness of the project's governance framework, ensuring all components are present, properly formatted, and mutually consistent.
-
 ## Purpose
 
 Governance frameworks can drift over time:
-- Files get out of sync
-- Metrics become stale
-- Links break
-- Inconsistencies emerge between constitution, roadmap, and next steps
+- Directories get renamed or go missing
+- Files end up in wrong locations
+- .gitignore patterns become incomplete
+- Structure diverges from canonical schema
 
-This skill performs systematic verification to detect and report issues.
+This skill performs systematic verification to detect and fix structural drift using `workspace-schema.json` as the single source of truth.
 
-## Verification Process
+## What This Skill Checks
 
-### Phase 1: File Existence Check
+**IN SCOPE** (Structure and Existence):
+- Directory structure matches `workspace-schema.json`
+- Subdirectories exist where schema defines them
+- Governance files exist at correct paths
+- Files are in correct locations (not legacy paths)
+- `.wrangler/.gitignore` exists with all required patterns
 
-**Check all required governance files exist:**
+**OUT OF SCOPE** (Content Quality):
+- File content/template compliance (future enhancement)
+- Governance file sections/structure validation
+- Cross-document link validation
+- Template version mismatches
+- Metrics staleness
 
-```bash
-# Core governance files
-echo "=== Checking Core Governance Files ==="
-[ -f .wrangler/CONSTITUTION.md ] && echo "✓ Constitution exists" || echo "✗ MISSING: Constitution"
-[ -f .wrangler/ROADMAP.md ] && echo "✓ Roadmap exists" || echo "✗ MISSING: Roadmap"
-[ -f .wrangler/ROADMAP_NEXT_STEPS.md ] && echo "✓ Next Steps exists" || echo "✗ MISSING: Next Steps"
+This simplification focuses on answering: "Is the structure correct?" not "Is the content good?"
 
-# Process documentation
-echo "=== Checking Process Documentation ==="
-[ -f .wrangler/specifications/README.md ] && echo "✓ Specs README exists" || echo "✗ MISSING: Specs README"
-[ -f .wrangler/issues/README.md ] && echo "✓ Issues README exists" || echo "✗ MISSING: Issues README"
-```
+## Verification Workflow
 
-**Report missing files**: If any files missing, suggest running `initialize-governance` skill.
+### Phase 1: Load Schema
 
-**Note on Templates**: Templates live in skill directories, not in `.wrangler/templates/`:
-- Issue template: `skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md`
-- Specification template: `skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md`
-
-### Phase 2: Constitution Validation
-
-**Read constitution file:**
+**Load workspace-schema.json as canonical structure:**
 
 ```bash
-cat .wrangler/CONSTITUTION.md
+# Find wrangler installation (usually in current project or ~/.local/share/wrangler/)
+WRANGLER_ROOT=$(pwd)
+SCHEMA_PATH="$WRANGLER_ROOT/.wrangler/config/workspace-schema.json"
+
+# Check if schema exists
+if [ ! -f "$SCHEMA_PATH" ]; then
+  echo "ERROR: workspace-schema.json not found at $SCHEMA_PATH"
+  echo "This project may not have wrangler initialized."
+  exit 1
+fi
+
+# Read schema (you'll parse this to extract directories, files, gitignore patterns)
+cat "$SCHEMA_PATH"
 ```
 
-**Verify structure:**
+**Parse key sections:**
+- `directories` - Canonical directory structure
+- `governanceFiles` - Required governance files
+- `readmeFiles` - Directory README files
+- `gitignorePatterns` - Patterns for .wrangler/.gitignore
 
-- [ ] **Frontmatter present**: Version, Ratified date, Last Amended
-- [ ] **North Star section**: Has mission statement
-- [ ] **Core Design Principles**: At least 3 principles
-- [ ] **Each principle has**:
-  - Principle statement
-  - "In Practice" section with specifics
-  - "Anti-patterns" section with ❌ examples
-  - "Examples" section with ✅ Good and ❌ Bad
-- [ ] **Decision Framework**: Has 5 evaluation questions
-- [ ] **Evolution of Principles**: Amendment process documented
-- [ ] **Version History**: Tracks constitutional changes
-- [ ] **Governance Rules**: Documents supremacy of constitution
+### Phase 2: Detect Directory Drift
 
-**Check for ambiguity**:
+**Check each directory in schema:**
 
-Scan principles for red flags:
-- Vague quality words without definition: "clean", "simple", "elegant"
-- No concrete examples
-- No anti-patterns
-- Unmeasurable criteria
+```bash
+# For each directory in schema.directories:
+# Example: .wrangler/issues, .wrangler/specifications, etc.
 
-**Report findings**:
+echo "=== Checking Directories ==="
+
+# From schema, check all directories
+for dir in .wrangler/issues .wrangler/specifications .wrangler/ideas .wrangler/memos \
+           .wrangler/plans .wrangler/docs .wrangler/cache .wrangler/config .wrangler/logs; do
+  if [ -d "$dir" ]; then
+    echo "✓ $dir exists"
+  else
+    echo "✗ MISSING: $dir"
+  fi
+done
+
+# Check subdirectories (from schema.directories[].subdirectories)
+echo "=== Checking Subdirectories ==="
+if [ -d ".wrangler/issues/completed" ]; then
+  echo "✓ .wrangler/issues/completed exists"
+else
+  echo "✗ MISSING: .wrangler/issues/completed"
+fi
+```
+
+**Detect legacy renamed directories:**
+
+Common v1.0 → v1.2 migrations to detect:
+- `.wrangler/issues/complete/` → `.wrangler/issues/completed/` (note: schema uses "completed", user may have "complete")
+- `.wrangler/specifications/done/` → `.wrangler/specifications/archived/`
+- `.wrangler/templates/` → (removed, templates now in skills/)
+
+```bash
+# Detect renamed directories
+echo "=== Detecting Legacy Directory Names ==="
+
+if [ -d ".wrangler/issues/complete" ]; then
+  echo "⚠️ LEGACY: .wrangler/issues/complete/ should be renamed to .wrangler/issues/completed/"
+fi
+
+if [ -d ".wrangler/specifications/done" ]; then
+  echo "⚠️ LEGACY: .wrangler/specifications/done/ should be renamed to .wrangler/specifications/archived/"
+fi
+
+if [ -d ".wrangler/templates" ]; then
+  echo "⚠️ LEGACY: .wrangler/templates/ no longer used (templates in skills/*/templates/)"
+fi
+```
+
+### Phase 3: Detect File Drift
+
+**Check governance files from schema:**
+
+```bash
+echo "=== Checking Governance Files ==="
+
+# From schema.governanceFiles
+for file in .wrangler/CONSTITUTION.md .wrangler/ROADMAP.md .wrangler/ROADMAP_NEXT_STEPS.md; do
+  if [ -f "$file" ]; then
+    echo "✓ $file exists"
+  else
+    echo "ℹ️  OPTIONAL: $file (not required, but recommended)"
+  fi
+done
+
+# From schema.readmeFiles
+for file in .wrangler/issues/README.md .wrangler/specifications/README.md \
+            .wrangler/memos/README.md .wrangler/plans/README.md; do
+  if [ -f "$file" ]; then
+    echo "✓ $file exists"
+  else
+    echo "ℹ️  MISSING: $file (consider creating)"
+  fi
+done
+```
+
+**Detect files in wrong locations:**
+
+Common legacy file locations:
+- `.wrangler/hooks-config.json` → `.wrangler/config/hooks-config.json`
+- `.wrangler/workspace-schema.json` → `.wrangler/config/workspace-schema.json`
+
+```bash
+echo "=== Detecting Legacy File Locations ==="
+
+if [ -f ".wrangler/hooks-config.json" ]; then
+  echo "⚠️ LEGACY: .wrangler/hooks-config.json should be at .wrangler/config/hooks-config.json"
+fi
+
+if [ -f ".wrangler/workspace-schema.json" ]; then
+  echo "⚠️ LEGACY: .wrangler/workspace-schema.json should be at .wrangler/config/workspace-schema.json"
+fi
+```
+
+### Phase 4: Detect .gitignore Drift
+
+**Check .wrangler/.gitignore:**
+
+```bash
+echo "=== Checking .wrangler/.gitignore ==="
+
+if [ ! -f ".wrangler/.gitignore" ]; then
+  echo "✗ MISSING: .wrangler/.gitignore"
+  echo "   Required patterns: cache/, config/, logs/"
+else
+  echo "✓ .wrangler/.gitignore exists"
+
+  # Check each pattern from schema.gitignorePatterns
+  echo "=== Checking gitignore patterns ==="
+
+  for pattern in "cache/" "config/" "logs/"; do
+    if grep -q "^${pattern}$" .wrangler/.gitignore; then
+      echo "✓ Pattern present: $pattern"
+    else
+      echo "✗ MISSING PATTERN: $pattern"
+    fi
+  done
+fi
+```
+
+### Phase 5: Report Drift
+
+**Compile findings into clear report:**
 
 ```markdown
-## Constitution Validation
+# Governance Structure Verification Report
 
-### ✅ Structure Complete
-- Version: [X.Y.Z]
-- [N] principles defined
-- Decision framework present
-- Amendment process documented
-
-### ⚠️ Potential Ambiguities
-- **Principle 2**: Uses "simple" without concrete definition
-- **Principle 4**: Missing anti-pattern examples
-- **Principle 5**: No measurable criteria
-
-### 💡 Recommendation
-Consider using `constitution` skill to refine ambiguous principles.
-```
-
-### Phase 3: Roadmap Validation
-
-**Read roadmap file:**
-
-```bash
-cat .wrangler/ROADMAP.md
-```
-
-**Verify structure:**
-
-- [ ] **Overview section**: Project description present
-- [ ] **Current State**: Lists completed features
-- [ ] **Phase sections**: At least 1 phase defined
-- [ ] **Each phase has**:
-  - Timeline
-  - Goal statement
-  - Core features list
-  - Success metrics
-- [ ] **Technical Debt section**: Ongoing priorities documented
-- [ ] **Design Principles section**: Links to constitution
-- [ ] **How to Use section**: Guidance for contributors/users
-- [ ] **Changelog**: Tracks roadmap evolution
-- [ ] **Related Documents**: Links to constitution and next steps
-
-**Verify constitutional alignment**:
-
-Check that roadmap references constitution:
-- Links to `CONSTITUTION.md`
-- Mentions design principles
-- Cites constitutional alignment
-
-**Report findings**:
-
-```markdown
-## Roadmap Validation
-
-### ✅ Structure Complete
-- [N] phases defined
-- All sections present
-- Links to constitution: ✓
-
-### ⚠️ Issues Found
-- Phase 2 missing success metrics
-- Changelog has no entries (might be new)
-
-### 📊 Phase Summary
-- **Phase 1**: [N] features, Timeline: [dates]
-- **Phase 2**: [N] features, Timeline: [dates]
-```
-
-### Phase 4: Next Steps Validation
-
-**Read next steps file:**
-
-```bash
-cat .wrangler/ROADMAP_NEXT_STEPS.md
-```
-
-**Verify structure:**
-
-- [ ] **Executive Summary**: Current status with % complete
-- [ ] **What Works Well**: Highlights strengths
-- [ ] **Critical Gap**: Identifies top priority
-- [ ] **Three implementation categories**:
-  - ✅ Fully Implemented Features
-  - ⚠️ Partially Implemented Features (with table)
-  - ❌ Not Implemented Features (with impact levels)
-- [ ] **Prioritized Roadmap**: 🔴🟡🟢 indicators
-- [ ] **Quick Win Checklist**: <4 hour items
-- [ ] **References**: Links to related docs
-
-**Verify metrics are current:**
-
-Check if percentages and counts seem reasonable:
-- Do fully implemented features match completed specs?
-- Are partially implemented features actually in progress?
-- Is overall % complete logical?
-
-**Report findings**:
-
-```markdown
-## Next Steps Validation
-
-### ✅ Structure Complete
-- All three categories present
-- Prioritized roadmap included
-- Quick wins identified
-
-### ⚠️ Metrics Status
-- Overall completion: ~[N]%
-- Last Updated: [DATE]
-- **Warning**: Last updated >30 days ago - metrics may be stale
-
-### 💡 Recommendation
-Run `refresh-metrics` skill to update status counts.
-```
-
-### Phase 5: Cross-Document Consistency
-
-**Check that documents reference each other correctly:**
-
-**Constitution → Roadmap:**
-```bash
-# Check if roadmap mentions constitution
-grep -i "constitution" .wrangler/ROADMAP.md
-```
-
-**Roadmap → Next Steps:**
-```bash
-# Check if roadmap changelog mentions next steps updates
-grep -i "next.steps\|ROADMAP_NEXT" .wrangler/ROADMAP.md
-```
-
-**Next Steps → Constitution:**
-```bash
-# Check if next steps references principles
-grep -i "constitution\|principle" .wrangler/ROADMAP_NEXT_STEPS.md
-```
-
-**Verify link integrity:**
-
-- [ ] Constitution links to roadmap
-- [ ] Roadmap links to constitution and next steps
-- [ ] Next steps links to constitution and roadmap
-- [ ] READMEs link to all three core docs
-- [ ] Templates reference governance workflow
-
-**Report findings**:
-
-```markdown
-## Cross-Document Consistency
-
-### ✅ Links Verified
-- Constitution ↔ Roadmap: ✓
-- Roadmap ↔ Next Steps: ✓
-- READMEs reference core docs: ✓
-
-### ⚠️ Issues
-- Next Steps missing reference to Constitution in [section]
-- Roadmap changelog has no entry for latest Next Steps update
-```
-
-### Phase 6: README Validation
-
-**Check issues README:**
-
-```bash
-cat .wrangler/issues/README.md
-```
-
-**Verify sections:**
-- [ ] Purpose statement
-- [ ] Quick reference (creating issues)
-- [ ] Issue lifecycle diagram
-- [ ] Governance integration (links to constitution/roadmap)
-- [ ] Labels section
-- [ ] Workflows section
-- [ ] Metrics section (with actual counts)
-- [ ] Best practices
-
-**Check specifications README:**
-
-```bash
-cat .wrangler/specifications/README.md
-```
-
-**Verify sections:**
-- [ ] Purpose statement
-- [ ] Quick reference (creating specs)
-- [ ] Specification lifecycle
-- [ ] Constitutional governance section
-- [ ] Roadmap integration section
-- [ ] Workflows section
-- [ ] Metrics section (with actual counts)
-- [ ] Best practices
-
-**Report findings**:
-
-```markdown
-## README Validation
-
-### Issues README
-- ✅ All sections present
-- ⚠️ Metrics need update (shows placeholders)
-
-### Specifications README
-- ✅ All sections present
-- ✅ Governance integration documented
-- ⚠️ Current phase section shows [Phase Name] placeholder
-```
-
-### Phase 7: Template Validation
-
-**Note**: Templates are stored in skill directories, not in `.wrangler/templates/`. Verify they exist in wrangler:
-
-**Check issue template:**
-
-```bash
-# Template location: skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md
-cat skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md
-```
-
-**Verify includes:**
-- [ ] YAML frontmatter with all fields
-- [ ] Description section
-- [ ] Acceptance Criteria section
-- [ ] Technical Notes section
-- [ ] Testing Strategy section
-- [ ] Labels guide
-- [ ] References section
-- [ ] Template usage notes
-
-**Check specification template:**
-
-```bash
-# Template location: skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md
-cat skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md
-```
-
-**Verify includes:**
-- [ ] YAML frontmatter with constitutional alignment fields
-- [ ] Constitutional Alignment section (mandatory)
-- [ ] Decision Framework verification
-- [ ] User Scenarios section
-- [ ] Requirements section
-- [ ] Design Decisions section
-- [ ] Testing Strategy section
-- [ ] Acceptance Criteria section
-- [ ] For AI Generation section
-
-**Report findings**:
-
-```markdown
-## Template Validation
-
-### Issue Template
-- ✅ All required sections present
-- ✅ Includes governance guidance
-
-### Specification Template
-- ✅ All required sections present
-- ✅ Constitutional Alignment section included
-- ✅ Decision Framework verification included
-```
-
-### Phase 8: Generate Verification Report
-
-**Compile all findings into structured report:**
-
-```markdown
-# Governance Framework Verification Report
-
-**Date**: [YYYY-MM-DD]
-**Project**: [Project Name]
+**Date**: [YYYY-MM-DD HH:MM]
+**Schema Version**: [from workspace-schema.json version field]
 
 ---
 
-## Executive Summary
+## Summary
 
-- **Status**: [✅ HEALTHY / ⚠️ NEEDS ATTENTION / ❌ CRITICAL ISSUES]
+- **Status**: [✅ COMPLIANT / ⚠️ DRIFT DETECTED / ❌ CRITICAL ISSUES]
+- **Missing Directories**: [N]
 - **Missing Files**: [N]
-- **Structural Issues**: [N]
-- **Stale Metrics**: [Yes/No]
-- **Consistency Issues**: [N]
+- **Wrong Locations**: [N]
+- **Missing Gitignore Patterns**: [N]
 
 ---
 
 ## Detailed Findings
 
-### File Existence [✅/⚠️/❌]
+### Missing Directories ([N])
 
-**Core Governance**:
-- [✅/✗] Constitution
-- [✅/✗] Roadmap
-- [✅/✗] Next Steps
+- `.wrangler/issues/completed/` (required by schema)
+- `.wrangler/cache/` (required by schema)
 
-**Process Documentation**:
-- [✅/✗] Issues README
-- [✅/✗] Specifications README
+**Fix**: `mkdir -p .wrangler/issues/completed .wrangler/cache`
 
-**Templates**:
-- [✅/✗] Issue template
-- [✅/✗] Specification template
+### Legacy Directory Names ([N])
 
-### Constitution [✅/⚠️/❌]
+- `.wrangler/issues/complete/` exists but schema expects `.wrangler/issues/completed/`
+  - **Impact**: 12 files in old location
+  - **Fix**: `mv .wrangler/issues/complete .wrangler/issues/completed`
 
-**Structure**: [Assessment]
-**Ambiguity Check**: [Issues found]
-**Recommendations**: [List]
+- `.wrangler/specifications/done/` exists but schema expects `.wrangler/specifications/archived/`
+  - **Impact**: 5 files in old location
+  - **Fix**: `mv .wrangler/specifications/done .wrangler/specifications/archived`
 
-### Roadmap [✅/⚠️/❌]
+### Wrong File Locations ([N])
 
-**Structure**: [Assessment]
-**Phase Coverage**: [N phases defined]
-**Constitutional Links**: [✅/✗]
-**Recommendations**: [List]
+- `.wrangler/hooks-config.json` should be at `.wrangler/config/hooks-config.json`
+  - **Fix**: `mv .wrangler/hooks-config.json .wrangler/config/hooks-config.json`
 
-### Next Steps [✅/⚠️/❌]
+### Missing Files ([N])
 
-**Structure**: [Assessment]
-**Metrics Status**: [Assessment]
-**Last Updated**: [DATE]
-**Recommendations**: [List]
+- `.wrangler/.gitignore` (required for proper git tracking)
+  - **Fix**: Create with patterns: cache/, config/, logs/
 
-### Cross-Document Consistency [✅/⚠️/❌]
+**Note**: Governance files (CONSTITUTION.md, ROADMAP.md) are optional per schema.
 
-**Link Integrity**: [Assessment]
-**Mutual References**: [Assessment]
-**Recommendations**: [List]
+### Missing Gitignore Patterns ([N])
 
-### READMEs [✅/⚠️/❌]
-
-**Issues README**: [Assessment]
-**Specifications README**: [Assessment]
-**Recommendations**: [List]
-
-### Templates [✅/⚠️/❌]
-
-**Issue Template**: [Assessment]
-**Specification Template**: [Assessment]
-**Recommendations**: [List]
+- Pattern `sessions/` missing from `.wrangler/.gitignore`
+  - **Fix**: Add to .gitignore
 
 ---
 
-## Priority Actions
+## Recommended Actions
 
-### 🔴 Critical (Do Now)
-1. [Action 1]
-2. [Action 2]
-
-### 🟡 Important (Do Soon)
-1. [Action 1]
-2. [Action 2]
-
-### 🟢 Nice to Have
-1. [Action 1]
-2. [Action 2]
-
----
-
-## Recommended Skills
-
-Based on findings, consider running:
-
-- [ ] `initialize-governance` - If missing files
-- [ ] `constitution` - If ambiguity detected
-- [ ] `refresh-metrics` - If metrics >30 days old
-- [ ] `check-constitutional-alignment` - To verify specs
-
----
-
-**Next Verification**: [DATE + 30 days]
+[List specific commands to fix each issue, grouped by type]
 ```
 
-## Automated Checks
+### Phase 6: Get Permission
 
-### Metrics Staleness Detection
+**Present user with 4 options:**
 
-**Check last update dates:**
+```
+## How would you like to proceed?
+
+1. **Fix all automatically** (recommended)
+   - I'll apply all fixes shown above
+   - Affected files will be moved/renamed
+   - Directories will be created
+   - .gitignore will be updated
+
+2. **Show me the commands**
+   - I'll display bash commands
+   - You run them manually
+   - Good for reviewing changes first
+
+3. **Let me choose**
+   - I'll ask about each fix individually
+   - You approve or skip each one
+   - Good for selective fixes
+
+4. **Cancel**
+   - No changes made
+   - Exit verification
+
+Please choose: [1/2/3/4]
+```
+
+**Wait for user response before proceeding.**
+
+### Phase 7: Apply Fixes
+
+**Option 1: Fix All Automatically**
 
 ```bash
-# Extract dates from files
-grep "Last Updated" .wrangler/ROADMAP_NEXT_STEPS.md
-grep "Last Updated" .wrangler/issues/README.md
-grep "Last Updated" .wrangler/specifications/README.md
+echo "=== Applying All Fixes ==="
 
-# Compare with current date
-# If >30 days, flag as stale
+# Create missing directories
+mkdir -p .wrangler/issues/completed
+mkdir -p .wrangler/cache
+echo "✓ Created missing directories"
+
+# Rename legacy directories (only if they exist)
+if [ -d ".wrangler/issues/complete" ]; then
+  mv .wrangler/issues/complete .wrangler/issues/completed
+  echo "✓ Renamed .wrangler/issues/complete/ → .wrangler/issues/completed/"
+fi
+
+# Move misplaced files
+if [ -f ".wrangler/hooks-config.json" ]; then
+  mkdir -p .wrangler/config
+  mv .wrangler/hooks-config.json .wrangler/config/hooks-config.json
+  echo "✓ Moved hooks-config.json to config/"
+fi
+
+# Create/update .gitignore
+if [ ! -f ".wrangler/.gitignore" ]; then
+  cat > .wrangler/.gitignore << 'EOF'
+cache/
+config/
+logs/
+EOF
+  echo "✓ Created .wrangler/.gitignore"
+else
+  # Append missing patterns
+  for pattern in "cache/" "config/" "logs/"; do
+    if ! grep -q "^${pattern}$" .wrangler/.gitignore; then
+      echo "$pattern" >> .wrangler/.gitignore
+      echo "✓ Added pattern to .gitignore: $pattern"
+    fi
+  done
+fi
+
+echo "=== All Fixes Applied ==="
 ```
 
-### Link Validation
+**Option 2: Show Commands**
 
-**Check for broken references:**
+Display the bash commands without executing:
 
 ```bash
-# Find all markdown links
-grep -r "\[.*\](.*.md)" .wrangler/specifications/
-grep -r "\[.*\](.*.md)" .wrangler/issues/
-
-# Verify linked files exist
-# Report any 404s
+echo "=== Commands to Fix Drift ==="
+echo ""
+echo "# Create missing directories"
+echo "mkdir -p .wrangler/issues/completed"
+echo "mkdir -p .wrangler/cache"
+echo ""
+echo "# Rename legacy directories"
+echo "mv .wrangler/issues/complete .wrangler/issues/completed"
+echo ""
+echo "# Move misplaced files"
+echo "mkdir -p .wrangler/config"
+echo "mv .wrangler/hooks-config.json .wrangler/config/hooks-config.json"
+echo ""
+echo "# Create .gitignore"
+echo "cat > .wrangler/.gitignore << 'EOF'"
+echo "cache/"
+echo "config/"
+echo "logs/"
+echo "EOF"
 ```
 
-### Constitutional Version Consistency
+**Option 3: Let Me Choose**
 
-**Verify version matches history:**
+Ask about each fix individually:
+
+```
+Fix: Create .wrangler/issues/completed/ directory
+Apply this fix? [y/n]: _
+
+[wait for user response]
+
+Fix: Rename .wrangler/issues/complete/ → .wrangler/issues/completed/ (12 files)
+Apply this fix? [y/n]: _
+
+[and so on...]
+```
+
+**Option 4: Cancel**
+
+```
+No changes made. Verification report saved for reference.
+Run /wrangler:verify-governance again when ready to fix drift.
+```
+
+### Phase 8: Re-Verify
+
+**After applying fixes, run verification again:**
 
 ```bash
-# Extract version from frontmatter
-version=$(grep "^version:" .wrangler/CONSTITUTION.md | cut -d'"' -f2)
+echo "=== Re-Running Verification ==="
+echo ""
 
-# Extract latest version from history
-latest_history=$(grep "^- \*\*.*\*\*" .wrangler/CONSTITUTION.md | head -1)
+# Run Phases 2-4 again to confirm all drift resolved
 
-# Compare
-# Report if mismatch
+echo "=== Final Status ==="
+
+if [ all checks pass ]; then
+  echo "✅ All drift resolved! Governance structure now compliant."
+else
+  echo "⚠️ Some issues remain:"
+  # List remaining issues
+fi
 ```
+
+## Legacy Migration Detection
+
+This skill specifically handles v1.0 → v1.2 migration drift:
+
+| Legacy Location | Current Location | Detection Method |
+|-----------------|------------------|------------------|
+| `.wrangler/issues/complete/` | `.wrangler/issues/completed/` | Directory exists check |
+| `.wrangler/specifications/done/` | `.wrangler/specifications/archived/` | Directory exists check |
+| `.wrangler/hooks-config.json` | `.wrangler/config/hooks-config.json` | File exists check |
+| `.wrangler/workspace-schema.json` | `.wrangler/config/workspace-schema.json` | File exists check |
+| `.wrangler/templates/` | `skills/*/templates/` | Directory exists check (now unused) |
+
+When detected, offer to migrate automatically.
 
 ## Edge Cases
 
-### Partial Governance Setup
+### No workspace-schema.json
 
-**Situation**: Only some governance files exist
-
-**Response**:
-1. Identify what exists vs what's missing
-2. Suggest: "Run `initialize-governance` to complete setup"
-3. Offer: "Or I can create missing files individually"
-
-### Severely Outdated Metrics
-
-**Situation**: Metrics >90 days old
+**Situation**: Schema file doesn't exist
 
 **Response**:
-1. Flag as critical issue
-2. Recommend running `refresh-metrics` immediately
-3. Warn: "Metrics this old may misguide decisions"
+```
+ERROR: workspace-schema.json not found at .wrangler/config/workspace-schema.json
 
-### Constitutional Violations in Specs
+This project may not have wrangler v1.2+ initialized.
 
-**Situation**: Specifications don't have constitutional alignment sections
+Options:
+1. Run /wrangler:initialize-governance to set up governance
+2. Manually create .wrangler/config/workspace-schema.json from template
+3. Update wrangler to latest version
+```
 
-**Response**:
-1. Count how many specs are missing alignment sections
-2. List specific spec IDs
-3. Recommend: "Add Constitutional Alignment sections to [N] specs"
-4. Offer to help update them
+### Partial .wrangler/ Setup
 
-### Conflicting Information
+**Situation**: Some directories exist, others don't
 
-**Situation**: Roadmap says Phase 2, but Next Steps shows Phase 1 features incomplete
+**Response**: Report exactly what's missing, offer to create all at once.
 
-**Response**:
-1. Report the conflict explicitly
-2. Ask user: "Which is correct - roadmap or next steps?"
-3. Update whichever is wrong
+### .gitignore Has Extra Patterns
+
+**Situation**: .gitignore has more patterns than schema requires
+
+**Response**: This is fine. Only report MISSING patterns, never complain about extras.
+
+### Schema Version Mismatch
+
+**Situation**: Schema version field doesn't match wrangler version
+
+**Response**: Report version mismatch as informational only, don't block.
+
+### Empty Directories
+
+**Situation**: Required directory exists but is empty
+
+**Response**: Directory exists = success. Empty is fine (issues/specs may not exist yet).
 
 ## Success Criteria
 
 Verification is complete when:
 
-- [ ] All 7 required files checked
-- [ ] Constitutional structure validated
-- [ ] Roadmap structure validated
-- [ ] Next Steps structure validated
-- [ ] Cross-document links verified
-- [ ] READMEs validated
-- [ ] Templates validated
-- [ ] Metrics staleness checked
-- [ ] Comprehensive report generated
-- [ ] Priority actions identified
-
-## Common Issues and Fixes
-
-### Issue: Missing Constitutional Alignment in Specs
-
-**Fix**: Update specification template, add sections to existing specs
-
-**Command**:
-```bash
-# Find specs missing constitutional alignment
-grep -L "Constitutional Alignment" .wrangler/specifications/*.md
-```
-
-### Issue: Stale Metrics
-
-**Fix**: Run `refresh-metrics` skill
-
-### Issue: Broken Links Between Docs
-
-**Fix**: Update link syntax to use relative paths
-
-**Pattern**: Use `../.wrangler/CONSTITUTION.md` not absolute paths
-
-### Issue: Ambiguous Principles
-
-**Fix**: Run `constitution` skill for Socratic refinement
-
-### Issue: Roadmap Phases Don't Match Next Steps
-
-**Fix**: Synchronize by updating whichever is outdated
-
-**Process**:
-1. Check recent changes to both files
-2. Determine source of truth
-3. Update other file to match
-4. Add changelog entry
+- [ ] workspace-schema.json loaded successfully
+- [ ] All directories checked against schema
+- [ ] All subdirectories checked against schema
+- [ ] All governance files checked against schema
+- [ ] All README files checked against schema
+- [ ] .gitignore existence and patterns validated
+- [ ] Legacy directory/file locations detected
+- [ ] Drift report generated with specific fixes
+- [ ] User permission obtained (or cancelled)
+- [ ] Fixes applied (if approved)
+- [ ] Re-verification confirmed success (if fixes applied)
 
 ## Output Format
 
 Always provide:
 
-1. **Quick Status**: One-line assessment (✅/⚠️/❌)
-2. **File Checklist**: What exists, what's missing
-3. **Structural Issues**: Problems with format/content
-4. **Priority Actions**: Ordered by urgency
-5. **Recommended Skills**: Which skills to run next
+1. **Executive Summary**: Quick status (✅/⚠️/❌) with counts
+2. **Detailed Findings**: Broken down by category
+3. **Specific Fixes**: Exact commands or actions for each issue
+4. **Permission Prompt**: 4 clear options
+5. **Confirmation**: Re-verification results after fixes
 
 ## Related Skills
 
-- **initialize-governance** - For creating missing governance files
-- **constitution** - For refining ambiguous principles
-- **refresh-metrics** - For updating stale metrics
-- **check-constitutional-alignment** - For verifying spec compliance
+- **initialize-governance** - For creating governance files from scratch
+- **refresh-metrics** - For updating metrics in README files (content, not structure)
+
+## Design Principles
+
+**Single Source of Truth**:
+- Structure defined ONLY in workspace-schema.json
+- Skill reads schema, never hardcodes structure
+- When wrangler structure changes, only schema updates
+
+**Simplicity**:
+- Focus on "does it exist?" and "is it in the right place?"
+- No content/quality validation (future enhancement)
+- Clear binary checks, no ambiguity
+
+**User Agency**:
+- Always ask permission before changes
+- Provide multiple options (auto, manual, selective, cancel)
+- Show exactly what will happen before it happens
+
+**Idempotency**:
+- Can run multiple times safely
+- Re-verification confirms fixes worked
+- No harm if run on compliant structure
 
 ## Remember
 
-Governance frameworks require maintenance. Running this verification monthly helps catch drift early before it becomes problematic. When you find issues, provide specific, actionable fixes - not just "this is wrong."
+This skill validates STRUCTURE ONLY. It doesn't care about:
+- Whether CONSTITUTION.md is well-written
+- Whether metrics are up to date
+- Whether links between docs work
+- Whether templates match current versions
+
+Those are future enhancements. Focus: "Is the directory structure and file organization correct per the schema?"

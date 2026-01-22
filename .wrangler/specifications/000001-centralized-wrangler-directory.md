@@ -121,10 +121,6 @@ project-root/
 │   ├── ROADMAP.md            # Strategic roadmap
 │   └── ROADMAP__NEXT_STEPS.md # Tactical execution tracker
 │
-├── metrics/                   # Runtime metrics data (gitignored)
-│   ├── tool-usage.json
-│   └── issue-stats.json
-│
 ├── cache/                     # Provider caches and settings (gitignored)
 │   ├── settings.json          # User-configurable cache settings
 │   └── issue-index.json       # Cached issue index
@@ -607,9 +603,6 @@ interface MarkdownProviderSettings {
 │   ├── ROADMAP.md
 │   └── ROADMAP__NEXT_STEPS.md
 │
-├── metrics/                   # Gitignored (runtime only)
-│   └── .gitkeep
-│
 ├── cache/                     # Gitignored (runtime only)
 │   └── .gitkeep
 │
@@ -678,7 +671,6 @@ Complexity: O(n) where n = number of subdirectories (constant, ~7)
     "issues": true,
     "specifications": true,
     "memos": true,
-    "metrics": false,
     "cache": false,
     "config": false
   }

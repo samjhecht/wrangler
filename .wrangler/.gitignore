@@ -1,0 +1,7 @@
+# Wrangler gitignore - generated from workspace-schema.json
+
+# Runtime data (don't commit)
+cache/
+logs/
+sessions/
+

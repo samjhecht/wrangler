@@ -8,12 +8,12 @@ set -e
 # =============================================================================
 # Ensure we're at git repository root
 # =============================================================================
-GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
-if [ -z "$GIT_ROOT" ]; then
+git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ $? -ne 0 ] || [ -z "$git_root" ] || [ ! -d "$git_root" ]; then
     echo "[pre-push] ERROR: Not in a git repository" >&2
     exit 1
 fi
-cd "$GIT_ROOT" || exit 1
+cd "$git_root" || exit 1
 
 # =============================================================================
 # Configuration (populated by setup-git-hooks skill)

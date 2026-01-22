@@ -8,12 +8,12 @@ set -e
 # =============================================================================
 # Ensure we're at git repository root
 # =============================================================================
-GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
-if [ -z "$GIT_ROOT" ]; then
+git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ $? -ne 0 ] || [ -z "$git_root" ] || [ ! -d "$git_root" ]; then
     echo "[pre-commit] ERROR: Not in a git repository" >&2
     exit 1
 fi
-cd "$GIT_ROOT" || exit 1
+cd "$git_root" || exit 1
 
 # =============================================================================
 # Configuration (populated by setup-git-hooks skill)
@@ -147,9 +147,11 @@ if [ -n "$FORMAT_COMMAND" ] && [ "$FORMAT_COMMAND" != "{{FORMAT_COMMAND}}" ]; th
                 if [ -z "$file" ]; then
                     continue
                 fi
-                if [ -f "$file" ]; then
-                    git add "$file"
+                if [ ! -f "$file" ]; then
+                    log_warn "File $file was modified/deleted during formatting - skipping re-stage"
+                    continue
                 fi
+                git add "$file"
             done
             log_info "Re-staged formatted files"
         fi

@@ -98,12 +98,13 @@ initialize_workspace() {
     done
 
     # Create runtime directories (not git-tracked)
-    for dir in cache config logs; do
+    for dir in cache logs; do
         mkdir -p "${GIT_ROOT}/.wrangler/${dir}"
     done
 
-    # Create completed subdirectory for issues
-    mkdir -p "${GIT_ROOT}/.wrangler/issues/completed"
+    # Create archived subdirectories for issues and specifications
+    mkdir -p "${GIT_ROOT}/.wrangler/issues/archived"
+    mkdir -p "${GIT_ROOT}/.wrangler/specifications/archived"
 
     echo "✓ Initialized .wrangler/ directory structure at ${GIT_ROOT}" >&2
 }
@@ -227,15 +228,16 @@ Git doesn't track empty directories. The `.gitkeep` file ensures:
 | Directory | Purpose | Git Tracked |
 |-----------|---------|-------------|
 | `issues/` | Issue tracking files | Yes |
-| `issues/completed/` | Archived closed issues | Yes |
+| `issues/archived/` | Archived closed/cancelled issues | Yes |
 | `specifications/` | Feature specifications | Yes |
+| `specifications/archived/` | Archived closed/cancelled specifications | Yes |
 | `ideas/` | Ideas and proposals | Yes |
 | `memos/` | Reference material, RCAs | Yes |
 | `plans/` | Implementation plans | Yes |
 | `docs/` | Auto-generated governance docs | Yes |
 | `templates/` | Issue/spec templates | Yes |
 | `cache/` | Runtime cache | No |
-| `config/` | Runtime configuration | No |
+| `config/` | Configuration files | Yes |
 | `logs/` | Runtime logs | No |
 
 ---

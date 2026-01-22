@@ -32,7 +32,11 @@ export declare class MarkdownIssueProvider extends IssueProvider {
     private slugify;
     private getNextCounter;
     /**
-     * Helper method to determine if a status represents an archived state
+     * Determines if a status represents an archived state.
+     * Archived statuses are 'closed' and 'cancelled'.
+     *
+     * @param status - The issue status to check
+     * @returns true if status is closed or cancelled
      */
     private isArchivedStatus;
     private findIssueLocation;

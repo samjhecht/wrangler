@@ -559,8 +559,9 @@ describe('workspace-schema', () => {
         const dirs = getInitializationDirectories();
 
         expect(dirs).toContain('.wrangler/issues');
-        expect(dirs).toContain('.wrangler/issues/completed');
+        expect(dirs).toContain('.wrangler/issues/archived');
         expect(dirs).toContain('.wrangler/specifications');
+        expect(dirs).toContain('.wrangler/specifications/archived');
         expect(dirs).toContain('.wrangler/ideas');
         expect(dirs).toContain('.wrangler/memos');
         expect(dirs).toContain('.wrangler/plans');
@@ -573,7 +574,8 @@ describe('workspace-schema', () => {
       it('should include all subdirectories', () => {
         const dirs = getInitializationDirectories();
 
-        expect(dirs).toContain('.wrangler/issues/completed');
+        expect(dirs).toContain('.wrangler/issues/archived');
+        expect(dirs).toContain('.wrangler/specifications/archived');
       });
 
       it('should return directories from custom schema', async () => {

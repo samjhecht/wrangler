@@ -133,20 +133,22 @@ initialize_workspace() {
         done
 
         # Create runtime directories (not git-tracked)
-        for dir in cache config logs; do
+        for dir in cache logs; do
             dir_path=$(extract_json_value "directories.${dir}.path")
             if [ -n "$dir_path" ]; then
                 mkdir -p "${GIT_ROOT}/${dir_path}"
             fi
         done
 
-        # Create completed subdirectory for issues
-        mkdir -p "${GIT_ROOT}/.wrangler/issues/completed"
+        # Create archived subdirectories for issues and specifications
+        mkdir -p "${GIT_ROOT}/.wrangler/issues/archived"
+        mkdir -p "${GIT_ROOT}/.wrangler/specifications/archived"
     else
         # Fallback to hardcoded defaults if schema not found
         mkdir -p "${GIT_ROOT}/.wrangler/issues"
-        mkdir -p "${GIT_ROOT}/.wrangler/issues/completed"
+        mkdir -p "${GIT_ROOT}/.wrangler/issues/archived"
         mkdir -p "${GIT_ROOT}/.wrangler/specifications"
+        mkdir -p "${GIT_ROOT}/.wrangler/specifications/archived"
         mkdir -p "${GIT_ROOT}/.wrangler/ideas"
         mkdir -p "${GIT_ROOT}/.wrangler/memos"
         mkdir -p "${GIT_ROOT}/.wrangler/plans"
@@ -171,13 +173,13 @@ initialize_workspace() {
         if [ -z "$gitignore_patterns" ]; then
             # Fallback if extraction failed
             gitignore_patterns="cache/
-config/
-logs/"
+logs/
+sessions/"
         fi
     else
         gitignore_patterns="cache/
-config/
-logs/"
+logs/
+sessions/"
     fi
 
     cat > "${GIT_ROOT}/.wrangler/.gitignore" <<GITIGNORE

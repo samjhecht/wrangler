@@ -26,10 +26,15 @@ export declare class MarkdownIssueProvider extends IssueProvider {
     private parseIssueFromFile;
     private matchesFilters;
     private normalizeTypes;
+    private getTypePrefix;
     private generateIssueId;
     private generateFileName;
     private slugify;
     private getNextCounter;
+    /**
+     * Helper method to determine if a status represents an archived state
+     */
+    private isArchivedStatus;
     private findIssueLocation;
     private assertWithinWorkspace;
 }

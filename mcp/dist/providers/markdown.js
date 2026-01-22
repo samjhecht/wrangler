@@ -46,7 +46,7 @@ export class MarkdownIssueProvider extends IssueProvider {
         const targetDir = this.getCollectionDir(artifactType);
         this.assertWithinWorkspace(targetDir, 'access issue directory');
         await fs.ensureDir(targetDir);
-        const issueId = await this.generateIssueId();
+        const issueId = await this.generateIssueId(artifactType);
         const fileName = this.generateFileName(issueId, request.title);
         const filePath = path.join(targetDir, fileName);
         this.assertWithinWorkspace(filePath, 'write issue file');
@@ -106,21 +106,40 @@ export class MarkdownIssueProvider extends IssueProvider {
         const targetType = request.type ?? existingIssue.type ?? 'issue';
         const targetDir = this.getCollectionDir(targetType);
         this.assertWithinWorkspace(targetDir, 'access issue directory');
-        const destinationPath = path.join(targetDir, path.basename(location.absolutePath));
-        this.assertWithinWorkspace(destinationPath, 'write issue file');
-        if (targetType !== location.type) {
-            await fs.ensureDir(targetDir);
+        // Determine the new status
+        const newStatus = request.status || existingIssue.status;
+        // Determine if we need to move between archived/root based on status
+        const willBeArchived = this.isArchivedStatus(newStatus);
+        // Determine where file should be based on new status
+        const targetBaseDir = willBeArchived
+            ? path.join(targetDir, 'archived')
+            : targetDir;
+        // Determine current location relative to collection dir - check if parent directory is 'archived'
+        const currentDir = path.dirname(location.absolutePath);
+        const isCurrentlyInArchived = path.basename(currentDir) === 'archived';
+        // Check if file needs to be moved
+        const needsMove = targetType !== location.type ||
+            (willBeArchived && !isCurrentlyInArchived) ||
+            (!willBeArchived && isCurrentlyInArchived);
+        let destinationPath;
+        if (needsMove) {
+            destinationPath = path.join(targetBaseDir, path.basename(location.absolutePath));
+            this.assertWithinWorkspace(destinationPath, 'write issue file');
+            await fs.ensureDir(path.dirname(destinationPath));
             await fs.move(location.absolutePath, destinationPath, { overwrite: true });
             location.absolutePath = destinationPath;
-            location.directory = targetDir;
+            location.directory = path.dirname(destinationPath);
             location.type = targetType;
+        }
+        else {
+            destinationPath = location.absolutePath;
         }
         const updatedIssue = {
             ...existingIssue,
             title: request.title || existingIssue.title,
             description: request.description || existingIssue.description,
             type: targetType,
-            status: request.status || existingIssue.status,
+            status: newStatus,
             priority: request.priority || existingIssue.priority,
             labels: request.labels || existingIssue.labels,
             assignee: request.assignee !== undefined ? request.assignee : existingIssue.assignee,
@@ -146,7 +165,7 @@ export class MarkdownIssueProvider extends IssueProvider {
         if (updatedIssue.wranglerContext)
             frontmatter.wranglerContext = updatedIssue.wranglerContext;
         const fileContent = matter.stringify(updatedIssue.description, frontmatter);
-        await fs.writeFile(location.absolutePath, fileContent, 'utf-8');
+        await fs.writeFile(destinationPath, fileContent, 'utf-8');
         return updatedIssue;
     }
     async deleteIssue(id) {
@@ -377,19 +396,33 @@ export class MarkdownIssueProvider extends IssueProvider {
         }
         return undefined;
     }
-    async generateIssueId() {
-        this.issueCounter = await this.getNextCounter();
-        return this.issueCounter.toString().padStart(6, '0');
+    getTypePrefix(artifactType) {
+        switch (artifactType) {
+            case 'issue':
+                return 'ISS';
+            case 'specification':
+                return 'SPEC';
+            case 'idea':
+                return 'IDEA';
+            default:
+                return 'ISS';
+        }
+    }
+    async generateIssueId(artifactType) {
+        const prefix = this.getTypePrefix(artifactType);
+        this.issueCounter = await this.getNextCounter(artifactType);
+        return `${prefix}-${this.issueCounter.toString().padStart(6, '0')}`;
     }
     generateFileName(id, title) {
         switch (this.settings.fileNaming) {
             case 'timestamp':
                 return `${Date.now()}-${this.slugify(title)}.md`;
-            case 'counter':
-                return `${id}-${this.slugify(title)}.md`;
             case 'slug':
-            default:
                 return `${this.slugify(title)}-${id}.md`;
+            case 'counter':
+            default:
+                // Default to counter format: ID first for better sorting
+                return `${id}-${this.slugify(title)}.md`;
         }
     }
     slugify(text) {
@@ -407,24 +440,41 @@ export class MarkdownIssueProvider extends IssueProvider {
         }
         return slug;
     }
-    async getNextCounter() {
+    async getNextCounter(artifactType) {
         const numbers = [];
-        for (const { directory } of this.getCollections()) {
-            if (!await fs.pathExists(directory)) {
-                continue;
+        const prefix = this.getTypePrefix(artifactType);
+        const directory = this.getCollectionDir(artifactType);
+        if (!await fs.pathExists(directory)) {
+            return 1;
+        }
+        const files = await glob('**/*.md', { cwd: directory });
+        for (const file of files) {
+            const basename = path.basename(file);
+            // Match files with the type prefix (e.g., ISS-000001, SPEC-000001)
+            const prefixedMatch = basename.match(new RegExp(`^${prefix}-(\\d+)`));
+            if (prefixedMatch) {
+                const value = parseInt(prefixedMatch[1], 10);
+                if (!isNaN(value)) {
+                    numbers.push(value);
+                }
             }
-            const files = await glob('**/*.md', { cwd: directory });
-            for (const file of files) {
-                const match = path.basename(file).match(/^(\d+)/);
-                if (match) {
-                    const value = parseInt(match[1], 10);
-                    if (!isNaN(value)) {
-                        numbers.push(value);
-                    }
+            // Also match legacy files without prefix (e.g., 000001-title.md)
+            // to maintain backwards compatibility
+            const legacyMatch = basename.match(/^(\d{6})/);
+            if (legacyMatch && !prefixedMatch) {
+                const value = parseInt(legacyMatch[1], 10);
+                if (!isNaN(value)) {
+                    numbers.push(value);
                 }
             }
         }
         return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    }
+    /**
+     * Helper method to determine if a status represents an archived state
+     */
+    isArchivedStatus(status) {
+        return status === 'closed' || status === 'cancelled';
     }
     async findIssueLocation(id) {
         for (const { type, directory } of this.getCollections()) {

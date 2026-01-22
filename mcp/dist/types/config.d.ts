@@ -8,8 +8,6 @@ export interface WranglerMCPConfig {
     version?: string;
     /** Workspace root directory */
     workspaceRoot?: string;
-    /** Enable debug logging */
-    debug?: boolean;
     /** Issue provider configuration */
     issues?: IssueProviderConfig;
 }

@@ -1,0 +1,15 @@
+{
+  "id": "2026-01-19-1d79856-fb2e",
+  "specFile": "/Users/sam/medb/projects/wrangler/test-temp-spec.md",
+  "status": "running",
+  "currentPhase": "init",
+  "worktreePath": "/Users/sam/medb/projects/wrangler/.worktrees/test-temp-spec-fb2e",
+  "branchName": "wrangler/test-temp-spec/2026-01-19-1d79856-fb2e",
+  "phasesCompleted": [
+    "init"
+  ],
+  "tasksCompleted": [],
+  "tasksPending": [],
+  "startedAt": "2026-01-19T21:30:18.237Z",
+  "updatedAt": "2026-01-19T21:30:18.237Z"
+}

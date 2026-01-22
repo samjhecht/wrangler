@@ -1,0 +1,15 @@
+{
+  "id": "2026-01-19-1d79856-02d0",
+  "specFile": "/Users/sam/medb/projects/wrangler/test-temp-spec.md",
+  "status": "running",
+  "currentPhase": "init",
+  "worktreePath": "/Users/sam/medb/projects/wrangler/.worktrees/test-temp-spec-02d0",
+  "branchName": "wrangler/test-temp-spec/2026-01-19-1d79856-02d0",
+  "phasesCompleted": [
+    "init"
+  ],
+  "tasksCompleted": [],
+  "tasksPending": [],
+  "startedAt": "2026-01-19T21:31:18.062Z",
+  "updatedAt": "2026-01-19T21:31:18.062Z"
+}

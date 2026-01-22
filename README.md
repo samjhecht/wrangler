@@ -14,16 +14,19 @@ Issue and specification tracking using markdown files with YAML frontmatter. Sto
 
 ### Slash Commands
 
-9 commands that activate skills:
+12 commands that activate skills:
 - `/wrangler:brainstorm` - Design refinement
 - `/wrangler:write-plan` - Implementation planning
 - `/wrangler:implement` - Autonomous execution
 - `/wrangler:run-tests` - Test execution
-- `/wrangler:scan-dependencies` - Dependency analysis
 - `/wrangler:update-yourself` - Version migration
-- `/wrangler:analyze-session-gaps` - Workflow analysis
 - `/wrangler:setup-git-hooks` - Git hooks configuration
 - `/wrangler:update-git-hooks` - Update hooks configuration
+- `/wrangler:commit-push-pr` - Commit, push, and create PR
+- `/wrangler:generate-plan-for-spec` - Generate plan from specification
+- `/wrangler:help` - Wrangler help and documentation
+- `/wrangler:issues` - Issue status summary
+- `/wrangler:sitrep` - Situational awareness report
 
 ### Git Hooks Enforcement
 
@@ -47,19 +50,18 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 ### Testing
 - **test-driven-development** - RED-GREEN-REFACTOR cycle enforcement
 - **run-the-tests** - Test suite execution with failure fixing
-- **condition-based-waiting** - Async test patterns replacing arbitrary timeouts
 - **testing-anti-patterns** - Prevents testing mock behavior and test-only production methods
 
 ### Debugging
 - **systematic-debugging** - Four-phase root cause investigation framework
 - **root-cause-tracing** - Backward tracing through call stack with instrumentation
 - **verification-before-completion** - Requires running verification commands before success claims
-- **defense-in-depth** - Multi-layer validation to prevent invalid data propagation
 
 ### Collaboration
 - **brainstorming** - Socratic design refinement
 - **writing-plans** - Implementation plan creation with MCP issues
 - **implement** - Autonomous implementation via subagents with TDD and code review
+- **implement-spec** - Orchestrate spec-to-PR workflow with session tracking
 - **code-review** - Comprehensive code review framework
 - **requesting-code-review** - Pre-merge review workflow
 - **receiving-code-review** - Technical rigor in feedback responses
@@ -68,6 +70,8 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 
 ### Git Workflows
 - **using-git-worktrees** - Isolated workspace creation with smart directory selection
+- **worktree-isolation** - Ensures changes stay in correct worktree
+- **cleanup-dangling-worktrees** - Removes worktrees for merged PRs
 - **finishing-a-development-branch** - Structured options for merge, PR, or cleanup
 - **setup-git-hooks** - Git hooks configuration for test enforcement
 - **update-git-hooks** - Update existing hooks configuration
@@ -75,10 +79,12 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 ### Issue Management
 - **create-new-issue** - Creates issues via MCP `issues_create` tool
 - **writing-specifications** - Technical specification creation
+- **capture-new-idea** - Capture user ideas verbatim in `.wrangler/ideas/`
 
 ### Governance
 - **housekeeping** - Updates roadmap, reconciles issues, detects drift
 - **initialize-governance** - Creates constitution, roadmap, next steps
+- **constitution** - Develop and refine constitutional principles
 - **verify-governance** - Validates governance file structure
 - **refresh-metrics** - Updates status counts
 - **check-constitutional-alignment** - Validates feature alignment
@@ -97,13 +103,11 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 - **finding-code-patterns** - Finds similar implementations
 - **analyzing-research-documents** - Extracts insights from research docs
 - **researching-web-sources** - Strategic web research
-- **dependency-opportunity-scanner** - Identifies replacement opportunities
 
 ### Wrangler System
 - **using-wrangler** - Skills discovery and workflow establishment
-- **migration-detector** - Version check on startup
-- **migration-executor** - LLM-driven migrations
-- **startup-checklist** - Session start validation
+- **update-yourself** - Update wrangler to latest version
+- **sitrep** - Situational awareness report showing recent activity
 
 ### Meta Skills
 - **writing-skills** - TDD for creating skills
@@ -113,7 +117,9 @@ Install via Claude Code plugin system. Run `/help` to verify - should list `/wra
 
 ## MCP Server
 
-Provides 11 tools for issue and specification management:
+Provides 16 tools for issue management and session orchestration:
+
+### Issue Management (11 tools)
 
 - `issues_create` - Create new issues or specifications
 - `issues_list` - List with filtering by status, priority, labels, project
@@ -126,6 +132,14 @@ Provides 11 tools for issue and specification management:
 - `issues_projects` - Manage project assignments
 - `issues_mark_complete` - Mark issues as closed
 - `issues_all_complete` - Check completion status
+
+### Session Orchestration (5 tools)
+
+- `session_start` - Initialize orchestration session with worktree and branch
+- `session_phase` - Record phase transitions (plan, execute, verify, publish)
+- `session_checkpoint` - Save resumable state for recovery
+- `session_complete` - Finalize session with status and PR info
+- `session_get` - Retrieve session state for recovery or status check
 
 ### Storage Format
 
@@ -150,8 +164,8 @@ See [docs/MCP-USAGE.md](docs/MCP-USAGE.md) for details.
 
 ```
 wrangler/
-├── skills/                  # 46 skills
-├── commands/                # 7 slash commands
+├── skills/                  # 48 skills
+├── commands/                # 12 slash commands
 ├── hooks/                   # Session hooks
 ├── mcp/                     # MCP server (TypeScript)
 ├── docs/                    # Documentation
@@ -178,6 +192,10 @@ wrangler/
 - [Versioning](docs/VERSIONING.md) - Version tracking and migration
 - [Slash Commands](docs/SLASH-COMMANDS.md) - Command reference
 - [Git Hooks](docs/git-hooks.md) - Git hooks enforcement framework
+- [Git Hooks Migration](docs/git-hooks-migration.md) - Migration from other hook managers
+- [Workflows](docs/workflows.md) - Major workflow guides (TDD, verification, code review)
+- [Verification Requirements](docs/verification-requirements.md) - Evidence requirements
+- [Skill Invocation Patterns](docs/skill-invocation-patterns.md) - Task-to-skill mapping
 - [Workflow Patterns](docs/WORKFLOW-PATTERNS.md) - Multi-agent workflows
 - [Workflow Ideas](docs/WORKFLOW-IDEAS.md) - Potential workflows
 

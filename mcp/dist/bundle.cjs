@@ -25193,13 +25193,13 @@ var schemaPath = null;
 function findSchemaPath(startDir = process.cwd()) {
   let currentDir = path.resolve(startDir);
   while (currentDir !== path.dirname(currentDir)) {
-    const candidatePath = path.join(currentDir, ".wrangler", "workspace-schema.json");
+    const candidatePath = path.join(currentDir, ".wrangler", "config", "workspace-schema.json");
     if (fs.existsSync(candidatePath)) {
       return candidatePath;
     }
     const gitDir = path.join(currentDir, ".git");
     if (fs.existsSync(gitDir)) {
-      const schemaAtGitRoot = path.join(currentDir, ".wrangler", "workspace-schema.json");
+      const schemaAtGitRoot = path.join(currentDir, ".wrangler", "config", "workspace-schema.json");
       if (fs.existsSync(schemaAtGitRoot)) {
         return schemaAtGitRoot;
       }
@@ -25228,6 +25228,7 @@ function loadWorkspaceSchema(basePath) {
 }
 function getDefaultSchema() {
   return {
+    $schema: "http://json-schema.org/draft-07/schema#",
     version: "1.2.0",
     description: "Default wrangler workspace schema",
     workspace: {
@@ -25269,11 +25270,6 @@ function getDefaultSchema() {
       docs: {
         path: ".wrangler/docs",
         description: "Generated documentation",
-        gitTracked: true
-      },
-      templates: {
-        path: ".wrangler/templates",
-        description: "Issue and spec templates",
         gitTracked: true
       },
       cache: {
@@ -25319,17 +25315,7 @@ function getDefaultSchema() {
         description: "Specifications README"
       }
     },
-    templateFiles: {
-      issue: {
-        path: ".wrangler/templates/issue.md",
-        description: "Issue template"
-      },
-      specification: {
-        path: ".wrangler/templates/specification.md",
-        description: "Specification template"
-      }
-    },
-    gitignorePatterns: ["cache/", "config/", "logs/", "metrics/"],
+    gitignorePatterns: ["cache/", "config/", "logs/"],
     artifactTypes: {
       issue: {
         directory: "issues",

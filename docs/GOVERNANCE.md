@@ -238,9 +238,8 @@ If you prefer manual control:
 # 1. Create directory structure
 mkdir -p .wrangler/specifications
 mkdir -p .wrangler/issues
-mkdir -p .wrangler/templates
 
-# 2. Copy templates from wrangler
+# 2. Copy templates from wrangler (skill-local pattern)
 cp /path/to/wrangler/skills/constitution/templates/_CONSTITUTION.md .wrangler/CONSTITUTION.md
 cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP.md .wrangler/ROADMAP.md
 cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md .wrangler/ROADMAP_NEXT_STEPS.md
@@ -248,6 +247,8 @@ cp /path/to/wrangler/skills/validating-roadmap/templates/_ROADMAP__NEXT_STEPS.md
 # 3. Fill in placeholders
 # Edit files to replace [PROJECT_NAME], add principles, etc.
 ```
+
+**Note**: Templates remain in skill directories and are referenced directly. No need to copy issue/spec templates to a central location.
 
 ---
 

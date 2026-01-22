@@ -1,6 +1,6 @@
 # Git Hooks (Pattern B: Version-Controlled)
 
-This project uses version-controlled git hooks stored in `.wrangler/git-hooks/`.
+This project uses version-controlled git hooks stored in `.wrangler/config/git-hooks/`.
 
 ## For New Team Members
 
@@ -15,7 +15,7 @@ This creates symlinks from `.git/hooks/` to the version-controlled hooks.
 ## How It Works
 
 ```
-.wrangler/git-hooks/          # Version-controlled hooks (committed)
+.wrangler/config/git-hooks/   # Version-controlled hooks (committed)
 ├── pre-commit                # Format, lint, unit tests
 ├── pre-push                  # Full test suite on protected branches
 └── commit-msg                # Commit message validation (optional)
@@ -24,9 +24,9 @@ scripts/
 └── install-hooks.sh          # Install script (creates symlinks)
 
 .git/hooks/                   # Active hooks (symlinks, not committed)
-├── pre-commit -> ../../.wrangler/git-hooks/pre-commit
-├── pre-push -> ../../.wrangler/git-hooks/pre-push
-└── commit-msg -> ../../.wrangler/git-hooks/commit-msg
+├── pre-commit -> ../../.wrangler/config/git-hooks/pre-commit
+├── pre-push -> ../../.wrangler/config/git-hooks/pre-push
+└── commit-msg -> ../../.wrangler/config/git-hooks/commit-msg
 ```
 
 ## Why Pattern B?
@@ -44,7 +44,7 @@ scripts/
 
 ## Updating Hooks
 
-1. Edit hooks in `.wrangler/git-hooks/`
+1. Edit hooks in `.wrangler/config/git-hooks/`
 2. Test locally
 3. Commit changes
 4. Team members pull and re-run `./scripts/install-hooks.sh`
@@ -61,7 +61,7 @@ WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: failing test for feature X"
 
 ## Configuration
 
-Hook behavior is configured in `.wrangler/hooks-config.json`.
+Hook behavior is configured in `.wrangler/config/hooks-config.json`.
 
 ## Troubleshooting
 
@@ -79,7 +79,7 @@ ls -la .git/hooks/
 
 ```bash
 # Make hooks executable
-chmod +x .wrangler/git-hooks/*
+chmod +x .wrangler/config/git-hooks/*
 ```
 
 ### Windows Issues

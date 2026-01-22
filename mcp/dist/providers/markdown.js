@@ -46,7 +46,7 @@ export class MarkdownIssueProvider extends IssueProvider {
         const targetDir = this.getCollectionDir(artifactType);
         this.assertWithinWorkspace(targetDir, 'access issue directory');
         await fs.ensureDir(targetDir);
-        const issueId = await this.generateIssueId();
+        const issueId = await this.generateIssueId(artifactType);
         const fileName = this.generateFileName(issueId, request.title);
         const filePath = path.join(targetDir, fileName);
         this.assertWithinWorkspace(filePath, 'write issue file');
@@ -377,19 +377,33 @@ export class MarkdownIssueProvider extends IssueProvider {
         }
         return undefined;
     }
-    async generateIssueId() {
-        this.issueCounter = await this.getNextCounter();
-        return this.issueCounter.toString().padStart(6, '0');
+    getTypePrefix(artifactType) {
+        switch (artifactType) {
+            case 'issue':
+                return 'ISS';
+            case 'specification':
+                return 'SPEC';
+            case 'idea':
+                return 'IDEA';
+            default:
+                return 'ISS';
+        }
+    }
+    async generateIssueId(artifactType) {
+        const prefix = this.getTypePrefix(artifactType);
+        this.issueCounter = await this.getNextCounter(artifactType);
+        return `${prefix}-${this.issueCounter.toString().padStart(6, '0')}`;
     }
     generateFileName(id, title) {
         switch (this.settings.fileNaming) {
             case 'timestamp':
                 return `${Date.now()}-${this.slugify(title)}.md`;
-            case 'counter':
-                return `${id}-${this.slugify(title)}.md`;
             case 'slug':
-            default:
                 return `${this.slugify(title)}-${id}.md`;
+            case 'counter':
+            default:
+                // Default to counter format: ID first for better sorting
+                return `${id}-${this.slugify(title)}.md`;
         }
     }
     slugify(text) {
@@ -407,20 +421,31 @@ export class MarkdownIssueProvider extends IssueProvider {
         }
         return slug;
     }
-    async getNextCounter() {
+    async getNextCounter(artifactType) {
         const numbers = [];
-        for (const { directory } of this.getCollections()) {
-            if (!await fs.pathExists(directory)) {
-                continue;
+        const prefix = this.getTypePrefix(artifactType);
+        const directory = this.getCollectionDir(artifactType);
+        if (!await fs.pathExists(directory)) {
+            return 1;
+        }
+        const files = await glob('**/*.md', { cwd: directory });
+        for (const file of files) {
+            const basename = path.basename(file);
+            // Match files with the type prefix (e.g., ISS-000001, SPEC-000001)
+            const prefixedMatch = basename.match(new RegExp(`^${prefix}-(\\d+)`));
+            if (prefixedMatch) {
+                const value = parseInt(prefixedMatch[1], 10);
+                if (!isNaN(value)) {
+                    numbers.push(value);
+                }
             }
-            const files = await glob('**/*.md', { cwd: directory });
-            for (const file of files) {
-                const match = path.basename(file).match(/^(\d+)/);
-                if (match) {
-                    const value = parseInt(match[1], 10);
-                    if (!isNaN(value)) {
-                        numbers.push(value);
-                    }
+            // Also match legacy files without prefix (e.g., 000001-title.md)
+            // to maintain backwards compatibility
+            const legacyMatch = basename.match(/^(\d{6})/);
+            if (legacyMatch && !prefixedMatch) {
+                const value = parseInt(legacyMatch[1], 10);
+                if (!isNaN(value)) {
+                    numbers.push(value);
                 }
             }
         }

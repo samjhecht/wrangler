@@ -12,7 +12,7 @@ Git hooks must already be set up. If you haven't set up hooks yet, use `/wrangle
 
 ## What It Does
 
-1. **Reads current configuration** from `.wrangler/hooks-config.json`
+1. **Reads current configuration** from `.wrangler/config/hooks-config.json`
 2. **Shows current settings** in a clear table
 3. **Asks what to update** (test commands, branches, etc.)
 4. **Gathers new values** for selected settings
@@ -73,7 +73,7 @@ Enable commit message validation? Yes
 If something goes wrong, restore from backup:
 
 ```bash
-cp .wrangler/hooks-config.json.backup .wrangler/hooks-config.json
+cp .wrangler/config/hooks-config.json.backup .wrangler/config/hooks-config.json
 ```
 
 Then run `/wrangler:update-git-hooks` to regenerate hooks.

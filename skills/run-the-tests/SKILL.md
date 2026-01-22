@@ -745,10 +745,10 @@ npm test -- path/to/failing.test.ts
 
 ```bash
 # View hooks configuration
-cat .wrangler/hooks-config.json
+cat .wrangler/config/hooks-config.json
 
 # Check which test command hooks use
-grep testCommand .wrangler/hooks-config.json
+grep testCommand .wrangler/config/hooks-config.json
 ```
 
 ---

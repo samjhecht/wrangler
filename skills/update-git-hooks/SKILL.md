@@ -30,14 +30,14 @@ Hooks must already be set up. If not, use `setup-git-hooks` skill instead.
 
 ```bash
 # Check if hooks are configured
-[ -f .wrangler/hooks-config.json ] && echo "Config exists" || echo "Run setup-git-hooks first"
+[ -f .wrangler/config/hooks-config.json ] && echo "Config exists" || echo "Run setup-git-hooks first"
 ```
 
 ## Activation Detection
 
 When user runs `/wrangler:update-git-hooks`, check if this is first activation:
 
-1. Read `.wrangler/hooks-config.json`
+1. Read `.wrangler/config/hooks-config.json`
 2. Check `setupComplete` field:
    - If `false` -> First activation (was inactive)
    - If `true` or missing -> Reconfiguration (already active)
@@ -64,7 +64,7 @@ When user runs `/wrangler:update-git-hooks`, check if this is first activation:
 
 ```bash
 # Check configuration file
-cat .wrangler/hooks-config.json
+cat .wrangler/config/hooks-config.json
 
 # Check installed hooks
 ls -la .git/hooks/pre-commit .git/hooks/pre-push 2>/dev/null
@@ -144,15 +144,15 @@ Repeat for each selected setting category.
 
 ```bash
 # Create backup
-cp .wrangler/hooks-config.json .wrangler/hooks-config.json.backup
+cp .wrangler/config/hooks-config.json .wrangler/config/hooks-config.json.backup
 
 # Record timestamp
-echo "Backup created at: $(date)" >> .wrangler/hooks-config.json.backup
+echo "Backup created at: $(date)" >> .wrangler/config/hooks-config.json.backup
 ```
 
 **Step 6: Update Configuration File**
 
-Use Edit tool to update `.wrangler/hooks-config.json`:
+Use Edit tool to update `.wrangler/config/hooks-config.json`:
 
 1. Read current config
 2. Parse JSON
@@ -184,7 +184,7 @@ For Pattern A:
 
 For Pattern B:
 ```bash
-# Hooks are in .wrangler/git-hooks/
+# Hooks are in .wrangler/config/git-hooks/
 # Regenerate and keep symlinks intact
 ```
 
@@ -208,7 +208,7 @@ chmod +x .git/hooks/pre-push
 ```bash
 # Show updated config
 echo "=== Updated Configuration ==="
-cat .wrangler/hooks-config.json
+cat .wrangler/config/hooks-config.json
 
 # Verify hooks are executable
 echo ""
@@ -238,13 +238,13 @@ done
 
 ### Files Modified
 
-- `.wrangler/hooks-config.json` - Updated configuration
+- `.wrangler/config/hooks-config.json` - Updated configuration
 - `.git/hooks/pre-commit` - Regenerated
 - `.git/hooks/pre-push` - Regenerated
 
 ### Backup Created
 
-Original config saved to: `.wrangler/hooks-config.json.backup`
+Original config saved to: `.wrangler/config/hooks-config.json.backup`
 
 ### Test Your Changes
 
@@ -303,7 +303,7 @@ If something goes wrong:
 
 ```bash
 # Restore from backup
-cp .wrangler/hooks-config.json.backup .wrangler/hooks-config.json
+cp .wrangler/config/hooks-config.json.backup .wrangler/config/hooks-config.json
 
 # Regenerate hooks with original config
 # Run /wrangler:update-git-hooks to regenerate
@@ -335,13 +335,13 @@ cp .wrangler/hooks-config.json.backup .wrangler/hooks-config.json
 ### Enable Commit Message Validation
 
 ```bash
-# Current: enableCommitMsgValidation: false
+# Current in .wrangler/config/hooks-config.json: enableCommitMsgValidation: false
 # Updated: enableCommitMsgValidation: true
 ```
 
 ### Update Docs Patterns
 
 ```bash
-# Current: ["*.md", "docs/*"]
+# Current in .wrangler/config/hooks-config.json: ["*.md", "docs/*"]
 # Updated: ["*.md", "*.txt", "docs/*", "README*", "CHANGELOG*"]
 ```

@@ -229,13 +229,13 @@ vi .git/hooks/pre-commit
 
 **Option B: Use Pattern B**
 
-Install with Pattern B, then customize `.wrangler/git-hooks/`:
+Install with Pattern B, then customize `.wrangler/config/git-hooks/`:
 
 ```bash
 # Select Pattern B during setup
 
 # Edit version-controlled hooks
-vi .wrangler/git-hooks/pre-commit
+vi .wrangler/config/git-hooks/pre-commit
 ```
 
 **Step 6: Verify**
@@ -289,7 +289,7 @@ npm run lint
 npm test
 ```
 
-**Wrangler `.wrangler/hooks-config.json`:**
+**Wrangler `.wrangler/config/hooks-config.json`:**
 ```json
 {
   "lintCommand": "npm run lint",
@@ -314,7 +314,7 @@ repos:
         types: [python]
 ```
 
-**Wrangler `.wrangler/hooks-config.json`:**
+**Wrangler `.wrangler/config/hooks-config.json`:**
 ```json
 {
   "formatCommand": "black .",
@@ -404,7 +404,7 @@ cp .git/hooks.backup/* .git/hooks/
 
 - See [docs/git-hooks.md](git-hooks.md) for comprehensive documentation
 - Run `/wrangler:setup-git-hooks` for interactive setup
-- Check `.wrangler/hooks-config.json` for current configuration
+- Check `.wrangler/config/hooks-config.json` for current configuration
 
 ---
 

@@ -45,11 +45,6 @@
       "description": "Auto-generated governance documentation (git-tracked)",
       "gitTracked": true
     },
-    "templates": {
-      "path": ".wrangler/templates",
-      "description": "Issue and specification templates (git-tracked)",
-      "gitTracked": true
-    },
     "cache": {
       "path": ".wrangler/cache",
       "description": "Runtime cache (gitignored)",
@@ -109,24 +104,10 @@
     }
   },
 
-  "templateFiles": {
-    "issue": {
-      "path": ".wrangler/templates/issue.md",
-      "description": "Template for creating new issues",
-      "source": "skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md"
-    },
-    "specification": {
-      "path": ".wrangler/templates/specification.md",
-      "description": "Template for creating new specifications",
-      "source": "skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md"
-    }
-  },
-
   "gitignorePatterns": [
     "cache/",
     "config/",
-    "logs/",
-    "metrics/"
+    "logs/"
   ],
 
   "artifactTypes": {

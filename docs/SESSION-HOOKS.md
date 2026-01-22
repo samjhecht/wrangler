@@ -59,7 +59,7 @@ SessionStart hook triggered
     ↓
 hooks/session-start.sh executes
     ↓
-├─ Read workspace-schema.json for directory structure
+├─ Read .wrangler/config/workspace-schema.json for directory structure
 ├─ Initialize .wrangler/ directory structure
 ├─ Check for legacy configuration warnings
 ├─ Read using-wrangler skill content
@@ -90,7 +90,7 @@ initialize_workspace() {
         return 0
     fi
 
-    # Read directories from workspace-schema.json
+    # Read directories from .wrangler/config/workspace-schema.json
     # Create git-tracked directories
     for dir in issues specifications ideas memos plans docs templates; do
         mkdir -p "${GIT_ROOT}/.wrangler/${dir}"
@@ -111,7 +111,7 @@ initialize_workspace() {
 
 **Behavior**:
 - Detects git repository root
-- Reads directory structure from `workspace-schema.json`
+- Reads directory structure from `.wrangler/config/workspace-schema.json`
 - Creates `.wrangler/` directory with all subdirectories
 - Adds `.gitkeep` files to track empty directories in git
 - Creates `.wrangler/.gitignore` for runtime directories
@@ -204,7 +204,7 @@ project-root/
 3. If missing → Create full directory structure
 
 **Schema-Driven**:
-- Reads `workspace-schema.json` from plugin directory
+- Reads `.wrangler/config/workspace-schema.json` from plugin directory
 - Creates directories defined in schema
 - Falls back to hardcoded defaults if schema not found
 
@@ -440,7 +440,7 @@ Available in hook execution context:
 | `SCRIPT_DIR` | Hook script directory | `session-start.sh` |
 | `PLUGIN_ROOT` | Plugin root (computed) | `session-start.sh` |
 | `GIT_ROOT` | Git repository root | `session-start.sh` |
-| `SCHEMA_PATH` | Path to workspace-schema.json | `session-start.sh` |
+| `SCHEMA_PATH` | Path to .wrangler/config/workspace-schema.json | `session-start.sh` |
 
 ---
 

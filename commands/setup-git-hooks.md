@@ -11,8 +11,8 @@ This command helps you configure and install Git hooks in your project to enforc
 1. **Detects your project type** (JavaScript, Python, Go, etc.)
 2. **Finds existing test/lint/format commands** from project files
 3. **Asks configuration questions** with sensible defaults
-4. **Generates hook configuration** (`.wrangler/hooks-config.json`)
-5. **Installs hooks** to `.git/hooks/` or `.wrangler/git-hooks/`
+4. **Generates hook configuration** (`.wrangler/config/hooks-config.json`)
+5. **Installs hooks** to `.git/hooks/` or `.wrangler/config/git-hooks/`
 6. **Creates documentation templates** (TESTING.md, security checklist, etc.)
 
 ## Usage
@@ -37,13 +37,13 @@ Follow the interactive prompts to configure your hooks.
 
 ### Pattern A: Direct Installation (Default)
 
-Hooks installed directly to `.git/hooks/`. Configuration in `.wrangler/hooks-config.json`.
+Hooks installed directly to `.git/hooks/`. Configuration in `.wrangler/config/hooks-config.json`.
 
 **Best for**: Individual developers, small teams
 
 ### Pattern B: Version-Controlled
 
-Hooks stored in `.wrangler/git-hooks/` and symlinked via install script.
+Hooks stored in `.wrangler/config/git-hooks/` and symlinked via install script.
 
 **Best for**: Teams that want hooks in version control, consistent setup across team
 
@@ -110,7 +110,7 @@ chmod +x .git/hooks/pre-commit
 rm .git/hooks/pre-commit .git/hooks/pre-push .git/hooks/commit-msg
 
 # Keep config for later
-# .wrangler/hooks-config.json preserved
+# .wrangler/config/hooks-config.json preserved
 ```
 
 ### Conflicts with Husky

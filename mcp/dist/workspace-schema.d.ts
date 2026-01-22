@@ -29,6 +29,7 @@ export interface MCPConfiguration {
     ideasDirectory: string;
 }
 export interface WorkspaceSchema {
+    $schema?: string;
     version: string;
     description: string;
     workspace: {
@@ -42,17 +43,12 @@ export interface WorkspaceSchema {
         description: string;
         template?: string;
     }>;
-    templateFiles: Record<string, {
-        path: string;
-        description: string;
-        source?: string;
-    }>;
     gitignorePatterns: string[];
     artifactTypes: Record<string, ArtifactTypeConfig>;
     mcpConfiguration: MCPConfiguration;
 }
 /**
- * Find the workspace schema file by looking for .wrangler/workspace-schema.json
+ * Find the workspace schema file by looking for .wrangler/config/workspace-schema.json
  * starting from the given directory and walking up to find git root.
  */
 export declare function findSchemaPath(startDir?: string): string | null;

@@ -29,7 +29,7 @@ You are setting up a complete project governance framework to ensure perfect ali
 This skill creates the three-tier governance hierarchy:
 1. **Constitution** (`CONSTITUTION.md`) - Immutable design principles
 2. **Roadmap** (`ROADMAP.md` + `ROADMAP_NEXT_STEPS.md`) - Strategic + tactical plans
-3. **Process Documentation** (README files, templates) - Operational guidance
+3. **Process Documentation** (README files) - Operational guidance
 
 ## Initialization Process
 
@@ -104,15 +104,13 @@ mkdir -p .wrangler/plans
 # Note: .wrangler/issues and .wrangler/specifications are created by session hooks
 ```
 
-**4. Create Process Documentation Templates**
+**4. Create Process Documentation**
 
-Create standard process documentation files:
+Create standard process documentation files from skill templates:
 
 ```bash
-# Create from templates
+# Copy TESTING.md from skill template
 cp skills/initialize-governance/templates/TESTING.md .wrangler/TESTING.md
-cp skills/initialize-governance/templates/SECURITY_CHECKLIST.md .wrangler/templates/SECURITY_CHECKLIST.md
-cp skills/initialize-governance/templates/DEFINITION_OF_DONE.md .wrangler/templates/DEFINITION_OF_DONE.md
 ```
 
 **TESTING.md** will be populated later by setup-git-hooks with actual test commands.
@@ -122,9 +120,13 @@ Initial state should have placeholder status:
 - Leave `{{TEST_COMMAND}}` and other placeholders as-is
 - These will be filled in by setup-git-hooks
 
-**SECURITY_CHECKLIST.md** provides security review checklist for sensitive code changes.
+**Note on Templates**: Issue and specification templates live in their respective skills:
+- Issue template: `skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md`
+- Specification template: `skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md`
+- Security checklist: `skills/initialize-governance/templates/SECURITY_CHECKLIST.md`
+- Definition of Done: `skills/initialize-governance/templates/DEFINITION_OF_DONE.md`
 
-**DEFINITION_OF_DONE.md** establishes completion criteria for all work items.
+These are referenced directly from skills, not copied to `.wrangler/templates/`.
 
 **5. Set Up Git Hooks (Automatic)**
 
@@ -138,7 +140,7 @@ Skill: setup-git-hooks
 This will:
 - Populate `.wrangler/TESTING.md` (created in previous step)
 - Detect project type and configure appropriate hooks
-- Create `.wrangler/hooks-config.json` with configuration
+- Create `.wrangler/config/hooks-config.json` with configuration
 - Install hooks to `.git/hooks/` directory
 - Handle empty projects gracefully (creates placeholders)
 
@@ -266,7 +268,7 @@ Initial file should reflect current state:
 
 **1. Create Issues README**
 
-Create a minimal README with status metrics. No separate template file exists - create inline with essential content.
+Create a minimal README with status metrics using template from `skills/initialize-governance/templates/issues-README.md`.
 
 Use Edit tool to:
 - Update "Status" section with current counts (run `issues_list` to get counts)
@@ -275,7 +277,7 @@ Use Edit tool to:
 
 **2. Create Specifications README**
 
-Create a minimal README with status metrics. No separate template file exists - create inline with essential content.
+Create a minimal README with status metrics using template from `skills/initialize-governance/templates/specifications-README.md`.
 
 Use Edit tool to:
 - Update "Status" section with current counts
@@ -283,22 +285,11 @@ Use Edit tool to:
 - Update "Metrics" section with actual data
 - Keep rest as guidance
 
-**3. Add Issue Template to .wrangler/templates/**
+**Note**: Templates remain in their skill directories and are referenced directly:
+- Issue template: `skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md`
+- Specification template: `skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md`
 
-```bash
-# Create templates directory
-mkdir -p .wrangler/templates
-
-# Copy issue template
-cp /path/to/wrangler/skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md .wrangler/templates/issue.md
-```
-
-**4. Add Specification Template to .wrangler/templates/**
-
-```bash
-# Copy spec template
-cp /path/to/wrangler/skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md .wrangler/templates/specification.md
-```
+No copying to `.wrangler/templates/` is needed. Skills reference templates from their own directories.
 
 
 ### Phase 5: Integration and Verification
@@ -354,8 +345,6 @@ ls -lh .wrangler/ROADMAP.md
 ls -lh .wrangler/ROADMAP_NEXT_STEPS.md
 ls -lh .wrangler/specifications/README.md
 ls -lh .wrangler/issues/README.md
-ls -lh .wrangler/templates/issue.md
-ls -lh .wrangler/templates/specification.md
 
 echo ""
 echo "=== Directory Structure ==="
@@ -446,14 +435,10 @@ Your project now has a complete governance system ensuring we stay aligned on:
 **Process Documentation** (in `.wrangler/`):
 - `issues/README.md` - Issue management guide
 - `specifications/README.md` - Specification guide
-- `templates/issue.md` - Issue template
-- `templates/specification.md` - Spec template
-- `templates/SECURITY_CHECKLIST.md` - Security review checklist
-- `templates/DEFINITION_OF_DONE.md` - Completion criteria standards
 - `TESTING.md` - Test documentation (created here, populated by setup-git-hooks)
 
 **Git Hooks** (always enabled):
-- `.wrangler/hooks-config.json` - Hook configuration
+- `.wrangler/config/hooks-config.json` - Hook configuration
 - `.git/hooks/pre-commit` - Pre-commit hook
 - `.git/hooks/pre-push` - Pre-push hook
 
@@ -543,11 +528,10 @@ Update NEXT_STEPS (mark features complete)
 
 Initialization is complete when:
 
-- [ ] All 7 governance files exist and are populated
+- [ ] Core governance files exist and are populated (CONSTITUTION.md, ROADMAP.md, ROADMAP_NEXT_STEPS.md)
 - [ ] Constitution has 3+ principles with examples
 - [ ] Roadmap has at least 1 phase with goals
-- [ ] README files have current metrics
-- [ ] Templates are in place
+- [ ] README files have current metrics (issues/README.md, specifications/README.md)
 - [ ] Welcome issue created
 - [ ] User has reviewed all documents
 - [ ] CLAUDE.md updated (if exists)

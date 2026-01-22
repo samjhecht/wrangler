@@ -51,14 +51,13 @@ echo "=== Checking Core Governance Files ==="
 echo "=== Checking Process Documentation ==="
 [ -f .wrangler/specifications/README.md ] && echo "✓ Specs README exists" || echo "✗ MISSING: Specs README"
 [ -f .wrangler/issues/README.md ] && echo "✓ Issues README exists" || echo "✗ MISSING: Issues README"
-
-# Templates
-echo "=== Checking Templates ==="
-[ -f .wrangler/templates/issue.md ] && echo "✓ Issue template exists" || echo "✗ MISSING: Issue template"
-[ -f .wrangler/templates/specification.md ] && echo "✓ Spec template exists" || echo "✗ MISSING: Spec template"
 ```
 
 **Report missing files**: If any files missing, suggest running `initialize-governance` skill.
+
+**Note on Templates**: Templates live in skill directories, not in `.wrangler/templates/`:
+- Issue template: `skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md`
+- Specification template: `skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md`
 
 ### Phase 2: Constitution Validation
 
@@ -304,10 +303,13 @@ cat .wrangler/specifications/README.md
 
 ### Phase 7: Template Validation
 
+**Note**: Templates are stored in skill directories, not in `.wrangler/templates/`. Verify they exist in wrangler:
+
 **Check issue template:**
 
 ```bash
-cat .wrangler/templates/issue.md
+# Template location: skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md
+cat skills/create-new-issue/templates/TASK_ISSUE_TEMPLATE.md
 ```
 
 **Verify includes:**
@@ -323,7 +325,8 @@ cat .wrangler/templates/issue.md
 **Check specification template:**
 
 ```bash
-cat .wrangler/templates/specification.md
+# Template location: skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md
+cat skills/writing-specifications/templates/SPECIFICATION_TEMPLATE.md
 ```
 
 **Verify includes:**

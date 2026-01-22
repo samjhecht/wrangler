@@ -89,7 +89,7 @@ Runs on every commit to validate message format.
 
 ## Configuration
 
-Configuration is stored in `.wrangler/hooks-config.json`.
+Configuration is stored in `.wrangler/config/hooks-config.json`.
 
 ### Configuration Schema
 
@@ -138,13 +138,14 @@ Configuration is stored in `.wrangler/hooks-config.json`.
 
 ### Pattern A: Direct Installation (Default)
 
-Hooks are installed directly to `.git/hooks/`. Configuration is in `.wrangler/hooks-config.json`.
+Hooks are installed directly to `.git/hooks/`. Configuration is in `.wrangler/config/hooks-config.json`.
 
 **File structure:**
 ```
 project/
 ├── .wrangler/
-│   └── hooks-config.json    # Configuration
+│   └── config/
+│       └── hooks-config.json    # Configuration
 ├── .git/
 │   └── hooks/
 │       ├── pre-commit       # Installed hook
@@ -159,24 +160,25 @@ project/
 
 ### Pattern B: Version-Controlled
 
-Hooks are stored in `.wrangler/git-hooks/` and symlinked to `.git/hooks/`.
+Hooks are stored in `.wrangler/config/git-hooks/` and symlinked to `.git/hooks/`.
 
 **File structure:**
 ```
 project/
 ├── .wrangler/
-│   ├── hooks-config.json    # Configuration
-│   └── git-hooks/           # Version-controlled hooks
-│       ├── pre-commit
-│       ├── pre-push
-│       └── commit-msg
+│   └── config/
+│       ├── hooks-config.json    # Configuration
+│       └── git-hooks/           # Version-controlled hooks
+│           ├── pre-commit
+│           ├── pre-push
+│           └── commit-msg
 ├── scripts/
 │   └── install-hooks.sh     # Install script
 ├── .git/
 │   └── hooks/
-│       ├── pre-commit -> ../../.wrangler/git-hooks/pre-commit
-│       ├── pre-push -> ../../.wrangler/git-hooks/pre-push
-│       └── commit-msg -> ../../.wrangler/git-hooks/commit-msg
+│       ├── pre-commit -> ../../.wrangler/config/git-hooks/pre-commit
+│       ├── pre-push -> ../../.wrangler/config/git-hooks/pre-push
+│       └── commit-msg -> ../../.wrangler/config/git-hooks/commit-msg
 ```
 
 **Best for:**
@@ -338,7 +340,7 @@ On Windows, symlinks may require:
 
 ```bash
 # Check current protected patterns
-cat .wrangler/hooks-config.json | grep protectedBranches
+cat .wrangler/config/hooks-config.json | grep protectedBranches
 
 # Branch patterns use glob matching
 # "release/*" matches "release/1.0.0"
@@ -410,12 +412,12 @@ cat .wrangler/hooks-config.json | grep protectedBranches
 
 | File | Purpose |
 |------|---------|
-| `.wrangler/hooks-config.json` | Hook configuration |
+| `.wrangler/config/hooks-config.json` | Hook configuration |
 | `.wrangler/TESTING.md` | Test documentation (created by initialize-governance) |
 | `.git/hooks/pre-commit` | Pre-commit hook |
 | `.git/hooks/pre-push` | Pre-push hook |
 | `.git/hooks/commit-msg` | Commit message hook |
-| `.wrangler/git-hooks/` | Version-controlled hooks (Pattern B) |
+| `.wrangler/config/git-hooks/` | Version-controlled hooks (Pattern B) |
 | `scripts/install-hooks.sh` | Install script (Pattern B) |
 
 ## FAQ
@@ -438,7 +440,7 @@ Hooks run on each commit created. During rebase, hooks may run multiple times. U
 
 ### Q: Can I add custom checks?
 
-Yes. Edit the hook files directly or extend templates in `.wrangler/git-hooks/` (Pattern B).
+Yes. Edit the hook files directly or extend templates in `.wrangler/config/git-hooks/` (Pattern B).
 
 ---
 

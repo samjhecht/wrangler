@@ -34,6 +34,7 @@ export interface MCPConfiguration {
 }
 
 export interface WorkspaceSchema {
+  $schema?: string;
   version: string;
   description: string;
   workspace: {
@@ -43,7 +44,6 @@ export interface WorkspaceSchema {
   directories: Record<string, WorkspaceDirectory>;
   governanceFiles: Record<string, GovernanceFile>;
   readmeFiles: Record<string, { path: string; description: string; template?: string }>;
-  templateFiles: Record<string, { path: string; description: string; source?: string }>;
   gitignorePatterns: string[];
   artifactTypes: Record<string, ArtifactTypeConfig>;
   mcpConfiguration: MCPConfiguration;
@@ -53,14 +53,14 @@ let cachedSchema: WorkspaceSchema | null = null;
 let schemaPath: string | null = null;
 
 /**
- * Find the workspace schema file by looking for .wrangler/workspace-schema.json
+ * Find the workspace schema file by looking for .wrangler/config/workspace-schema.json
  * starting from the given directory and walking up to find git root.
  */
 export function findSchemaPath(startDir: string = process.cwd()): string | null {
   let currentDir = path.resolve(startDir);
 
   while (currentDir !== path.dirname(currentDir)) {
-    const candidatePath = path.join(currentDir, '.wrangler', 'workspace-schema.json');
+    const candidatePath = path.join(currentDir, '.wrangler', 'config', 'workspace-schema.json');
     if (fs.existsSync(candidatePath)) {
       return candidatePath;
     }
@@ -69,7 +69,7 @@ export function findSchemaPath(startDir: string = process.cwd()): string | null 
     const gitDir = path.join(currentDir, '.git');
     if (fs.existsSync(gitDir)) {
       // We're at git root, check for schema here
-      const schemaAtGitRoot = path.join(currentDir, '.wrangler', 'workspace-schema.json');
+      const schemaAtGitRoot = path.join(currentDir, '.wrangler', 'config', 'workspace-schema.json');
       if (fs.existsSync(schemaAtGitRoot)) {
         return schemaAtGitRoot;
       }
@@ -114,6 +114,7 @@ export function loadWorkspaceSchema(basePath?: string): WorkspaceSchema {
  */
 export function getDefaultSchema(): WorkspaceSchema {
   return {
+    $schema: 'http://json-schema.org/draft-07/schema#',
     version: '1.2.0',
     description: 'Default wrangler workspace schema',
     workspace: {
@@ -155,11 +156,6 @@ export function getDefaultSchema(): WorkspaceSchema {
       docs: {
         path: '.wrangler/docs',
         description: 'Generated documentation',
-        gitTracked: true
-      },
-      templates: {
-        path: '.wrangler/templates',
-        description: 'Issue and spec templates',
         gitTracked: true
       },
       cache: {
@@ -205,17 +201,7 @@ export function getDefaultSchema(): WorkspaceSchema {
         description: 'Specifications README'
       }
     },
-    templateFiles: {
-      issue: {
-        path: '.wrangler/templates/issue.md',
-        description: 'Issue template'
-      },
-      specification: {
-        path: '.wrangler/templates/specification.md',
-        description: 'Specification template'
-      }
-    },
-    gitignorePatterns: ['cache/', 'config/', 'logs/', 'metrics/'],
+    gitignorePatterns: ['cache/', 'config/', 'logs/'],
     artifactTypes: {
       issue: {
         directory: 'issues',

@@ -8,5 +8,4 @@
 export { WranglerMCPServer } from './server.js';
 export * from './types/config.js';
 export * from './types/errors.js';
-export * from './observability/metrics.js';
 //# sourceMappingURL=index.d.ts.map

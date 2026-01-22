@@ -24,8 +24,8 @@ This creates an audit trail showing which skills were applied during the session
 
 This skill sets up Git hooks to automatically enforce testing and code quality standards before commits and pushes. It supports two installation patterns:
 
-- **Pattern A (Default)**: Hooks installed directly to `.git/hooks/` with configuration in `.wrangler/hooks-config.json`
-- **Pattern B**: Version-controlled hooks in `.wrangler/git-hooks/` with install script for team synchronization
+- **Pattern A (Default)**: Hooks installed directly to `.git/hooks/` with configuration in `.wrangler/config/hooks-config.json`
+- **Pattern B**: Version-controlled hooks in `.wrangler/config/git-hooks/` with install script for team synchronization
 
 ## When to Use
 
@@ -48,7 +48,7 @@ git rev-parse --show-toplevel
 ls -la .git/hooks/ 2>/dev/null | head -10
 
 # Check for existing wrangler hooks config
-[ -f .wrangler/hooks-config.json ] && echo "Existing config found" || echo "No existing config"
+[ -f .wrangler/config/hooks-config.json ] && echo "Existing config found" || echo "No existing config"
 ```
 
 If not in a git repository, inform user and exit.
@@ -112,6 +112,8 @@ If the skill detects an empty project or no test framework:
    }
    ```
 
+   Note: File should be created at `.wrangler/config/hooks-config.json`
+
 3. **Install bypass-only hooks:**
    - Hooks check `setupComplete` flag in config
    - If false, log message and exit 0 (allow all commits/pushes)
@@ -127,7 +129,7 @@ If the skill detects an empty project or no test framework:
 
    Created:
    - .wrangler/TESTING.md (placeholder)
-   - .wrangler/hooks-config.json (stub configuration)
+   - .wrangler/config/hooks-config.json (stub configuration)
    - .git/hooks/pre-commit (bypass mode)
    - .git/hooks/pre-push (bypass mode)
    ```
@@ -196,11 +198,11 @@ AskUserQuestion({
     options: [
       {
         label: "Pattern A: Direct installation (Recommended)",
-        description: "Hooks in .git/hooks/, config in .wrangler/hooks-config.json"
+        description: "Hooks in .git/hooks/, config in .wrangler/config/hooks-config.json"
       },
       {
         label: "Pattern B: Version-controlled",
-        description: "Hooks in .wrangler/git-hooks/, install script for team sync"
+        description: "Hooks in .wrangler/config/git-hooks/, install script for team sync"
       }
     ],
     multiSelect: false
@@ -313,10 +315,10 @@ AskUserQuestion({
 Create the configuration file with user's answers:
 
 ```bash
-mkdir -p .wrangler
+mkdir -p .wrangler/config
 ```
 
-Use Write tool to create `.wrangler/hooks-config.json`:
+Use Write tool to create `.wrangler/config/hooks-config.json`:
 
 ```json
 {
@@ -385,22 +387,22 @@ If Pattern B selected:
 
 ```bash
 # Create version-controlled hooks directory
-mkdir -p .wrangler/git-hooks
+mkdir -p .wrangler/config/git-hooks
 ```
 
-Use Write tool to save hooks to `.wrangler/git-hooks/`:
-- `.wrangler/git-hooks/pre-commit`
-- `.wrangler/git-hooks/pre-push`
-- `.wrangler/git-hooks/commit-msg` (if enabled)
+Use Write tool to save hooks to `.wrangler/config/git-hooks/`:
+- `.wrangler/config/git-hooks/pre-commit`
+- `.wrangler/config/git-hooks/pre-push`
+- `.wrangler/config/git-hooks/commit-msg` (if enabled)
 
 Use Write tool to create install script at `scripts/install-hooks.sh`:
 (Copy from `skills/setup-git-hooks/templates/install-hooks.sh`)
 
 Make files executable:
 ```bash
-chmod +x .wrangler/git-hooks/pre-commit
-chmod +x .wrangler/git-hooks/pre-push
-[ -f .wrangler/git-hooks/commit-msg ] && chmod +x .wrangler/git-hooks/commit-msg
+chmod +x .wrangler/config/git-hooks/pre-commit
+chmod +x .wrangler/config/git-hooks/pre-push
+[ -f .wrangler/config/git-hooks/commit-msg ] && chmod +x .wrangler/config/git-hooks/commit-msg
 chmod +x scripts/install-hooks.sh
 ```
 
@@ -411,27 +413,22 @@ Run install script:
 
 ### Phase 6: Documentation Installation
 
-**Step 9: Install Documentation Templates**
+**Step 9: Install PR Template**
 
-Create documentation files in user's project:
+Create PR template in user's project:
 
 ```bash
-mkdir -p .wrangler/templates
 mkdir -p .github
 ```
 
-**Note:** If governance was initialized via `initialize-governance` skill, these templates already exist:
-- `.wrangler/templates/SECURITY_CHECKLIST.md` (created by initialize-governance)
-- `.wrangler/templates/DEFINITION_OF_DONE.md` (created by initialize-governance)
+Create PR template (git hooks specific):
+- `.github/pull_request_template.md` (copy from `skills/setup-git-hooks/templates/pull_request_template.md`)
 
-Check if they exist before creating:
-```bash
-[ -f .wrangler/templates/SECURITY_CHECKLIST.md ] && echo "Security checklist exists" || cp skills/initialize-governance/templates/SECURITY_CHECKLIST.md .wrangler/templates/
-[ -f .wrangler/templates/DEFINITION_OF_DONE.md ] && echo "DoD exists" || cp skills/initialize-governance/templates/DEFINITION_OF_DONE.md .wrangler/templates/
-```
+**Note on other templates**: Security checklist and Definition of Done templates remain in their skill directories:
+- Security checklist: `skills/initialize-governance/templates/SECURITY_CHECKLIST.md`
+- Definition of Done: `skills/initialize-governance/templates/DEFINITION_OF_DONE.md`
 
-Always create PR template (git hooks specific):
-- `.github/pull_request_template.md` (copy from setup-git-hooks templates)
+These are referenced directly from skills, not copied to project directories.
 
 **Step 10: Populate TESTING.md**
 
@@ -468,10 +465,10 @@ done
 # Verify config file
 echo ""
 echo "=== Configuration ==="
-[ -f .wrangler/hooks-config.json ] && echo "[OK] hooks-config.json created" || echo "[ERROR] hooks-config.json missing"
+[ -f .wrangler/config/hooks-config.json ] && echo "[OK] hooks-config.json created" || echo "[ERROR] hooks-config.json missing"
 
 # Show config summary
-cat .wrangler/hooks-config.json
+cat .wrangler/config/hooks-config.json
 ```
 
 **Step 12: Provide Summary**
@@ -500,12 +497,10 @@ Display completion message to user:
 
 ### Files Created
 
-- `.wrangler/hooks-config.json` - Hook configuration
+- `.wrangler/config/hooks-config.json` - Hook configuration
 - `.git/hooks/pre-commit` - Pre-commit hook
 - `.git/hooks/pre-push` - Pre-push hook
 [- `.git/hooks/commit-msg` - Commit message hook]
-[- `.wrangler/templates/SECURITY_CHECKLIST.md` (if not already created by initialize-governance)]
-[- `.wrangler/templates/DEFINITION_OF_DONE.md` (if not already created by initialize-governance)]
 [- `.github/pull_request_template.md`]
 
 ### Important Notes

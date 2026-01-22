@@ -105,7 +105,7 @@
       "type": "string",
       "enum": ["A", "B"],
       "default": "A",
-      "description": "Installation pattern: A = hooks in .git/hooks, B = version-controlled in .wrangler/git-hooks"
+      "description": "Installation pattern: A = hooks in .git/hooks, B = version-controlled in .wrangler/config/git-hooks"
     }
   },
   "additionalProperties": false

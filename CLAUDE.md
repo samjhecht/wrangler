@@ -43,10 +43,11 @@ Wrangler ensures you and your human partner are **of one mind** about:
    - Full-text search and metadata queries
 
 4. **Template System**
+   - Templates stored in skill directories (skill-local pattern)
    - Governance file templates (Constitution, Roadmap, etc.)
    - Issue and specification templates
    - Directory README templates
-   - Consistent structure across projects
+   - Referenced directly from skills, not copied
 
 5. **Workflow Integration**
    - Slash commands for common operations
@@ -73,7 +74,6 @@ wrangler/
 │   ├── memos/                     # Reference material, RCA archives
 │   ├── plans/                     # Implementation plans (git-tracked)
 │   ├── docs/                      # Auto-generated governance docs
-│   ├── templates/                 # Issue and spec templates
 │   ├── cache/                     # Runtime cache (gitignored)
 │   ├── config/                    # Runtime config (gitignored)
 │   └── logs/                      # Runtime logs (gitignored)
@@ -463,11 +463,11 @@ The Git Hooks Enforcement Framework provides automated testing and code quality 
 
 **Pattern A (Default): Direct Installation**
 - Hooks installed directly to `.git/hooks/`
-- Configuration in `.wrangler/hooks-config.json`
+- Configuration in `.wrangler/config/hooks-config.json`
 - Best for individual developers
 
 **Pattern B: Version-Controlled**
-- Hooks stored in `.wrangler/git-hooks/`
+- Hooks stored in `.wrangler/config/git-hooks/`
 - Symlinked via `scripts/install-hooks.sh`
 - Best for teams wanting identical hooks
 
@@ -504,7 +504,7 @@ WRANGLER_SKIP_HOOKS=1 git commit -m "WIP: failing test"
 
 ### Configuration
 
-Configuration stored in `.wrangler/hooks-config.json`:
+Configuration stored in `.wrangler/config/hooks-config.json`:
 
 ```json
 {
@@ -519,7 +519,7 @@ Configuration stored in `.wrangler/hooks-config.json`:
 
 ### File Locations
 
-- `.wrangler/hooks-config.json` - Hook configuration
+- `.wrangler/config/hooks-config.json` - Hook configuration
 - `.wrangler/TESTING.md` - Test documentation
 - `.git/hooks/pre-commit` - Pre-commit hook
 - `.git/hooks/pre-push` - Pre-push hook

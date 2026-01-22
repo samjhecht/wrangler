@@ -31,6 +31,10 @@ export declare class MarkdownIssueProvider extends IssueProvider {
     private generateFileName;
     private slugify;
     private getNextCounter;
+    /**
+     * Helper method to determine if a status represents an archived state
+     */
+    private isArchivedStatus;
     private findIssueLocation;
     private assertWithinWorkspace;
 }

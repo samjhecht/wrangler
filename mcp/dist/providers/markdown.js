@@ -106,21 +106,40 @@ export class MarkdownIssueProvider extends IssueProvider {
         const targetType = request.type ?? existingIssue.type ?? 'issue';
         const targetDir = this.getCollectionDir(targetType);
         this.assertWithinWorkspace(targetDir, 'access issue directory');
-        const destinationPath = path.join(targetDir, path.basename(location.absolutePath));
-        this.assertWithinWorkspace(destinationPath, 'write issue file');
-        if (targetType !== location.type) {
-            await fs.ensureDir(targetDir);
+        // Determine the new status
+        const newStatus = request.status || existingIssue.status;
+        // Determine if we need to move between archived/root based on status
+        const willBeArchived = this.isArchivedStatus(newStatus);
+        // Determine where file should be based on new status
+        const targetBaseDir = willBeArchived
+            ? path.join(targetDir, 'archived')
+            : targetDir;
+        // Determine current location relative to collection dir - check if parent directory is 'archived'
+        const currentDir = path.dirname(location.absolutePath);
+        const isCurrentlyInArchived = path.basename(currentDir) === 'archived';
+        // Check if file needs to be moved
+        const needsMove = targetType !== location.type ||
+            (willBeArchived && !isCurrentlyInArchived) ||
+            (!willBeArchived && isCurrentlyInArchived);
+        let destinationPath;
+        if (needsMove) {
+            destinationPath = path.join(targetBaseDir, path.basename(location.absolutePath));
+            this.assertWithinWorkspace(destinationPath, 'write issue file');
+            await fs.ensureDir(path.dirname(destinationPath));
             await fs.move(location.absolutePath, destinationPath, { overwrite: true });
             location.absolutePath = destinationPath;
-            location.directory = targetDir;
+            location.directory = path.dirname(destinationPath);
             location.type = targetType;
+        }
+        else {
+            destinationPath = location.absolutePath;
         }
         const updatedIssue = {
             ...existingIssue,
             title: request.title || existingIssue.title,
             description: request.description || existingIssue.description,
             type: targetType,
-            status: request.status || existingIssue.status,
+            status: newStatus,
             priority: request.priority || existingIssue.priority,
             labels: request.labels || existingIssue.labels,
             assignee: request.assignee !== undefined ? request.assignee : existingIssue.assignee,
@@ -146,7 +165,7 @@ export class MarkdownIssueProvider extends IssueProvider {
         if (updatedIssue.wranglerContext)
             frontmatter.wranglerContext = updatedIssue.wranglerContext;
         const fileContent = matter.stringify(updatedIssue.description, frontmatter);
-        await fs.writeFile(location.absolutePath, fileContent, 'utf-8');
+        await fs.writeFile(destinationPath, fileContent, 'utf-8');
         return updatedIssue;
     }
     async deleteIssue(id) {
@@ -450,6 +469,12 @@ export class MarkdownIssueProvider extends IssueProvider {
             }
         }
         return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    }
+    /**
+     * Helper method to determine if a status represents an archived state
+     */
+    isArchivedStatus(status) {
+        return status === 'closed' || status === 'cancelled';
     }
     async findIssueLocation(id) {
         for (const { type, directory } of this.getCollections()) {

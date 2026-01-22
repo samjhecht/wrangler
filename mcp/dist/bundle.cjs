@@ -25762,7 +25762,11 @@ var MarkdownIssueProvider = class extends IssueProvider {
     return numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
   }
   /**
-   * Helper method to determine if a status represents an archived state
+   * Determines if a status represents an archived state.
+   * Archived statuses are 'closed' and 'cancelled'.
+   *
+   * @param status - The issue status to check
+   * @returns true if status is closed or cancelled
    */
   isArchivedStatus(status) {
     return status === "closed" || status === "cancelled";

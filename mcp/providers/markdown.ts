@@ -145,6 +145,15 @@ export class MarkdownIssueProvider extends IssueProvider {
     // Determine the new status
     const newStatus: IssueStatus = request.status || existingIssue.status;
 
+    /**
+     * Auto-archive logic: Issues and specifications are automatically moved to an
+     * 'archived/' subdirectory when marked as 'closed' or 'cancelled', and moved
+     * back to the root directory when reopened (status changed to 'open' or 'in_progress').
+     *
+     * This keeps active work visible while preserving completed/cancelled items for
+     * historical reference without cluttering the main directories.
+     */
+
     // Determine if we need to move between archived/root based on status
     const willBeArchived = this.isArchivedStatus(newStatus);
 
@@ -157,7 +166,7 @@ export class MarkdownIssueProvider extends IssueProvider {
     const currentDir = path.dirname(location.absolutePath);
     const isCurrentlyInArchived = path.basename(currentDir) === 'archived';
 
-    // Check if file needs to be moved
+    // Check if file needs to be moved (type change OR status-based archive/unarchive)
     const needsMove = targetType !== location.type ||
                       (willBeArchived && !isCurrentlyInArchived) ||
                       (!willBeArchived && isCurrentlyInArchived);
@@ -553,7 +562,11 @@ export class MarkdownIssueProvider extends IssueProvider {
   }
 
   /**
-   * Helper method to determine if a status represents an archived state
+   * Determines if a status represents an archived state.
+   * Archived statuses are 'closed' and 'cancelled'.
+   *
+   * @param status - The issue status to check
+   * @returns true if status is closed or cancelled
    */
   private isArchivedStatus(status: IssueStatus): boolean {
     return status === 'closed' || status === 'cancelled';

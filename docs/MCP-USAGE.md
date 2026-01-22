@@ -11,6 +11,7 @@ Complete guide to using the Wrangler MCP server for local issue and specificatio
 - [Automatic Workspace Initialization](#automatic-workspace-initialization)
 - [Directory Structure](#directory-structure)
 - [Available Tools](#available-tools)
+- [Auto-Archive Behavior](#auto-archive-behavior)
 - [Issue Lifecycle](#issue-lifecycle)
 - [Search and Filtering](#search-and-filtering)
 - [Best Practices](#best-practices)
@@ -506,6 +507,92 @@ session_get({})
 **Returns:** Session state including tasks completed/pending, checkpoint info if available
 
 **Note:** Session tools are primarily used by the `implement-spec` skill for end-to-end spec-to-PR workflows.
+
+## Auto-Archive Behavior
+
+Issues and specifications are automatically archived when marked as closed or cancelled.
+
+### How It Works
+
+When you update an issue or specification's status to `closed` or `cancelled`, it automatically moves to an `archived/` subdirectory within its collection directory. When you reopen an archived item by changing its status to `open` or `in_progress`, it automatically moves back to the root directory.
+
+This keeps your active work visible while preserving completed/cancelled items for historical reference without cluttering the main directories.
+
+### Directory Structure
+
+```
+.wrangler/
+├── issues/
+│   ├── ISS-000001-active-issue.md
+│   ├── ISS-000003-another-active-issue.md
+│   └── archived/
+│       ├── ISS-000002-completed-issue.md
+│       └── ISS-000004-cancelled-issue.md
+└── specifications/
+    ├── SPEC-000001-active-spec.md
+    └── archived/
+        ├── SPEC-000002-completed-spec.md
+        └── SPEC-000003-obsolete-spec.md
+```
+
+### Archived Items Are Still Accessible
+
+All MCP tools (list, search, get) include archived items by default. You don't need to do anything special to access archived issues:
+
+```javascript
+// List all issues (includes archived)
+issues_list({})
+
+// Search all issues (includes archived)
+issues_search({ query: "authentication" })
+
+// Get archived issue directly
+issues_get({ id: "ISS-000002" })
+```
+
+### Reopening Archived Items
+
+To reopen an archived issue or specification, simply update its status:
+
+```javascript
+// This automatically moves the file from archived/ back to root
+issues_update({
+  id: "ISS-000002",
+  status: "open"
+})
+```
+
+The file will be automatically moved from `.wrangler/issues/archived/` back to `.wrangler/issues/`.
+
+### When Archiving Happens
+
+Archiving occurs automatically when you:
+
+1. **Mark an issue as complete:**
+   ```javascript
+   issues_mark_complete({ id: "ISS-000001" })
+   // Status becomes 'closed', file moves to archived/
+   ```
+
+2. **Update status to closed:**
+   ```javascript
+   issues_update({ id: "ISS-000001", status: "closed" })
+   // File moves to archived/
+   ```
+
+3. **Update status to cancelled:**
+   ```javascript
+   issues_update({ id: "ISS-000001", status: "cancelled" })
+   // File moves to archived/
+   ```
+
+### Benefits
+
+- **Cleaner directories**: Active work is easy to find
+- **Historical record**: Completed work is preserved, not deleted
+- **Git-friendly**: All items remain version-controlled
+- **Seamless access**: Archived items don't require special queries
+- **Automatic**: No manual file management needed
 
 ## Issue Lifecycle
 

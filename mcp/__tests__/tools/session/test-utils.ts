@@ -237,8 +237,48 @@ export async function createTempDir(): Promise<string> {
 
 /**
  * Clean up a temporary directory
+ * CRITICAL: Must remove git worktrees before deleting directory
  */
 export async function cleanupTempDir(tempDir: string): Promise<void> {
+  const { execSync } = require('child_process');
+
+  // Find and remove any git worktrees created inside the temp directory
+  try {
+    const result = execSync('git worktree list --porcelain', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore']
+    });
+
+    // Parse worktree paths from porcelain output
+    const worktreePaths = result
+      .split('\n')
+      .filter(line => line.startsWith('worktree '))
+      .map(line => line.replace('worktree ', '').trim())
+      .filter(p => p.startsWith(tempDir));
+
+    // Remove each worktree found inside tempDir
+    for (const worktreePath of worktreePaths) {
+      try {
+        execSync(`git worktree remove "${worktreePath}" --force`, {
+          stdio: 'ignore'
+        });
+      } catch (e) {
+        // If removal fails, try pruning and continue
+        try {
+          execSync('git worktree prune', { stdio: 'ignore' });
+        } catch (pruneError) {
+          // Ignore prune errors
+        }
+      }
+    }
+
+    // Prune stale worktree metadata
+    execSync('git worktree prune', { stdio: 'ignore' });
+  } catch (e) {
+    // Not in a git repo or no worktrees - that's fine
+  }
+
+  // Now safe to remove the directory
   await fs.remove(tempDir);
 }
 

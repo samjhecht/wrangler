@@ -6,6 +6,16 @@
 set -e
 
 # =============================================================================
+# Ensure we're at git repository root
+# =============================================================================
+GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -z "$GIT_ROOT" ]; then
+    echo "[pre-commit] ERROR: Not in a git repository" >&2
+    exit 1
+fi
+cd "$GIT_ROOT" || exit 1
+
+# =============================================================================
 # Configuration (populated by setup-git-hooks skill)
 # =============================================================================
 FORMAT_COMMAND="{{FORMAT_COMMAND}}"
@@ -81,7 +91,12 @@ is_docs_only_change() {
     fi
 
     # Check each staged file against docs patterns
-    for file in $staged_files; do
+    # Use while loop to handle filenames with spaces correctly
+    echo "$staged_files" | while IFS= read -r file; do
+        if [ -z "$file" ]; then
+            continue
+        fi
+
         is_doc=false
         for pattern in $DOCS_PATTERNS; do
             case "$file" in
@@ -124,8 +139,14 @@ if [ -n "$FORMAT_COMMAND" ] && [ "$FORMAT_COMMAND" != "{{FORMAT_COMMAND}}" ]; th
         log_success "Formatting complete"
 
         # Re-stage only the originally staged files (not all modified files)
+        # Note: We check if file exists (-f) to handle deleted files gracefully.
+        # Deleted files don't need re-staging; their deletion is already staged.
         if [ -n "$originally_staged_files" ]; then
-            for file in $originally_staged_files; do
+            # Use while loop to handle filenames with spaces correctly
+            echo "$originally_staged_files" | while IFS= read -r file; do
+                if [ -z "$file" ]; then
+                    continue
+                fi
                 if [ -f "$file" ]; then
                     git add "$file"
                 fi

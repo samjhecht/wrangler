@@ -57,6 +57,79 @@ Wrangler ensures you and your human partner are **of one mind** about:
 
 ---
 
+## Core Design Philosophy
+
+Wrangler's design is guided by two fundamental principles that must be balanced:
+
+### Principle 1: Determinism Through Verification, Not Prescription
+
+**Goal**: Reliable, consistent outcomes from AI agent workflows.
+
+**How we achieve it**:
+- **Verify outcomes, not steps** - Check that tests pass, not that the agent followed 47 prescribed steps
+- **External enforcement** - Git hooks and GitHub checks are authoritative; they can't be rationalized away
+- **Hard gates at phase boundaries** - Certain conditions must be met before proceeding
+- **Passive audit trails** - Session tools track what happened for observability and recovery
+
+**What this means for skills**:
+- Skills should focus on **outcomes required**, not prescriptive step-by-step instructions
+- The LLM decides **how** to achieve outcomes; wrangler verifies **that** they're achieved
+- Shorter, outcome-focused skills are better than long prescriptive ones
+
+### Principle 2: Stay Out of Claude Code's Way
+
+**Goal**: Don't add friction to what the LLM naturally does well.
+
+**What LLMs do well** (let them do it freely):
+- Understanding context and intent
+- Generating and modifying code
+- Exploring codebases
+- Making judgment calls about implementation approach
+- Adapting to unexpected situations
+
+**What needs structure** (add minimal gates):
+- Ensuring tests exist and pass
+- Maintaining clean git state
+- Obtaining code review
+- Creating audit trails for recovery
+
+**Anti-patterns to avoid**:
+- Prescribing exact order of operations when order doesn't matter
+- Micromanaging how the LLM implements features
+- Adding checkpoints that don't verify anything meaningful
+- Creating skills so long that the LLM can't follow them reliably
+
+### The Enforcement Architecture
+
+```
++-------------------+     +--------------------+     +------------------+
+|   LLM Freedom     |     |   Hard Gates       |     |   Audit Trail    |
+|                   |     |                    |     |                  |
+| - How to implement|     | - Git pre-commit   |     | - Session tools  |
+| - Which files     |     | - Git pre-push     |     | - Phase tracking |
+| - Code structure  |     | - GitHub checks    |     | - Checkpoints    |
+| - Test patterns   |     | - PR requirements  |     | - Recovery state |
++-------------------+     +--------------------+     +------------------+
+       |                          |                         |
+       v                          v                         v
+   "Trust the LLM"         "Verify outcomes"         "Enable recovery"
+```
+
+### Minimal Gate Set
+
+These are the only hard gates wrangler enforces:
+
+| Gate | Enforcement | Purpose |
+|------|-------------|---------|
+| Tests pass | Git pre-commit hook | Core quality guarantee |
+| Clean git state | Session checkpoint | Enables recovery |
+| PR has checks | GitHub required checks | External verification |
+| Code review | Configurable | Second perspective |
+
+Everything else is guidance, not enforcement.
+
+---
+
 ## Architecture
 
 ### Directory Structure
